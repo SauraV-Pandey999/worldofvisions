@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('2.jpg'); /* Replace with your image path */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .container-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px;
+      gap: 20px;
+    }
+
+    .doc-container {
+      width: 200px;
+      height: 150px;
+      background-color: rgba(194, 17, 230, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .doc-container:hover {
+      transform: scale(1.05);
+    }
+
+    .doc-title {
+      font-size: 18px;
+      color: #333;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container-wrapper">
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1TmBaUQ_U3hT3EjLzgV9cL8ZFel3LZT7o/view?usp=sharing')">
+      <div class="doc-title">phyics-physical quantity</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1T6UWFwLb4GnBQwj_YUO9ri5sdpMFx-VP/view?usp=drive_link')">
+      <div class="doc-title">phyics-vector</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1QrKZ38h6DyBFYI7k7zR07QpZ3wRsLB_x/view?usp=drive_link')">
+      <div class="doc-title">phyics-heat and temperature</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1jpJaA0Avu47V-fnOTCgGIT44k0L8sFne/view?usp=sharing')">
+      <div class="doc-title">phyics-reflection at curved mirror</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1Pm6IFSVV4K9xqdjOy9Wmncc1Yb6tp6RQ/view?usp=sharing')">
+      <div class="doc-title">chemistry-periodic table</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1y9LRnn513n8moHNf5EwDvhVuFAgZwno_/view?usp=sharing')">
+      <div class="doc-title">chemistry-nitrogen</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1HFos1Dpf-e3eco86xQ3H1nF3-krKxkh-/view')">
+      <div class="doc-title">chemistry-states of matter</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1d1sSL8YW0qPS0UuqiwP-6GtmVQ9sQ9BO/view')">
+      <div class="doc-title">biology-bio-molecules</div>
+    </div>
+     <div class="doc-container" onclick="openDocument('https://drive.google.com/file/d/1dFWHlJpJoPTbygRSp-Hy76qG7KvqYIP9/view')">
+      <div class="doc-title">biology-lichens</div>
+    </div>
+    <div class="doc-container" onclick="openDocument('doc1.pdf')">
+      <div class="doc-title">mathematics</div>
+    </div>
+    <!-- Add more containers as needed -->
+  </div>
+
+  <script>
+    function openDocument(url) {
+      window.open(url, '_blank');
+    }
+  </script>
+
+</body>
+</html>
