@@ -1,0 +1,118 @@
+*{
+  -webkit-transition:300ms;
+  font-family: 'Cabin';
+}
+body{
+  background-image:url('http://www.publicdomainpictures.net/pictures/120000/velka/mint-green-diffused-background.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.jumbotron{
+  background:rgba(0,0,0,0.0);
+}
+#title
+{
+  color:black;
+  letter-spacing:3px;
+  margin-right:20px;
+  font-weight:600;
+  display:inline-block;
+}
+#title:hover{
+  text-decoration:none;
+  color:#2c2d2d;
+  cursor:default;
+  transition-delay:50ms;
+  transition-duration:100ms;
+}
+#myself:hover{
+  text-decoration:none;
+  background:rgba(0,0,0,0.3);
+  border-radius:2px;
+  transition-delay:50ms;
+  transition-duration:300ms;
+  padding: 6px;
+  display:inline;
+}
+.panel{
+  margin-bottom:0px;
+  margin-top:150px;
+  padding-top:10px;
+  background:rgba(255,255,255,0.8);
+  font-size:20px;
+}
+.board {
+    height: 450px;
+    width: 450px;
+    margin: 0 auto;
+}
+.cell
+{
+    width: 150px;
+    height: 150px;
+    border: 1px solid grey;
+    cursor:pointer;
+    float:left;
+    line-height: 140px;
+  border-radius:20px;
+    text-align: center;
+  background:rgba(0,0,0,0.2);
+    font-weight: bold;
+    font-size: 70px;
+  transition:all 0.9s;
+}
+.occupied
+{
+  font-family:Helvetica;
+}
+.cell:hover{
+  box-shadow: 300px 0 0 0  rgba(0,0,0,0.15) inset, -300px 0 0 0  rgba(0,0,0,0.15) inset;
+}
+.control
+{
+  font-size:20px;
+}
+.level
+{
+    margin: 0 15px;
+    color: lightskyblue;
+    cursor: pointer;
+}
+.not-selected {
+    opacity: 0.5;
+}
+
+.not-selected:hover {
+    opacity:1;
+}
+
+
+.sweet-alert *
+{
+  font-family:'Linotype';
+}
+.sweet-alert button
+{
+  font-family:'Cabin';
+}
+.sweet-alert button.cancel{
+  background-color: #f26f99;
+  color: white;
+}
+.sweet-alert button.cancel:hover
+{
+  background-color: #f26f99;
+}
+
+.fa-refresh
+{
+  background-color:#8bb3f4;
+  color:#396aba;
+  padding:10px 14px 10px 14px;
+  border-radius:40px;
+}
+.fa-refresh:hover
+{
+  color:white;
+   box-shadow: 300px 0 0 0 rgba(0,0,0,0.5) inset;
+}

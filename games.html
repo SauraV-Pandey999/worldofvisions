@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Games Hub</title>
+<style>
+  :root{
+    --bg:#071226; --card:#0b1724; --accent:#6ee7b7; --muted:#9fb6c6;
+    --glass: rgba(255,255,255,0.04);
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Arial,sans-serif}
+  body{margin:0;min-height:100vh;background:
+    radial-gradient(circle at 10% 10%, rgba(107,114,128,0.06), transparent 10%),
+    linear-gradient(180deg,#061323 0%, #07182b 100%); color:#e6f0f6;display:flex;align-items:center;justify-content:center;padding:28px}
+  .container{max-width:1100px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;
+    text-decoration:none;color:inherit;box-shadow:0 8px 30px rgba(2,6,23,0.6);transition:transform .18s ease, box-shadow .18s ease;
+    border:1px solid var(--glass);
+  }
+  .card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(2,6,23,0.72)}
+  .art{width:160px;height:160px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+       background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.02)}
+  .title{font-size:18px;font-weight:700;margin:6px 0 4px 0;color:var(--accent)}
+  .subtitle{font-size:13px;color:var(--muted);text-align:center;max-width:210px}
+  /* badge */
+  .badge{margin-top:12px;padding:6px 10px;background:rgba(0,0,0,0.25);border-radius:999px;font-size:13px;color:var(--muted)}
+  /* responsive */
+  @media (max-width:950px){ .container{grid-template-columns:repeat(2,1fr)} .art{width:140px;height:140px} }
+  @media (max-width:640px){ .container{grid-template-columns:1fr} .art{width:120px;height:120px} }
+</style>
+</head>
+<body>
+  <main class="container" role="main" aria-label="Games Hub">
+    <!-- Detective Cases -->
+    <a class="card" href="detective.html" aria-label="Open Detective Cases">
+      <div class="art" aria-hidden="true">
+        <!-- simple detective SVG (hat + magnifier) -->
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="12" fill="#061826"/>
+          <g transform="translate(8 8)" fill="none" stroke="#6ee7b7" stroke-width="1.6">
+            <path d="M6 20c0-7 10-12 20-12s20 5 20 12" stroke-opacity="0.9"/>
+            <circle cx="30" cy="26" r="8" stroke-opacity="0.95"/>
+            <path d="M36 32l12 12" stroke-opacity="0.7" stroke-linecap="round"/>
+            <path d="M6 20c0-5 6-12 14-12s14 7 14 12" stroke-opacity="0.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="title">Detective Cases</div>
+      <div class="subtitle">Solve CID-style mystery cases — read the briefing, deduce the truth.</div>
+      <div class="badge">Single-player investigative stories</div>
+    </a>
+
+    <!-- Tic Tac Toe - Single Player -->
+    <a class="card" href="SINGLEP.html" aria-label="Open Tic Tac Toe Single Player">
+      <div class="art" aria-hidden="true">
+        <!-- tic-tac-toe SVG -->
+        <svg width="120" height="120" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="12" fill="#061826"/>
+          <g stroke="#8be9fd" stroke-width="2.2" fill="none" stroke-linecap="round">
+            <path d="M18 14v36M32 14v36M46 14v36M10 26h44M10 38h44" stroke-opacity="0.95"/>
+            <!-- sample X and O -->
+            <g transform="translate(8 6)" stroke="#6ee7b7" stroke-width="2">
+              <path d="M12 12L24 24M24 12L12 24" stroke-linecap="round"/>
+              <circle cx="36" cy="18" r="6" stroke-opacity="0.9"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="title">Single Player Mode</div>
+      <div class="subtitle">Play against the computer — perfect for quick practice rounds.</div>
+      <div class="badge">AI opponent</div>
+    </a>
+
+    <!-- Tic Tac Toe - Multiplayer -->
+    <a class="card" href="tic.html" aria-label="Open Tic Tac Toe Multiplayer">
+      <div class="art" aria-hidden="true">
+        <!-- reuse tic-tac-toe svg with slight color -->
+        <svg width="120" height="120" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="12" fill="#061826"/>
+          <g stroke="#ffa8a8" stroke-width="2.2" fill="none" stroke-linecap="round">
+            <path d="M18 14v36M32 14v36M46 14v36M10 26h44M10 38h44" stroke-opacity="0.95"/>
+            <g transform="translate(8 6)" stroke="#ffb4a2" stroke-width="2">
+              <path d="M12 12L24 24M24 12L12 24" stroke-linecap="round"/>
+              <circle cx="36" cy="18" r="6" stroke-opacity="0.9"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="title">Multiplayer Mode</div>
+      <div class="subtitle">Local 2-player mode — pass-and-play on the same device.</div>
+      <div class="badge">Play with a friend</div>
+    </a>
+  </main>
+</body>
+</html>

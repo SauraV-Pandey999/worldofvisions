@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Detective — Case Files (HTML/CSS/JS)</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#8be9fd;--muted:#9aa4b2;--success:#7ee787;--danger:#ff6b6b}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Arial,Helvetica,sans-serif}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071026 0%, #07182b 60%);color:#e6f0f6}
+    .wrap{max-width:920px;margin:32px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    header h1{font-size:20px;margin:0;letter-spacing:0.2px}
+    .status{display:flex;gap:12px;align-items:center}
+    .badge{background:rgba(255,255,255,0.04);padding:6px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    .question{font-size:18px;margin-bottom:16px}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .opt{padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;background:rgba(255,255,255,0.012);}
+    .opt:hover{transform:translateY(-2px)}
+    .opt.correct{outline:3px solid rgba(126,231,135,0.14);box-shadow:0 6px 18px rgba(46,125,50,0.06)}
+    .opt.wrong{outline:3px solid rgba(255,107,107,0.12)}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;width:60%}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#6ee7b7);width:0%}
+    .footer-actions{display:flex;gap:10px}
+    .btn{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#012;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .center{text-align:center}
+    .home{display:flex;flex-direction:column;gap:12px;align-items:center;padding:28px}
+    input[type=text], input[type=number]{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{background:var(--card);padding:22px;border-radius:12px;max-width:520px;width:100%;}
+    .hidden{display:none}
+
+    /* Responsive */
+    @media (max-width:640px){.options{grid-template-columns:1fr}.wrap{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Detective — Case Files by VISION_S</h1>
+      <div class="status">
+        <div class="badge">Player: <strong id="playerName">—</strong></div>
+        <div class="badge">Genius: <strong id="genius">0</strong></div>
+        <div class="badge">Score: <strong id="score">0</strong></div>
+      </div>
+    </header>
+
+    <!-- Home Menu -->
+    <div class="card home" id="home">
+      <h2 style="margin:0 0 6px 0;color:var(--accent)">Welcome, Detective</h2>
+      <div style="max-width:640px;color:var(--muted);text-align:center">Step into the shoes of an investigator. Choose a case, read the briefing carefully — then answer a series of logical questions. Correct instincts move you forward; mistakes end the case. Save the city from cunning criminals.</div>
+
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <input id="nameInput" type="text" placeholder="Enter your name (e.g. Saurav)" />
+        <input id="initGenius" type="number" placeholder="Your starting genius level (0-10)" min="0" max="10" />
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn" id="btnStart">Start Game</button>
+        <button class="btn secondary" id="btnRules">Rules</button>
+        <button class="btn secondary" id="btnCases">Cases</button>
+      </div>
+
+      <small style="color:var(--muted);margin-top:12px">Tip: If you want a fresh case each run, use "New Case" inside the game.</small>
+    </div>
+
+    <!-- Game Card -->
+    <div class="card hidden" id="game">
+      <div id="caseTitle" style="color:var(--accent);font-weight:600;margin-bottom:6px">Case #</div>
+      <div id="caseIntro" style="color:var(--muted);margin-bottom:12px"></div>
+      <div class="question" id="questionText">Loading...</div>
+      <div class="options" id="options"></div>
+
+      <div class="meta">
+        <div class="meta-left"><small id="qcount" style="color:var(--muted)"></small></div>
+        <div class="meta-right">
+          <div class="progress"><i id="progressBar"></i></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted);font-size:13px">Answer carefully — wrong answer ends the case.</div>
+        <div class="footer-actions">
+          <button class="btn secondary" id="restart">Restart Case</button>
+          <button class="btn" id="newCase">New Case</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:18px"></div>
+    <div class="center" style="color:var(--muted)">Built by SAURAV PANDEY. ENJOY and test your critical thinking.</div>
+  </div>
+
+  <!-- Modal (failure / success / case intro / rules) -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" id="modalInner"></div>
+  </div>
+
+<script>
+// ========== Data: Cases (with intros) ==========
+const CASES = [
+  {
+    id: 'The Silent Manor',
+    intro: `At 2:17 AM the storm battered the old manor. An art collector lies dead — study locked from within. The gates show a single muddy print, and a priceless canvas is missing. The household insists on silence. Can you peel back the lies?`,
+    questions: [
+      {q: 'Which observation most strongly suggests an inside job?', opts: ['Broken window latch','Muddy print matches gardener\'s boots','Only expensive painting moved','The study door locked from inside'], a: 2},
+      {q: 'The security camera shows a brief blackout before discovery. Which technical detail is suspicious?', opts: ['Blackout lasted 5 seconds','Camera restarted itself','Power cut only in study','Backup recorder intact'], a: 2},
+      {q: 'An assistant claims they were preparing tea at the time. How verify this alibi?', opts: ['Ask other staff','Check kettle temperature','Look for tea stains on mug','Check kitchen log for use'], a: 3},
+      {q: 'A boot print size recorded is 9 but the gardener claims size 7. What does this suggest?', opts: ['Gardener lied','Different person entered','Boots swapped sizes','Measurement error'], a: 1},
+      {q: 'A secret safe shows smudged prints. Next best step?', opts: ['Ignore prints','Run fingerprint analysis','Ask for owner\'s fingerprint again','Look for keycard logs'], a: 1},
+      {q: 'Who likely stole the artwork?', opts: ['Revenge','Financial gain','Accident','Curiosity'], a: 1},
+    ]
+  },
+  {
+    id: 'The Night Train',
+    intro: `During a nocturnal journey, a passenger collapses. No signs of struggle — yet something in their glass hints at foul play. Carriages creak and secrets awake. Who had the motive, and how was the poison delivered?`,
+    questions: [
+      {q: 'Which clue indicates poison was administered slowly?', opts: ['Rapid collapse','Symptoms developed hours later','Found syringe','No evidence in food'], a: 1},
+      {q: 'The conductor recalls a passenger with a thermos. How use that info?', opts: ['Ignore it','Test thermos content','Ask seating chart','Ask other passengers'], a: 1},
+      {q: 'A note reads "Regret nothing". Which is likely?', opts: ['Suicide note','Clue by culprit','Random scribble','Insurance fraud'], a: 1},
+      {q: 'A bottle has faint milky residue that dissolves in water. What poisoning might this indicate?', opts: ['Cyanide','Arsenic','Sedative','Foodborne bacteria'], a: 2},
+      {q: 'Seat assignments show an empty seat next to victim earlier. What does that tell?', opts: ['Someone left quickly','No one sat there','Victim moved seats','Seat is broken'], a: 0},
+      {q: 'Final procedure?', opts: ['Arrest first suspect','Collect forensic samples then detain','Publicly accuse','Ignore the evidence'], a: 1},
+    ]
+  },
+  {
+    id: 'Cryptic Ledger',
+    intro: `A ledger keeps a rhythm of coded payments. Late-night transfers, odd descriptions — someone is moving money in the shadows. Can you trace the flow and expose the orchestrator?`,
+    questions: [
+      {q: 'An expense labelled "Maintenance" recurs oddly. What does this suggest?', opts: ['Regular upkeep','Bribe/cover-up','Accounting error','Bank fees'], a: 1},
+      {q: 'A transfer at 02:12 repeats. How to proceed?', opts: ['Trace bank routing','Ignore it','Ask the accountant','Block the account'], a: 0},
+      {q: 'An email trail repeats a distinct phrase. What use is that?', opts: ['Treat as signature','Ignore','Use for pattern analysis','Assume it\'s a template'], a: 2},
+      {q: 'Who likely orchestrates secret payments?', opts: ['Junior clerk','An inside executive','External contractor','Random third party'], a: 1},
+      {q: 'A counterfeit invoice matches a hospital address. Next step?', opts: ['Call hospital','Forensic document check','Pay the invoice','Send lawyer'], a: 1},
+      {q: 'Best conclusion?', opts: ['No crime','Internal embezzlement uncovered','Tax evasion only','Mistake in entries'], a: 1},
+    ]
+  },
+  {
+    id: 'Museum of Clocks',
+    intro: `Among ticking halls, a timepiece vanishes. Someone manipulated alarms and slipped through the schedule. Time itself holds the evidence — if you know where to look.`,
+    questions: [
+      {q: 'An antique clock shows wrong time. How verify the claim it was broken earlier?', opts: ['Compare logs','Check mechanism','Ask witness','Look for tampering'], a: 0},
+      {q: 'A ladder used has paint chips matching the display. What does the trace show?', opts: ['No prints','Fresh mud','Paint chips matching ladder','Old corrosion'], a: 2},
+      {q: 'A pencil code in a catalog matches display numbers. What is it likely?', opts: ['Catalog note','Clue by suspect','Repair code','Museum accession number'], a: 3},
+      {q: 'An alarm shows a short spike then silence. Likely cause?', opts: ['False alarm','Alarm disabled briefly','Battery low','Someone tripped wire'], a: 1},
+      {q: 'Confronted suspect shows a receipt. What to verify?', opts: ['Receipt date','Shop owner','Card used for payment','All of the above'], a: 3},
+      {q: 'Case outcome?', opts: ['Restitution and arrest','No evidence','Accidental damage only','Private settlement'], a: 0},
+    ]
+  }
+];
+
+// ========== State ==========
+let state = {
+  caseIndex: null,
+  questionIndex: 0,
+  score: 0,
+  genius: 0,
+  lastCaseSaved: null,
+  playerName: 'Detective',
+  initialGenius: 0,
+  retried: false // if player retries the same case, no genius increases for first-try-only rule
+};
+
+// Helpers
+function $(s){return document.querySelector(s)}
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+// Persistence to avoid repeat case
+const LAST_CASE_KEY = 'detective_last_case_2025';
+state.lastCaseSaved = localStorage.getItem(LAST_CASE_KEY);
+
+// UI refs
+const questionText = $('#questionText');
+const optionsEl = $('#options');
+const scoreEl = $('#score');
+const geniusEl = $('#genius');
+const qcountEl = $('#qcount');
+const caseTitle = $('#caseTitle');
+const caseIntro = $('#caseIntro');
+const progressBar = $('#progressBar');
+const modal = $('#modal');
+const modalInner = $('#modalInner');
+const restartBtn = $('#restart');
+const newCaseBtn = $('#newCase');
+
+const home = $('#home');
+const game = $('#game');
+const playerNameEl = $('#playerName');
+
+// Select a new random case not equal to last saved (if possible)
+function pickRandomCase(){
+  const last = state.lastCaseSaved;
+  const indices = CASES.map((c,i)=>i).filter(i=>String(i)!==String(last));
+  if(indices.length===0) indices.push(...CASES.map((c,i)=>i));
+  const pick = indices[Math.floor(Math.random()*indices.length)];
+  return pick;
+}
+
+function startNewCase(forceIndex=null){
+  state.caseIndex = (forceIndex!==null)?forceIndex:pickRandomCase();
+  localStorage.setItem(LAST_CASE_KEY, state.caseIndex);
+  state.lastCaseSaved = state.caseIndex;
+  state.questionIndex = 0;
+  state.score = 0;
+  // do NOT reset genius here - genius persists and grows
+  state.retried = false;
+  // show case intro before starting questions
+  showCaseIntro();
+  updateStatus();
+}
+
+function updateStatus(){
+  scoreEl.textContent = state.score;
+  geniusEl.textContent = state.genius;
+  playerNameEl.textContent = state.playerName;
+}
+
+function renderQuestion(){
+  const cs = CASES[state.caseIndex];
+  const qObj = cs.questions[state.questionIndex];
+  caseTitle.textContent = `Case: ${cs.id}`;
+  questionText.textContent = qObj.q;
+  qcountEl.textContent = `Question ${state.questionIndex+1} of ${cs.questions.length}`;
+  const opts = qObj.opts.map((t,i)=>({t,i}));
+  // shuffle options for fair play
+  shuffle(opts);
+  optionsEl.innerHTML = '';
+  opts.forEach(o=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<div>${o.t}</div>`;
+    btn.onclick = ()=>handleAnswer(o.i, btn, opts);
+    optionsEl.appendChild(btn);
+  });
+  // progress
+  const pct = Math.round((state.questionIndex/ (cs.questions.length))*100);
+  progressBar.style.width = pct + '%';
+}
+
+function handleAnswer(originalIndex, btn, opts){
+  // disable clicking
+  Array.from(optionsEl.children).forEach(b=>b.disabled = true);
+  const cs = CASES[state.caseIndex];
+  const qObj = cs.questions[state.questionIndex];
+  const correctIndex = qObj.a; // original index
+  if(originalIndex === correctIndex){
+    // correct
+    btn.classList.add('correct');
+    // increase score
+    const gain = 10 + Math.floor(Math.random()*6);
+    state.score += gain;
+    // increase genius only if this case hasn't been retried (first-try-only rule)
+    if(!state.retried){
+      // per-question genius increment (small)
+      state.genius += Math.max(1, Math.floor(gain/15));
+    }
+    updateStatus();
+    // brief pause then next
+    setTimeout(()=>{
+      state.questionIndex++;
+      if(state.questionIndex >= cs.questions.length){
+        showWin();
+      } else {
+        renderQuestion();
+      }
+    }, 700);
+  } else {
+    // wrong answer
+    btn.classList.add('wrong');
+    // reveal correct
+    Array.from(optionsEl.children).forEach((b,idx)=>{
+      const displayedText = b.innerText.trim();
+      if(displayedText === qObj.opts[correctIndex]) b.classList.add('correct');
+      b.disabled = true;
+    });
+    setTimeout(()=>{
+      showFailure();
+    }, 700);
+  }
+}
+
+function showModal(html){
+  modalInner.innerHTML = html;
+  modal.style.display = 'flex';
+}
+function hideModal(){ modal.style.display = 'none'; }
+
+function showFailure(){
+  // mark retried true if player chooses to retry
+  const html = `
+    <div style="text-align:center">
+      <h2 style="margin-top:0;color:var(--danger)">Not yet trained enough</h2>
+      <p style="color:var(--muted)">You answered incorrectly. You can replay this case (counts as a retry) or try a new case.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px">
+        <button id="tryAgain" class="btn">Try This Case Again</button>
+        <button id="altCase" class="btn secondary">New Case</button>
+      </div>
+    </div>
+  `;
+  showModal(html);
+  $('#tryAgain').onclick = ()=>{ hideModal(); state.retried = true; restartCase(); };
+  $('#altCase').onclick = ()=>{ hideModal(); startNewCase(); };
+}
+
+function showWin(){
+  // final remark based on performance + initial genius
+  const totalGenius = state.genius + Number(state.initialGenius || 0);
+  let remark = 'Novice';
+  if(totalGenius >= 20) remark = 'Master Detective';
+  else if(totalGenius >= 12) remark = 'Seasoned Investigator';
+  else if(totalGenius >= 6) remark = 'Detective';
+
+  const html = `
+    <div style="text-align:center">
+      <h2 style="margin-top:0;color:var(--success)">Case Closed — You Win!</h2>
+      <p style="color:var(--muted)">Final Score: <strong>${state.score}</strong><br/>Genius Earned: <strong>${state.genius}</strong><br/>Starting Genius: <strong>${state.initialGenius}</strong><br/><strong>Overall Genius:</strong> ${totalGenius}</p>
+      <p style="color:var(--muted)"><em>Remark:</em> <strong>${remark}</strong></p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px">
+        <button id="another" class="btn">Play Another Case</button>
+        <button id="replay" class="btn secondary">Replay This Case</button>
+      </div>
+    </div>
+  `;
+  showModal(html);
+  $('#another').onclick = ()=>{ hideModal(); startNewCase(); };
+  $('#replay').onclick = ()=>{ hideModal(); state.retried = false; restartCase(); };
+}
+
+function restartCase(){
+  state.questionIndex = 0;
+  state.score = 0;
+  // note: do NOT reset genius - genius is cumulative
+  renderQuestion();
+  updateStatus();
+}
+
+function showCaseIntro(){
+  const cs = CASES[state.caseIndex];
+  // hide home, show game
+  home.classList.add('hidden');
+  game.classList.remove('hidden');
+  caseIntro.textContent = cs.intro;
+  // show a modal with dramatic intro and Begin Case button
+  const html = `
+    <div>
+      <h3 style="color:var(--accent);margin-top:0">${cs.id}</h3>
+      <p style="color:var(--muted)">${cs.intro}</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button id="beginCase" class="btn">Begin Case</button>
+        <button id="backHome" class="btn secondary">Back to Menu</button>
+      </div>
+    </div>
+  `;
+  showModal(html);
+  $('#beginCase').onclick = ()=>{ hideModal(); renderQuestion(); };
+  $('#backHome').onclick = ()=>{ hideModal(); home.classList.remove('hidden'); game.classList.add('hidden'); };
+}
+
+// UI events
+restartBtn.onclick = ()=>{ state.retried = true; restartCase(); };
+newCaseBtn.onclick = ()=>{ startNewCase(); };
+modal.onclick = (e)=>{ if(e.target===modal) hideModal(); };
+
+// Home buttons
+$('#btnRules').onclick = ()=>{
+  const html = `
+    <div>
+      <h3 style="color:var(--accent);margin-top:0">Rules</h3>
+      <ol style="color:var(--muted);text-align:left">
+        <li>Enter your name and starting genius level (0–10) before starting.</li>
+        <li>Each case contains 6 logical questions. Answer all correctly to close the case.</li>
+        <li>Wrong answer ends the case immediately — you may retry (counts as a retry) or try a new case.</li>
+        <li>Genius increases only when you answer correctly without previously retrying the case.</li>
+        <li>Your final remark is based on cumulative performance plus your starting genius.</li>
+      </ol>
+      <div style="display:flex;justify-content:center;margin-top:12px"><button id="closeRules" class="btn">Close</button></div>
+    </div>
+  `;
+  showModal(html);
+  $('#closeRules').onclick = ()=>hideModal();
+};
+
+$('#btnCases').onclick = ()=>{
+  const html = `
+    <div>
+      <h3 style="color:var(--accent);margin-top:0">Available Cases</h3>
+      <ul style="color:var(--muted);text-align:left">
+        ${CASES.map((c,i)=>`<li><strong>${c.id}</strong> — ${c.intro.substring(0,110)}...</li>`).join('')}
+      </ul>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button id="closeCases" class="btn">Close</button></div>
+    </div>
+  `;
+  showModal(html);
+  $('#closeCases').onclick = ()=>hideModal();
+};
+
+$('#btnStart').onclick = ()=>{
+  const name = $('#nameInput').value.trim();
+  const g = Number($('#initGenius').value);
+  if(!name){ alert('Please enter your name.'); return; }
+  if(isNaN(g) || g<0){ alert('Enter starting genius (0-10).'); return; }
+  state.playerName = name;
+  state.initialGenius = g;
+  // set displayed genius to include initial value (visual)
+  state.genius = 0; // earned during play
+  updateStatus();
+  // start the first case
+  startNewCase();
+};
+
+// Initialize (show home)
+home.classList.remove('hidden');
+game.classList.add('hidden');
+updateStatus();
+</script>
+</body>
+</html>
