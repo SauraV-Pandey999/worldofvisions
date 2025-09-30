@@ -5,9 +5,118 @@
 	<link rel="stylesheet" type="text/css" href="home.css">
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
-	<link rel="icon" href="19.jpg">
+      <style>
+      /* --- overlay canvas for shooting stars --- */
+
+/* keep page layouts same height */
+html, body { height: 100%; }
+
+/* Remove forced black background so your site's background shows through */
+body {
+  margin: 0;
+  /* keep your site's background color or image here; remove any hard black */
+  /* example: background: linear-gradient(180deg,#0f172a,#1f2a44); */
+  /* If you already have a background elsewhere, just leave it out here. */
+  background-color: transparent;
+}
+
+/* make the canvas an overlay that does not block mouse events */
+#canvas {
+  position: fixed;       /* overlay the viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;  /* allow clicks through to your page */
+  z-index: 9999;         /* ensure it sits above content; lower if needed */
+  background: transparent;
+}
+
+/* keep message styles (if used) */
+#message {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  color: rgba(255,255,255,0.7);
+  font-family: Georgia, serif;
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms;
+}
+body.o-start #message { opacity: 1; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: #111;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: yellow;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+#app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  overflow: hidden;
+  touch-action: pan-up;
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  text-shadow: 0 0 5px #ffffff, 0 0 20px #000, 0 0 30px #000;
+}
+
+#app h1 {
+  --fontSize: 60px;
+  --lineHeight: 80px;
+  width: auto;
+  height: calc(2 * var(--lineHeight));
+  line-height: var(--lineHeight);
+  margin: calc(50vh - var(--lineHeight)) auto 0;
+  font-size: var(--fontSize);
+  text-transform: uppercase;
+}
+
+#app a {
+  margin-top: 10px;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+}
+
+#app canvas {
+  display: block;
+  position: fixed;
+  z-index: -1;
+  top: 0;
+}
+</style>
 </head>
+
 <body>
+  <canvas id="canvas"></canvas>
 
 <header>
 	
@@ -19,12 +128,12 @@
 		<a href="services.html">services</a>
 		<a href="https://www.youtube.com/@VISIONS-9" target="_blank">about</a>
 		<a href="contact.html">contact</a>
-		
 	</div>
 </nav>
 
 	<main>
 		<section>
+            
 			<h3>Welcome To world of vision s</h3>
 			<h1>we <span class="change_content"> </span> <span style="margin-top: -10px;"> | </span> </h1>
 			<p>"A vision inspired by saurav"</p>
@@ -35,6 +144,242 @@
 
 
 </header>
+
+	<script type="text/javascript" src=""></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js" type="text/javascript"></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.5/dat.gui.min.js'></script><script type="module" src="./script.js"></script>
+<script>
+  // shooting-stars-final.js
+// Natural, RGB-colored shooting stars with soft glow, curved motion, and interactive response.
+
+(() => {
+  const canvas = document.getElementById('canvas') || (() => {
+    const c = document.createElement('canvas');
+    c.id = 'canvas';
+    document.body.appendChild(c);
+    return c;
+  })();
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
+
+  // ===== CONFIG =====
+  const MAX_STARS = 6;
+  const AMBIENT_INTERVAL = 1600;
+  const MOUSE_COOLDOWN = 45;
+  const BASE_SPEED = 4.5;
+  const SPEED_FROM_MOUSE = 0.16;
+  const DRAG = 0.994;
+  const CURVE_MAG = 0.16;
+  const TAIL_SEGMENTS = 14;
+  const FADE_ALPHA = 0.06;
+  const GLOW_INTENSITY = 1.0;
+  const MIN_LENGTH = 80, MAX_LENGTH = 260;
+  const HEAD_BASE_RADIUS = 1.0;
+  const HEAD_MAX_RADIUS = 2.6;
+  const CHROMA = 0.35;
+  // ===================
+
+  let stars = [];
+  let lastRAF = performance.now();
+  let nextAmbient = lastRAF + AMBIENT_INTERVAL;
+  let lastMouseSpawn = 0;
+
+  const mouse = { x: w / 2, y: h / 2, px: null, py: null, vx: 0, vy: 0, lastMove: 0 };
+
+  function onResize() {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+  }
+  addEventListener("resize", onResize);
+
+  function handlePointer(x, y) {
+    const now = performance.now();
+    if (mouse.px === null) {
+      mouse.px = x;
+      mouse.py = y;
+    }
+    const dt = Math.max(1, now - (mouse.lastMove || now));
+    mouse.vx = (x - mouse.px) / dt;
+    mouse.vy = (y - mouse.py) / dt;
+    mouse.px = x;
+    mouse.py = y;
+    mouse.x = x;
+    mouse.y = y;
+    mouse.lastMove = now;
+  }
+
+  addEventListener("mousemove", (e) => {
+    handlePointer(e.clientX, e.clientY);
+    spawnFromPointer(e.clientX, e.clientY);
+  });
+  addEventListener("touchstart", (ev) => {
+    const t = ev.touches[0];
+    handlePointer(t.clientX, t.clientY);
+    spawnFromPointer(t.clientX, t.clientY);
+  }, { passive: true });
+  addEventListener("touchmove", (ev) => {
+    const t = ev.touches[0];
+    handlePointer(t.clientX, t.clientY);
+    spawnFromPointer(t.clientX, t.clientY);
+  }, { passive: true });
+
+  function rnd(seed) {
+    return Math.abs(Math.sin(seed) * 10000 % 1);
+  }
+
+  function createStar(opts = {}) {
+    const x = opts.x ?? Math.random() * w * 0.6;
+    const y = opts.y ?? Math.random() * h * 0.45;
+    const vx = opts.vx ?? Math.cos((30 + Math.random() * 35) * Math.PI / 180) * (BASE_SPEED + Math.random() * 4);
+    const vy = opts.vy ?? Math.sin((30 + Math.random() * 35) * Math.PI / 180) * (BASE_SPEED + Math.random() * 4);
+    const speed = Math.sqrt(vx * vx + vy * vy);
+    const length = opts.length ?? (MIN_LENGTH + Math.min(1, speed / 10) * (MAX_LENGTH - MIN_LENGTH));
+    const life = opts.life ?? (700 + Math.random() * 900);
+    const seed = Math.random() * 99999;
+    const hue0 = Math.floor(Math.random() * 360);
+    const hueVel = (Math.random() - 0.5) * 0.1; // faster shifting
+    const tail = Array(TAIL_SEGMENTS).fill([x, y]);
+    return { x, y, vx, vy, length, life, seed, created: performance.now(), tail, hue: hue0, hueVel };
+  }
+
+  function spawnAmbient() {
+    if (stars.length >= MAX_STARS) return;
+    stars.push(createStar());
+  }
+
+  function spawnFromPointer(px, py) {
+    const now = performance.now();
+    if (now - lastMouseSpawn < MOUSE_COOLDOWN) return;
+    lastMouseSpawn = now;
+
+    const mvx = mouse.vx || 0;
+    const mvy = mouse.vy || 0;
+    let angle;
+    if (Math.abs(mvx) + Math.abs(mvy) > 0.0005) angle = Math.atan2(mvy, mvx);
+    else angle = (Math.PI / 180) * (28 + Math.random() * 30);
+
+    const pointerSpeed = Math.sqrt(mvx * mvx + mvy * mvy) * (1 / 0.016666) * SPEED_FROM_MOUSE;
+    const speed = BASE_SPEED + pointerSpeed + Math.random() * 3;
+    const spread = (Math.PI / 180) * (6 + Math.random() * 24);
+    const finalAngle = angle + (Math.random() - 0.5) * spread;
+    const vx = Math.cos(finalAngle) * speed;
+    const vy = Math.sin(finalAngle) * speed;
+
+    const back = 6 + Math.random() * 18;
+    const sx = px - vx * (back / 16.666);
+    const sy = py - vy * (back / 16.666);
+
+    const length = MIN_LENGTH * 0.6 + Math.min(1, speed / 10) * (MAX_LENGTH - MIN_LENGTH);
+    const life = 420 + Math.min(1600, 120 + speed * 80 + Math.random() * 300);
+
+    if (stars.length < MAX_STARS) stars.push(createStar({ x: sx, y: sy, vx, vy, length, life }));
+  }
+
+  function drawStar(s, now) {
+    const age = now - s.created;
+    const freq = 0.002 + rnd(s.seed) * 0.003;
+    const wobble = Math.sin((now + s.seed * 37) * freq) * CURVE_MAG * (0.9 + Math.sin(s.seed));
+    const speed = Math.max(0.0001, Math.sqrt(s.vx * s.vx + s.vy * s.vy));
+    const nx = -s.vy / speed,
+      ny = s.vx / speed;
+    s.vx += nx * wobble * 0.9;
+    s.vy += ny * wobble * (0.55 + rnd(s.seed + 1) * 0.8);
+    s.vx *= DRAG;
+    s.vy *= DRAG;
+    s.x += s.vx;
+    s.y += s.vy;
+    s.hue = (s.hue + s.hueVel) % 360;
+
+    s.tail.unshift([s.x, s.y]);
+    if (s.tail.length > TAIL_SEGMENTS) s.tail.pop();
+
+    const lifeRatio = Math.max(0, 1 - age / s.life);
+    const headAlpha = Math.pow(lifeRatio, 0.6) * 0.95 * GLOW_INTENSITY;
+    const headRadius = Math.max(HEAD_BASE_RADIUS, HEAD_MAX_RADIUS * (0.5 + lifeRatio * 0.8));
+
+    const hx = s.x,
+      hy = s.y;
+    const glowR = headRadius * 6;
+    const hue = s.hue;
+
+    // 🌈 vivid colored glow
+    const grad = ctx.createRadialGradient(hx, hy, 0, hx, hy, glowR);
+    grad.addColorStop(0, `hsla(${hue}, 100%, 75%, ${headAlpha})`);
+    grad.addColorStop(0.25, `hsla(${hue}, 95%, 65%, ${headAlpha * 0.7})`);
+    grad.addColorStop(0.55, `hsla(${hue}, 85%, 55%, ${headAlpha * 0.4})`);
+    grad.addColorStop(1, `rgba(0,0,0,0)`);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(hx, hy, glowR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Colored core
+    ctx.beginPath();
+    ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${headAlpha * 1.1})`;
+    ctx.arc(hx, hy, Math.max(0.9, headRadius * 1.0), 0, Math.PI * 2);
+    ctx.fill();
+
+    // 🌈 chromatic tail
+    ctx.globalCompositeOperation = "lighter";
+    for (let c = -1; c <= 1; c++) {
+      const hueOffset = c * 15 * CHROMA * (1 + (1 - lifeRatio));
+      const tailHue = (hue + hueOffset + 360) % 360;
+      for (let i = 0; i < s.tail.length - 1; i++) {
+        const p0 = s.tail[i];
+        const p1 = s.tail[i + 1];
+        const segT = i / (s.tail.length - 1);
+        const width = Math.max(0.3, (1 - segT) * (2.8 - Math.abs(c) * 0.6));
+        const alpha = Math.pow(1 - segT, 1.9) * 0.95 * lifeRatio * (0.45 + (1 - segT) * 0.55) * (0.8 - Math.abs(c) * 0.25);
+        ctx.lineWidth = width;
+        ctx.strokeStyle = `hsla(${tailHue}, 100%, 60%, ${alpha * 1.2})`;
+        ctx.beginPath();
+        ctx.moveTo(p0[0], p0[1]);
+        ctx.lineTo(p1[0], p1[1]);
+        ctx.lineCap = "round";
+        ctx.stroke();
+      }
+    }
+
+    // crisp tiny white sparkle at the core
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255,255,255,${Math.min(1, headAlpha * 1.1)})`;
+    ctx.arc(hx, hy, Math.max(0.7, headRadius * 0.9), 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function loop(now) {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = `rgba(0,0,0,${FADE_ALPHA})`;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.globalCompositeOperation = "lighter";
+
+    if (now > nextAmbient && now - (mouse.lastMove || 0) > 500) {
+      spawnAmbient();
+      nextAmbient = now + AMBIENT_INTERVAL + Math.random() * 800;
+    }
+
+    for (let i = stars.length - 1; i >= 0; i--) {
+      const s = stars[i];
+      drawStar(s, now);
+      const age = now - s.created;
+      if (age > s.life || s.x < -150 || s.y < -150 || s.x > w + 150 || s.y > h + 150) {
+        stars.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
+
+  for (let i = 0; i < 2; i++) spawnAmbient();
+})();
+
+</script>
 <script>
 (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="B0MJ5HsSwum84et_wDyaG";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
 </script>
