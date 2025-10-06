@@ -401,5 +401,161 @@ body {
 <script>
 (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="B0MJ5HsSwum84et_wDyaG";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
 </script>
+	<!-- 🌟 Voice Welcome Popup -->
+<div id="voicePopup">
+  <div class="popup-content">
+    <h2>👋 Hey there!</h2>
+    <p>Would you like a quick voice welcome?</p>
+    <button id="greetBtn">Play Greeting</button>
+  </div>
+</div>
+
+<style>
+  #voicePopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(32, 28, 28, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .popup-content {
+    background: #111;
+    color: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 25px #00e5ff80;
+    max-width: 320px;
+    animation: scaleUp 0.5s ease;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .popup-content h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+
+  .popup-content button {
+    background: #00e5ff;
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00e5ff80;
+    transition: 0.3s;
+  }
+
+  .popup-content button:hover {
+    background: #03a9f4;
+    box-shadow: 0 0 20px #03a9f4;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleUp {
+    from { transform: scale(0.8); }
+    to { transform: scale(1); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+  }
+</style>
+
+<script>
+  // Show popup 1.5s after page load
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      const popup = document.getElementById("voicePopup");
+      if (popup) popup.style.display = "flex";
+    }, 1500);
+  });
+
+  let voicesReady = false;
+  window.speechSynthesis.onvoiceschanged = function () {
+    voicesReady = true;
+  };
+
+  document.getElementById("greetBtn").addEventListener("click", async function () {
+    // Wait for voices to load
+    if (!voicesReady) await new Promise(function (r) { setTimeout(r, 300); });
+
+    // Time-based greeting
+    const hour = new Date().getHours();
+    let timeMsg = "";
+    if (hour < 12) timeMsg = "Good morning! The day is fresh and full of possibilities.";
+    else if (hour < 18) timeMsg = "Good afternoon! Keep the energy flowing strong.";
+    else timeMsg = "Good evening! The stars are out, and so is your potential.";
+
+    // Random cool greetings
+    const greetings = [
+      "Welcome aboard, legend! Let’s make some magic today.",
+      "Glad you’re here! Your vibe just made this site cooler.",
+      "The site just leveled up because you arrived.",
+      "Whoa, look who just stepped in! The one and only.",
+      "Hey superstar, your timing is perfect as always.",
+      "Your presence just brightened up my circuits!",
+      "Welcome back, explorer of the digital realm!",
+      "Yo! Glad to see your energy in this space.",
+      "Welcome traveler — your journey continues here.",
+      "It’s a great day because you showed up.",
+      "Hey champion, ready to conquer some pixels?",
+      "Welcome, dreamer. Your story matters here.",
+      "Nice to see you! You bring serious good vibes.",
+      "What’s cookin’, rockstar? Let’s make it awesome!",
+      "You plus this website equals pure brilliance.",
+      "Welcome home — you belong right here.",
+      "Whoa, the screen just lit up! You must be amazing.",
+      "If good energy had a name, it’d be yours.",
+      "Great to see you here — you radiate inspiration!",
+      "Welcome aboard! Fasten your seatbelt for fun!",
+      "You’re not just visiting — you’re making history.",
+      "Glad to have such greatness in the house!",
+      "The world just got brighter because you arrived.",
+      "You made it! Let’s create something unforgettable.",
+      "Hey, it’s you! The site’s been waiting for this moment.",
+      "Welcome, genius mind — let the ideas flow!"
+    ];
+
+    const randomIndex = Math.floor(Math.random() * greetings.length);
+    const randomGreeting = greetings[randomIndex];
+
+    // Final message with Vision-S branding
+    const fullMessage = "Welcome to the world of Vision-S. " + timeMsg + " " + randomGreeting;
+
+    // Speech synthesis
+    const utter = new SpeechSynthesisUtterance(fullMessage);
+    utter.pitch = 1.1;
+    utter.rate = 1;
+    utter.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      utter.voice = voices.find(function (v) { return v.name.includes("Female"); }) || voices[0];
+    }
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+
+    // Fade out popup
+    const popup = document.getElementById("voicePopup");
+    popup.style.animation = "fadeOut 0.8s forwards";
+    setTimeout(function () {
+      popup.remove();
+    }, 800);
+  });
+</script>
 </body>
 </html>
