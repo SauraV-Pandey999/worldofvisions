@@ -186,4 +186,22 @@
         opacity: 1;
         transform: scale(1);
     }
+
 }
+/* =================== MOBILE HORIZONTAL SCROLL FIX =================== */
+@media (max-width: 820px) {
+    .contanier {
+        display: block; /* remove flex centering */
+        overflow-x: auto; /* allow horizontal scroll */
+        -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+        width: 100%;
+        padding: 10px 0; /* optional padding */
+    }
+
+    .hero {
+        min-width: 1000px; /* preserve laptop width */
+        margin: 0; /* remove centering margin */
+    }
+}
+
+
