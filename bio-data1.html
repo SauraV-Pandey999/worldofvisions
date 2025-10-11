@@ -5,100 +5,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scale=no">
     <title>Bio-data</title>
-    <link rel="icon" href="19.jpg">
+    <link rel="icon" href="bg.jpg">
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-        
-        .container {
-            width: 100%;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-        }
-        
-        .biodatabox {
-            margin-top: 50px;
-            width: 70%;
-            height: 100%;
-            padding: 50px;
-            position: relative;
-            border: 3px solid blueviolet;
-            border-radius: 1px 90px 1px 1px;
-        }
-        
-        .biodatabox::before {
-            width: 100%;
-            height: 100%;
-            margin: -50px;
-            position: absolute;
-            border-radius: 1px 90px 1px 1px;
-            content: "";
-            background: url(bg.jpg);
-            background-size: 100% 100%;
-            opacity: .6;
-            z-index: -10;
-        }
-        
-        .img {
-            position: absolute;
-            margin: 20px;
-            right: 0;
-        }
-        
-        .img img {
-            backface-visibility: hidden;
-        }
-        
-        table {
-            width: 100%;
-            height: auto;
-            font-size: 30px;
-            font-family: Georgia, 'Times New Roman', Times, serif;
-        }
-        
-        .hed {
-            text-align: center;
-            font-size: 40px;
-            color: rgb(47, 18, 179);
-            font-weight: 600;
-        }
-        
-        .heds {
-            padding-left: 10%;
-            font-size: 30px;
-            font-weight: 600;
-            font-style: oblique;
-            color: darkmagenta;
-            text-shadow: 15px 15px 40px white;
-        }
-        
-        .hedsa {
-            font-size: 30px;
-            font-weight: 600;
-            font-style: inherit;
-            color: rgb(247, 58, 11);
-            text-align: center;
-        }
-        
-        .field {
-            border: 3px solid rgb(55, 0, 255);
-            border-radius: 20px;
-        }
-        
-        .name {
-            color: rgb(14, 209, 63);
-            font-weight: 550;
-        }
-        
-        .ans {
-            font-size: 25px;
-        }
+       * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background: #f9f9f9;
+}
+
+.container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.biodatabox {
+    width: 70%;
+    max-width: 900px;
+    padding: 50px;
+    position: relative;
+    border: 3px solid blueviolet;
+    border-radius: 1px 90px 1px 1px;
+    background: rgba(255,255,255,0.95);
+    z-index: 1;
+}
+
+.biodatabox::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 1px 90px 1px 1px;
+    background: url(bg.jpg);
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    z-index: -1;
+}
+
+.img {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.img img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.hed {
+    text-align: center;
+    font-size: 36px;
+    color: rgb(47, 18, 179);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.heds {
+    font-size: 24px;
+    font-weight: 600;
+    font-style: oblique;
+    color: darkmagenta;
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+
+.hedsa {
+    font-size: 24px;
+    font-weight: 600;
+    color: rgb(247, 58, 11);
+    text-align: center;
+}
+
+.given {
+    font-weight: 600;
+    width: 30%;
+    vertical-align: top;
+}
+
+.ans {
+    font-size: 20px;
+    width: 70%;
+}
+
+.field {
+    border: 3px solid rgb(55, 0, 255);
+    border-radius: 20px;
+    padding: 15px;
+}
+
+/* ==========================
+   RESPONSIVE MOBILE STYLES
+   ========================== */
+@media (max-width: 900px) {
+    .biodatabox {
+        width: 90%;
+        padding: 30px;
+    }
+
+    .hed {
+        font-size: 28px;
+    }
+
+    .heds {
+        font-size: 20px;
+    }
+
+    .hedsa {
+        font-size: 20px;
+    }
+
+    .ans {
+        font-size: 18px;
+    }
+
+    .img img {
+        max-width: 150px;
+    }
+
+    table, tr, td {
+        display: block;
+        width: 100%;
+    }
+
+    .given, .ans {
+        width: 100%;
+        display: block;
+    }
+
+    .given {
+        margin-top: 10px;
+    }
+
+    .ans {
+        margin-bottom: 10px;
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hed {
+        font-size: 24px;
+    }
+
+    .heds {
+        font-size: 18px;
+    }
+
+    .hedsa {
+        font-size: 18px;
+    }
+
+    .ans {
+        font-size: 16px;
+    }
+
+    .img img {
+        max-width: 120px;
+    }
+
+    .biodatabox {
+        padding: 20px;
+    }
+}
+
     </style>
 </head>
 
@@ -192,7 +278,4 @@
 
 
 
-
 </html>
-
-
