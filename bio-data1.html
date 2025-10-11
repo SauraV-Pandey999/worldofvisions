@@ -1,207 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scale=no">
-    <title>Bio-data</title>
-    <link rel="icon" href="bg.jpg">
-    <style>
-       * {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bio-data</title>
+<link rel="icon" href="bg.jpg">
+<style>
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    background: #f9f9f9;
+/* Make the outer container scrollable on small screens */
+.container-wrapper {
+    width: 100%;
+    overflow-x: auto; /* horizontal scroll if needed */
 }
 
+/* Original container */
 .container {
     width: 100%;
-    padding: 20px;
+    height: auto;
     display: flex;
+    align-items: center;
     justify-content: center;
+    padding: 30px;
+    min-width: 900px; /* ensures desktop layout stays intact */
 }
 
 .biodatabox {
+    margin-top: 50px;
     width: 70%;
-    max-width: 900px;
+    height: 100%;
     padding: 50px;
     position: relative;
     border: 3px solid blueviolet;
     border-radius: 1px 90px 1px 1px;
-    background: rgba(255,255,255,0.95);
-    z-index: 1;
+    min-width: 800px; /* prevents stacking on mobile */
 }
 
 .biodatabox::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
+    margin: -50px;
+    position: absolute;
     border-radius: 1px 90px 1px 1px;
+    content: "";
     background: url(bg.jpg);
-    background-size: cover;
-    background-position: center;
-    opacity: 1;
-    z-index: -1;
+    background-size: 100% 100%;
+    opacity: 0.6;
+    z-index: -10;
 }
 
 .img {
-    text-align: center;
-    margin-bottom: 20px;
+    position: absolute;
+    margin: 20px;
+    right: 0;
 }
 
 .img img {
-    max-width: 200px;
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
+    backface-visibility: hidden;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+    height: auto;
+    font-size: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .hed {
     text-align: center;
-    font-size: 36px;
+    font-size: 40px;
     color: rgb(47, 18, 179);
     font-weight: 600;
-    margin-bottom: 10px;
 }
 
 .heds {
-    font-size: 24px;
+    padding-left: 10%;
+    font-size: 30px;
     font-weight: 600;
     font-style: oblique;
     color: darkmagenta;
-    padding-left: 0;
-    margin-bottom: 10px;
+    text-shadow: 15px 15px 40px white;
 }
 
 .hedsa {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 600;
+    font-style: inherit;
     color: rgb(247, 58, 11);
     text-align: center;
-}
-
-.given {
-    font-weight: 600;
-    width: 30%;
-    vertical-align: top;
-}
-
-.ans {
-    font-size: 20px;
-    width: 70%;
 }
 
 .field {
     border: 3px solid rgb(55, 0, 255);
     border-radius: 20px;
-    padding: 15px;
 }
 
-/* ==========================
-   RESPONSIVE MOBILE STYLES
-   ========================== */
-@media (max-width: 900px) {
-    .biodatabox {
-        width: 90%;
-        padding: 30px;
-    }
-
-    .hed {
-        font-size: 28px;
-    }
-
-    .heds {
-        font-size: 20px;
-    }
-
-    .hedsa {
-        font-size: 20px;
-    }
-
-    .ans {
-        font-size: 18px;
-    }
-
-    .img img {
-        max-width: 150px;
-    }
-
-    table, tr, td {
-        display: block;
-        width: 100%;
-    }
-
-    .given, .ans {
-        width: 100%;
-        display: block;
-    }
-
-    .given {
-        margin-top: 10px;
-    }
-
-    .ans {
-        margin-bottom: 10px;
-        padding-left: 10px;
-    }
+.name {
+    color: rgb(14, 209, 63);
+    font-weight: 550;
 }
 
-@media (max-width: 480px) {
-    .hed {
-        font-size: 24px;
-    }
-
-    .heds {
-        font-size: 18px;
-    }
-
-    .hedsa {
-        font-size: 18px;
-    }
-
-    .ans {
-        font-size: 16px;
-    }
-
-    .img img {
-        max-width: 120px;
-    }
-
-    .biodatabox {
-        padding: 20px;
-    }
+.ans {
+    font-size: 25px;
 }
 
-    </style>
+/* Optional: smooth scrolling on mobile */
+.container-wrapper {
+    -webkit-overflow-scrolling: touch;
+}
+</style>
 </head>
-
-<body >
+<body>
+<div class="container-wrapper">
     <div class="container">
         <div class="biodatabox">
-            <div class="img"><img src="saurav.jpg " alt="photo" height ="200
-            "></div>
-            <table cellspacing="20px"  >
-                <tr colspan="2">
+            <div class="img"><img src="saurav.jpg" alt="photo" height="200"></div>
+            <table cellspacing="20px">
+                <tr>
                     <td colspan="2" class="hed">Bio-Data<br>GLIMPSE OF SAURAV<br><br><br></td>
-
                 </tr>
-                <tr colspan="2">
+                <tr>
                     <td colspan="2" class="heds"> Personal Detail : CEO OF VISION S<br><br></td>
                 </tr>
-
                 <tr>
                     <td class="given"> Name </td>
                     <td class="ans b"> :-&nbsp; <span class="name">SAURAV PANDEY </span></td>
@@ -233,9 +157,7 @@ table {
             </table>
             <fieldset class="field">
                 <legend class="hedsa">&nbsp;&nbsp;-- : Family detail : --&nbsp;&nbsp;&nbsp;&nbsp;</legend>
-
                 <table cellspacing="20px">
-
                     <tr>
                         <td class="given"> Father name </td>
                         <td class="ans"> :-&nbsp; SUNIL PANDEY </td>
@@ -244,19 +166,16 @@ table {
                         <td class="given"> Mother name </td>
                         <td class="ans"> :-&nbsp; S---- PANDEY </td>
                     </tr>
-                    <tr colspan="2">
+                    <tr>
                         <td colspan="2" class="heds">Sisters :1</td>
-
                     </tr>
                     <tr>
                         <td class="given"> Sister name </td>
                         <td class="ans"> :-&nbsp; SANJIVANI PANDEY </td>
                     </tr>
-
-                    
                 </table>
             </fieldset>
-            <table cellspace="20px">
+            <table cellspacing="20px">
                 <tr>
                     <td colspan="2" class="heds"><br> Contact Detail –<br></td>
                 </tr>
@@ -269,13 +188,8 @@ table {
                     <td class="ans"> :-&nbsp; 1)&nbsp;9820995322 &nbsp;&nbsp; 2)&nbsp;9820995322  </td>
                 </tr>
             </table>
-
-
         </div>
     </div>
-    
+</div>
 </body>
-
-
-
 </html>
