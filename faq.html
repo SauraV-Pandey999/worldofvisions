@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VISION_S FAQ</title>
+<style>
+:root{
+  --bg:#03030a; --bg-alt:#071022; --text:#dff7ff;
+  --muted:rgba(255,255,255,0.05);
+  --color1:#00ffd5; --color2:#ff2a9e; --color3:#8a00ff; --color4:#00ff3c; --color5:#ff8000;
+}
+
+body{
+  margin:0; font-family:Inter,system-ui,sans-serif;
+  background:#03030a; color:var(--text);
+  padding:20px; display:flex; justify-content:center; overflow-x:hidden;
+  position:relative;
+}
+
+/* Canvas starry background */
+#starfield{
+  position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;
+  background: radial-gradient(ellipse at bottom, #0d0d1a 0%, #03030a 100%);
+}
+
+.container{
+  max-width:900px; width:100%; padding:28px; border-radius:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  border:1px solid var(--muted); box-shadow:0 30px 80px rgba(2,4,15,0.18);
+  position:relative; z-index:1;
+}
+
+h1{
+  text-align:center; font-size:32px; margin-bottom:24px;
+  background:linear-gradient(90deg,var(--color1),var(--color3)); 
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation: hueShift 5s linear infinite;
+}
+@keyframes hueShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+#faqSearch{
+  width:100%; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);
+  background:rgba(0,0,0,0.15); color:var(--text); margin-bottom:24px; font-size:14px;
+}
+#faqSearch:focus{
+  outline:none; border:2px solid var(--color1); box-shadow:0 0 8px var(--color1);
+}
+
+.faq-item{
+  border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:16px;
+  overflow:hidden; transition:0.3s; position:relative;
+}
+.faq-question{
+  padding:16px 20px; cursor:pointer; font-weight:600; font-size:16px; position:relative;
+  background:linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
+  transition:0.3s; border-left:4px solid transparent;
+  text-shadow:0 0 5px rgba(0,0,0,0.5);
+}
+.faq-question::after{
+  content:'▼'; position:absolute; right:20px; top:50%; transform:translateY(-50%); transition:0.3s;
+}
+.faq-item.active .faq-question::after{
+  transform:translateY(-50%) rotate(180deg);
+}
+.faq-answer{
+  max-height:0; overflow:hidden; padding:0 20px; transition:max-height 0.5s ease, padding 0.3s ease, opacity 0.3s ease, transform 0.5s ease;
+  font-size:14px; opacity:0; color:rgba(223,247,255,0.9); line-height:1.6;
+  transform:translateX(-20px);
+}
+
+/* Hover neon borders with unique color per question */
+.faq-item:nth-child(1) .faq-question:hover{ border-left:4px solid var(--color1); box-shadow:0 0 12px var(--color1);}
+.faq-item:nth-child(2) .faq-question:hover{ border-left:4px solid var(--color2); box-shadow:0 0 12px var(--color2);}
+.faq-item:nth-child(3) .faq-question:hover{ border-left:4px solid var(--color3); box-shadow:0 0 12px var(--color3);}
+.faq-item:nth-child(4) .faq-question:hover{ border-left:4px solid var(--color4); box-shadow:0 0 12px var(--color4);}
+.faq-item:nth-child(5) .faq-question:hover{ border-left:4px solid var(--color5); box-shadow:0 0 12px var(--color5);}
+.faq-item:nth-child(6) .faq-question:hover{ border-left:4px solid var(--color1); box-shadow:0 0 12px var(--color1);}
+.faq-item:nth-child(7) .faq-question:hover{ border-left:4px solid var(--color2); box-shadow:0 0 12px var(--color2);}
+.faq-item:nth-child(8) .faq-question:hover{ border-left:4px solid var(--color3); box-shadow:0 0 12px var(--color3);}
+.faq-item:nth-child(9) .faq-question:hover{ border-left:4px solid var(--color4); box-shadow:0 0 12px var(--color4);}
+
+.faq-item.active .faq-answer{
+  max-height:500px; padding:12px 20px; opacity:1; transform:translateX(0);
+}
+
+@media(max-width:600px){
+  h1{ font-size:28px; }
+  .faq-question{ font-size:15px; }
+  .faq-answer{ font-size:13px; }
+}
+</style>
+</head>
+<body>
+<canvas id="starfield" style="position:fixed; inset:0; z-index:-1;"></canvas>
+
+
+
+<div class="container">
+<h1>VISION_S FAQ</h1>
+<input type="text" id="faqSearch" placeholder="Search FAQs...">
+
+<!-- FAQ Items -->
+<div class="faq-item">
+  <div class="faq-question">1. What is VISION_S?</div>
+  <div class="faq-answer">
+    VISION_S is a company founded by <strong>Saurav Pandey</strong> in 2023. It started with limited resources but a grand vision: to become an undisputed leader brand providing services across every sector. Currently, it helps students in Nepal with study resources and is building a dynamic team of young visionary minds.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">2. How can I join the VISION_S team?</div>
+  <div class="faq-answer">
+    To join the VISION_S team, you must understand the company's vision, demonstrate a hardworking and dedicated spirit, abide by rules, and submit all required documents and information during the application.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">3. What roles are available at VISION_S?</div>
+  <div class="faq-answer">
+    Available roles include Developer, Designer, Marketing Specialist, Intern, Freelancer, Content Creator, Community Manager, Research & Development.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">4. Do you offer internships or freelance opportunities?</div>
+  <div class="faq-answer">
+    Yes! VISION_S provides internships and freelance opportunities. These are unpaid but are designed to help you grow, learn, and develop skills while contributing to the company's vision.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">5. How does VISION_S handle user privacy and data?</div>
+  <div class="faq-answer">
+    VISION_S is committed to protecting your privacy. Any data you share is securely stored, used only for official purposes, and never shared with third parties without consent. See our <a href="privacy.html" style="color:#00ffd5;text-decoration:underline">Privacy Policy</a> for details.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">6. How can I contact VISION_S?</div>
+  <div class="faq-answer">
+    You can reach us via email at: <strong>worldofvisions.official@gmail.com</strong>.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">7. What makes VISION_S different?</div>
+  <div class="faq-answer">
+    VISION_S stands out because of its young leaders with a great vision. The company values innovation, teamwork, and creating opportunities for growth, making it unique in approach and execution.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">8. Can I collaborate with VISION_S?</div>
+  <div class="faq-answer">
+    Yes! To collaborate, you must first join the VISION_S team. Once part of the team, you can contact us for further collaboration details.
+  </div>
+</div>
+
+<div class="faq-item">
+  <div class="faq-question">9. Where can students get study notes?</div>
+  <div class="faq-answer">
+    Students can get notes by visiting our <strong>Services</strong> page, selecting <strong>Resources</strong>, browsing by subject, choosing the desired chapter, and clicking to access the notes.
+  </div>
+</div>
+
+</div>
+
+<script>
+// Starfield animation
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let w, h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+window.addEventListener('resize', resize);
+resize();
+
+const stars = [];
+const numStars = 150;
+for(let i=0;i<numStars;i++){
+  stars.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*1.2+0.2,
+    dx:(Math.random()-0.5)*0.2,
+    dy:(Math.random()-0.5)*0.2
+  });
+}
+function animateStars(){
+  ctx.clearRect(0,0,w,h);
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,255,255,0.8)";
+    ctx.fill();
+    s.x+=s.dx; s.y+=s.dy;
+    if(s.x<0)s.x=w; if(s.x>w)s.x=0;
+    if(s.y<0)s.y=h; if(s.y>h)s.y=0;
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+// Toggle FAQ
+const items = document.querySelectorAll('.faq-item');
+items.forEach(item => {
+  const q = item.querySelector('.faq-question');
+  q.addEventListener('click', () => {
+    item.classList.toggle('active');
+    items.forEach(other => { if(other !== item) other.classList.remove('active'); });
+  });
+});
+
+// Search/filter
+const searchInput = document.getElementById('faqSearch');
+searchInput.addEventListener('input', e => {
+  const query = e.target.value.toLowerCase();
+  items.forEach(item => {
+    const q = item.querySelector('.faq-question').textContent.toLowerCase();
+    const a = item.querySelector('.faq-answer').textContent.toLowerCase();
+    if(q.includes(query) || a.includes(query)){
+      item.style.display='block';
+    }else item.style.display='none';
+  });
+});
+
+// Scroll animation
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.faq-answer').forEach(ans => observer.observe(ans));
+</script>
+
+</body>
+</html>
+
