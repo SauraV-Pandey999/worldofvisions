@@ -10,4 +10,28 @@ select option:hover {
   background: #00ffd5;  /* highlight on hover */
   color: #03030a;       /* text color when hovered */
 }
- </style> </head> <body> <div class="card"> <h1>Join the VISION_S Team</h1> <form id="joinForm"> <label>First Name<input type="text" name="firstName" required></label> <label>Middle Name<input type="text" name="middleName"></label> <label>Last Name<input type="text" name="lastName" required></label> <label>Father's Name<input type="text" name="fatherName" required></label> <label>Mother's Name<input type="text" name="motherName" required></label> <label>Date of Birth<input type="date" name="dob" required></label> <label>Phone Number<input type="tel" name="phone" pattern="[0-9]{10,15}" placeholder="e.g., 9801234567" required></label> <label>Email Address<input type="email" name="email" required></label> <label>Temporary Address<input type="text" name="tempAddress" required></label> <label>Permanent Address<input type="text" name="permAddress" required></label> <label>SEE GPA<input type="number" step="0.01" min="0" max="4" name="seeGpa" required></label> <label>SEE Symbol Number<input type="text" name="symbolNo" required></label> <label>Current School / College<input type="text" name="school" required></label> <label>Preferred Role in VISION_S <select name="role" class="animate-glow" required> <option value="">Select Role</option> <option value="developer">Developer</option> <option value="designer">Designer</option> <option value="marketing">Marketing</option> <option value="intern">Intern</option> <option value="freelancer">Freelancer</option> </select> </label> <label>Skills / Expertise<textarea name="skills" placeholder="List your skills separated by commas" required></textarea></label> <label>Why do you want to join?<textarea name="whyJoin" placeholder="Explain your motivation" required></textarea></label> <label>Why should we select you?<textarea name="whySelect" placeholder="Highlight your strengths" required></textarea></label> <div class="checkbox-container"> <input type="checkbox" id="acceptPolicy" required> <label for="acceptPolicy">I accept the <a href="privacy.html" target="_blank">Privacy Policy</a></label> </div> <button type="submit">Submit Application</button> </form> </div> <script> const form = document.getElementById('joinForm'); form.addEventListener('submit', e=>{ e.preventDefault(); const data = new FormData(form); const obj = {}; data.forEach((v,k)=> obj[k]=v); console.log('Form submission:', obj); alert('Thank you! Your application has been submitted.'); form.reset(); }); </script> </body> </html>
+ </style> </head> <body> <div class="card"> <h1>Join the VISION_S Team</h1> 
+ <form id="joinForm"> <label>First Name<input type="text" name="firstName" required></label> <label>Middle Name<input type="text" name="middleName"></label> <label>Last Name<input type="text" name="lastName" required></label> <label>Father's Name<input type="text" name="fatherName" required></label> <label>Mother's Name<input type="text" name="motherName" required></label> <label>Date of Birth<input type="date" name="dob" required></label> <label>Phone Number<input type="tel" name="phone" pattern="[0-9]{10,15}" placeholder="e.g., 9801234567" required></label> <label>Email Address<input type="email" name="email" required></label> <label>Temporary Address<input type="text" name="tempAddress" required></label> <label>Permanent Address<input type="text" name="permAddress" required></label> <label>SEE GPA<input type="number" step="0.01" min="0" max="4" name="seeGpa" required></label> <label>SEE Symbol Number<input type="text" name="symbolNo" required></label> <label>Current School / College<input type="text" name="school" required></label> <label>Preferred Role in VISION_S <select name="role" class="animate-glow" required> <option value="">Select Role</option> <option value="developer">Developer</option> <option value="designer">Designer</option> <option value="marketing">Marketing</option> <option value="intern">Intern</option> <option value="freelancer">Freelancer</option> </select> </label> <label>Skills / Expertise<textarea name="skills" placeholder="List your skills separated by commas" required></textarea></label> <label>Why do you want to join?<textarea name="whyJoin" placeholder="Explain your motivation" required></textarea></label> <label>Why should we select you?<textarea name="whySelect" placeholder="Highlight your strengths" required></textarea></label> <div class="checkbox-container"> <input type="checkbox" id="acceptPolicy" required> <label for="acceptPolicy">I accept the <a href="privacy.html" target="_blank">Privacy Policy</a></label> </div> <button type="submit">Submit Application</button> </form> </div>
+<script>
+document.getElementById("joinForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const form = e.target;
+
+  fetch("https://script.google.com/macros/s/AKfycbzWaUuxjbESp0yAVFUPXHtwWVtPzIO_cNILoWU9ZMdWwAKBqYYpzEPs534P9jssPkv7dw/exec", { // replace with your web app URL
+    method: "POST",
+    body: new FormData(form)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success"){
+      window.location.href = "thanks.html";
+    }
+  })
+  .catch(err => {
+    alert("Submission failed. Try again!");
+    console.error(err);
+  });
+});
+</script>
+
+ </body> </html>
