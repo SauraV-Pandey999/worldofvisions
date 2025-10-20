@@ -135,102 +135,155 @@
       top: 0;
     }
 
-/* ===== NAV: Scoped to .site-nav ===== */
-.site-nav {
-  width: 100%;
-  height: 15vh;
-  min-height: 70px;
-  background: rgba(0,0,0,0.2);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-transform: uppercase;
-  padding: 0 18px;
-  position: relative;
-  z-index: 40;
-}
+    /* ====== NAV: Scoped to .site-nav so only this page is affected ====== */
+    .site-nav {
+      width: 100%;
+      height: 15vh;
+      min-height: 70px;
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+      padding: 0 18px;
+      position: relative;
+      z-index: 40;
+    }
 
-.site-nav .logo { width: auto; text-align: left; }
-.site-nav .logo h1 { font-size: 20px; margin: 0; }
+    .site-nav .logo {
+      width: auto;
+      text-align: left;
+    }
 
-/* Desktop menu: left-aligned, all in one row */
-.site-nav .menu {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  justify-content: flex-start; /* changed from center */
-  flex: 0 0 auto;
-  margin-left: 24px; /* optional spacing from logo */
-  flex-wrap: wrap; /* allows menu items to stay in single line if possible */
+    .site-nav .logo h1 { font-size: 20px; margin: 0; }
 
+    .site-nav .menu {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
 
-.site-nav .menu-toggle { display: none; } /* hide hamburger on desktop */
-}
+    .site-nav .menu a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      font-size: 15px;
+      white-space: nowrap;
+    }
 
-/* Mobile menu */
-@media (max-width: 768px) {
-  .site-nav {
-    height: auto;
-    padding: 10px 14px;
-    align-items: center;
-  }
-  .site-nav .menu-toggle {
-    display: block;
-    order: 2;
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: #fff;
-    cursor: pointer;
-    padding: 6px 10px;
-    line-height: 1;
-    border-radius: 8px;
-  }
-  .site-nav .menu {
-    position: fixed;
-    right: 0;
-    top: 64px;
-    height: calc(100% - 64px);
-    width: 260px;
-    max-width: 85%;
-    background: rgba(8,8,10,0.98);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 18px;
-    transform: translateX(110%);
-    transition: transform 260ms ease;
-    box-shadow: -8px 18px 48px rgba(0,0,0,0.6);
-    border-left: 1px solid rgba(255,255,255,0.04);
-    backdrop-filter: blur(6px);
-    z-index: 1000;
-  }
-  .site-nav .menu.open { transform: translateX(0); }
-  .site-nav .menu a {
-    padding: 14px 12px;
-    font-size: 18px;
-    border-radius: 8px;
-    display: block;
-    width: 100%;
-  }
-}
+    .site-nav .menu a:first-child {
+      color: #00b894;
+    }
 
-/* Menu links common */
-.site-nav .menu a {
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 6px;
-  display: inline-block;
-  font-size: 15px;
-  white-space: nowrap;
-}
-.site-nav .menu a:first-child { color: #00b894; }
-.site-nav .menu a:hover { background: rgba(255,255,255,0.06); }
-   
-    
+    .site-nav .menu a:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* hamburger toggle (hidden desktop) */
+    .site-nav .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+      padding: 6px 10px;
+      line-height: 1;
+      border-radius: 8px;
+    }
+    .site-nav .menu-toggle:focus {
+      outline: 2px solid rgba(0,184,148,0.25);
+    }
+
+    /* keep your hero styles (kept from your CSS) */
+    main { width: 100%; height: 85vh; display: flex; justify-content: center; align-items: center; text-align: center; color: white; }
+    section h3 { font-size: 35px; font-weight: 200; letter-spacing: 3px; text-shadow: 1px 1px 2px black; }
+    section h1 { margin: 30px 0 20px 0; font-size: 55px; font-weight: 700; text-shadow: 2px 1px 5px black; text-transform: uppercase; }
+    section p { font-size: 25px; word-spacing: 2px; margin-bottom: 25px; text-shadow: 1px 1px 1px black; }
+    section a { padding: 12px 30px; border-radius: 4px; outline: none; text-transform: uppercase; font-size: 13px; font-weight: 500; text-decoration: none; letter-spacing: 1px; transition: all 0.5s ease; }
+    section .btnone { background: #fff; color: #000; } .btnone:hover { background: #00b894; color: white; }
+    section .btntwo { background: #00b894; color: white; } .btntwo:hover { background: #fff; color: #000; }
+
+    .change_content:after {
+      content: "";
+      animation: changetext 10s infinite linear;
+      color: #00b894;
+    }
+
+    @keyframes changetext {
+      0%   { content: "INNOVATE"; }
+      20%  { content: "CREATE"; }
+      35%  { content: "EDIT"; }
+      60%  { content: "DEVELOP"; }
+      80%  { content: "EVOLVE"; }
+      100% { content: "INSPIRE"; }
+    }
+
+    /* ===== responsive (mobile) - page-only ===== */
+    @media (max-width: 768px) {
+      .site-nav {
+        height: auto;
+        padding: 10px 14px;
+        align-items: center;
+      }
+
+      .site-nav .menu-toggle {
+        display: block;
+        order: 2;
+      }
+      .site-nav .logo { order: 1; }
+
+      .site-nav .menu {
+        position: fixed;
+        right: 0;
+        top: 64px;
+        height: calc(100% - 64px);
+        width: 260px;
+        max-width: 85%;
+        background: rgba(8,8,10,0.98);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px;
+        transform: translateX(110%);
+        transition: transform 260ms ease;
+        box-shadow: -8px 18px 48px rgba(0,0,0,0.6);
+        border-left: 1px solid rgba(255,255,255,0.04);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+      }
+
+      .site-nav .menu.open {
+        transform: translateX(0);
+      }
+
+      .site-nav .menu a {
+        padding: 14px 12px;
+        font-size: 18px;
+        border-radius: 8px;
+        display: block;
+        width: 100%;
+      }
+
+      section h3 { font-size: 20px; }
+      section h1 { font-size: 32px; margin: 18px 0; }
+      section p  { font-size: 16px; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1000px) {
+      .site-nav .menu {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+    }
 
     /* voice popup styles preserved from your embedded block */
     #voicePopup {
@@ -492,10 +545,10 @@
 
         // 🌈 vivid colored glow
         const grad = ctx.createRadialGradient(hx, hy, 0, hx, hy, glowR);
-        grad.addColorStop(0, `hsla(${hue}, 100%, 75%, ${headAlpha})`);
-        grad.addColorStop(0.25, `hsla(${hue}, 95%, 65%, ${headAlpha * 0.7})`);
-        grad.addColorStop(0.55, `hsla(${hue}, 85%, 55%, ${headAlpha * 0.4})`);
-        grad.addColorStop(1, `rgba(0,0,0,0)`);
+        grad.addColorStop(0, hsla(${hue}, 100%, 75%, ${headAlpha}));
+        grad.addColorStop(0.25, hsla(${hue}, 95%, 65%, ${headAlpha * 0.7}));
+        grad.addColorStop(0.55, hsla(${hue}, 85%, 55%, ${headAlpha * 0.4}));
+        grad.addColorStop(1, rgba(0,0,0,0));
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(hx, hy, glowR, 0, Math.PI * 2);
@@ -503,7 +556,7 @@
 
         // Colored core
         ctx.beginPath();
-        ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${headAlpha * 1.1})`;
+        ctx.fillStyle = hsla(${hue}, 100%, 70%, ${headAlpha * 1.1});
         ctx.arc(hx, hy, Math.max(0.9, headRadius * 1.0), 0, Math.PI * 2);
         ctx.fill();
 
@@ -519,7 +572,7 @@
             const width = Math.max(0.3, (1 - segT) * (2.8 - Math.abs(c) * 0.6));
             const alpha = Math.pow(1 - segT, 1.9) * 0.95 * lifeRatio * (0.45 + (1 - segT) * 0.55) * (0.8 - Math.abs(c) * 0.25);
             ctx.lineWidth = width;
-            ctx.strokeStyle = `hsla(${tailHue}, 100%, 60%, ${alpha * 1.2})`;
+            ctx.strokeStyle = hsla(${tailHue}, 100%, 60%, ${alpha * 1.2});
             ctx.beginPath();
             ctx.moveTo(p0[0], p0[1]);
             ctx.lineTo(p1[0], p1[1]);
@@ -530,14 +583,14 @@
 
         // crisp tiny white sparkle at the core
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${Math.min(1, headAlpha * 1.1)})`;
+        ctx.fillStyle = rgba(255,255,255,${Math.min(1, headAlpha * 1.1)});
         ctx.arc(hx, hy, Math.max(0.7, headRadius * 0.9), 0, Math.PI * 2);
         ctx.fill();
       }
 
       function loop(now) {
         ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = `rgba(0,0,0,${FADE_ALPHA})`;
+        ctx.fillStyle = rgba(0,0,0,${FADE_ALPHA});
         ctx.fillRect(0, 0, w, h);
 
         ctx.globalCompositeOperation = "lighter";
