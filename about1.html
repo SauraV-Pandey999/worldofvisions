@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saurav Pandey — Vision_S Founder | The Edge of Creativity</title>
+    <meta name="description" content="Saurav Pandey, Founder of Vision_S. Specializing in next-generation AI-driven creative tools, futuristic UI/UX, and open-source brand experimentation.">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Saurav Pandey",
+      "alternateName": "Vision_S",
+      "url": "https://PLACEHOLDER-YOURWEBSITE.com",
+      "image": "/mnt/data/saurav.jpg",
+      "jobTitle": "Founder, Vision_S",
+      "description": "Founder of Vision_S, specializing in AI-driven creative tools, futuristic interfaces, and open-source utilities.",
+      "sameAs": [
+        "https://linkedin.com/in/PLACEHOLDER",
+        "https://github.com/PLACEHOLDER",
+        "https://instagram.com/INPPLACEHOLDER"
+      ]
+    }
+    </script>
+    <meta property="og:title" content="Saurav Pandey — Founder, Vision_S">
+    <meta property="og:description" content="AI-driven visuals, futuristic interfaces, and open-source tools from Birgunj, Nepal.">
+    <meta property="og:image" content="https://PLACEHOLDER-YOURWEBSITE.com/mnt/data/saurav.jpg">
+    <meta property="og:url" content="https://PLACEHOLDER-YOURWEBSITE.com/about">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <style>
+        /* --------------------------------------
+           1. CORE VARIABLES, FONTS & SETUP
+           -------------------------------------- */
+        :root {
+            /* Colors */
+            --color-bg-primary: #020617; /* Deep Navy Blue */
+            --color-bg-secondary: #0f172a; /* Darker Slate */
+            --color-text-primary: #f8fafc;
+            --color-text-secondary: #94a3b8;
+            --color-glass-card: rgba(255, 255, 255, 0.04);
+            --color-glass-border: rgba(255, 255, 255, 0.1);
+            
+            /* RGB Neon Gradient (8-point smooth cycle) - UPDATED COLOR SCHEME */
+            --c1: #7bff00; /* ELECTRIC GREEN (Replaced Pink) */
+            --c2: #00e5ff; /* Cyan */
+            --c3: #b600ff; /* Purple */
+            --rgb-gradient: linear-gradient(90deg, 
+                var(--c1) 0%, var(--c2) 25%, 
+                var(--c3) 50%, var(--c1) 75%, var(--c2) 100%
+            );
+
+            /* Sizing & Spacing */
+            --spacing-xl: 96px;
+            --spacing-lg: 48px;
+            --spacing-md: 24px;
+            --spacing-sm: 12px;
+            --border-radius: 20px;
+        }
+
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none !important; /* Forces custom cursor */
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--color-bg-primary);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+            
+            /* Volumetric Background Effect */
+            background-image: 
+                /* Subtle radial glow */
+                radial-gradient(circle at top 200px right 100px, rgba(144, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at bottom 100px left 50px, rgba(0, 229, 255, 0.1) 0%, transparent 40%),
+                /* Base dark color */
+                linear-gradient(to bottom, var(--color-bg-primary) 0%, var(--color-bg-primary) 100%);
+        }
+
+        /* Keyframe for Extreme RGB Animation */
+        @keyframes extreme-rgb {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; } /* Cycle 4x width for continuous flow */
+        }
+
+        /* --------------------------------------
+           2. LOADING SCREEN (Hyperspace Warp)
+           -------------------------------------- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s cubic-bezier(0.86, 0, 0.07, 1), visibility 1s;
+        }
+
+        .loader-ring {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 500px;
+        }
+
+        .loader-ring::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            border-top-color: var(--c2);
+            border-left-color: var(--c3);
+            animation: spin 1.5s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.7);
+        }
+        
+        .loader-text {
+            color: var(--c2);
+            margin-top: 40px;
+            font-size: 1.5rem;
+            font-family: monospace;
+            opacity: 0;
+            animation: text-fade 1s ease 1s forwards;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 5px var(--c2);
+        }
+        
+        @keyframes spin {
+            to { transform: rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes text-fade {
+            to { opacity: 1; }
+        }
+
+        /* --------------------------------------
+           3. CUSTOM CURSOR & INTERACTION FEEDBACK
+           -------------------------------------- */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: none;
+            border: 2px solid var(--c2);
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
+                        height 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                        background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .custom-cursor.hovering {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 229, 255, 0.2);
+            border-color: var(--c1);
+        }
+
+        /* Trail dots are injected via JS and use the .cursor-trail-dot class */
+
+
+        /* --------------------------------------
+           4. LAYOUT, HEADER & NAVIGATION
+           -------------------------------------- */
+        header {
+            padding: 24px var(--spacing-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--color-glass-border);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: var(--rgb-gradient);
+            background-size: 400% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            animation: extreme-rgb 8s linear infinite;
+        }
+
+        nav a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            margin-left: 40px;
+            font-size: 1rem;
+            position: relative;
+            padding: 8px 0;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+        
+        nav a:hover {
+            color: var(--c2);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+        }
+        
+        nav a[aria-current="page"] {
+            color: var(--c1); /* Electric Green for current page */
+            text-shadow: 0 0 10px rgba(0, 255, 153, 0.6);
+        }
+
+        main {
+            padding: var(--spacing-xl);
+            display: flex;
+            gap: var(--spacing-lg);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* --------------------------------------
+           5. GLASS CARD & GRID OVERLAY
+           -------------------------------------- */
+        .glass-card {
+            background: var(--color-glass-card);
+            border: 1px solid var(--color-glass-border);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(0deg, rgba(0,0,0,0.1) 50%, transparent 50%), linear-gradient(90deg, rgba(0,0,0,0.1) 50%, transparent 50%);
+            background-size: 20px 20px;
+            opacity: 0.1;
+            pointer-events: none;
+            animation: grid-scroll 30s linear infinite;
+        }
+
+        @keyframes grid-scroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .glass-card:hover {
+            transform: perspective(1000px) rotateX(1deg) translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        /* --------------------------------------
+           6. PROFILE COLUMN & AVATAR
+           -------------------------------------- */
+        .profile-column {
+            flex: 0 0 380px;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .profile-card {
+            text-align: center;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+
+        /* CTA Group FIX */
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md); /* Ensures spacing between buttons */
+            margin-top: var(--spacing-md);
+        }
+
+
+        /* Avatar with 3D RGB border and ripple effect setup */
+        .avatar-border {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            padding: 6px;
+            position: relative;
+            overflow: hidden;
+            
+            border: 4px solid transparent;
+            background: linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box,
+                        var(--rgb-gradient) border-box;
+            background-size: 400% auto;
+            animation: extreme-rgb 10s linear infinite;
+            
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.5);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+        
+        .avatar-border:hover {
+            transform: rotateZ(-2deg) scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 255, 153, 0.8), 0 0 100px rgba(0, 229, 255, 0.5);
+        }
+
+        .avatar-border img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            border: 6px solid var(--color-bg-primary);
+        }
+
+        /* Typewriter & CTA */
+        .tagline-container {
+            min-height: 30px;
+            margin-bottom: var(--spacing-md);
+            display: inline-block;
+            font-size: 1.25rem;
+            color: var(--c2);
+            font-family: monospace;
+            border-right: 3px solid var(--c2);
+            white-space: nowrap;
+            overflow: hidden;
+            padding-right: 3px;
+        }
+
+        /* Magnetic Button */
+        .btn {
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            will-change: transform;
+        }
+
+        .btn-primary {
+            background: var(--c2);
+            color: var(--color-bg-primary);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+            transition: transform 0.15s linear, box-shadow 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--c2);
+            box-shadow: 0 0 30px var(--c2), 0 0 60px rgba(0, 229, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--c1); /* Electric Green */
+            border: 2px solid var(--c1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 255, 153, 0.15); /* Green overlay */
+            border-color: var(--c3);
+            color: var(--color-text-primary);
+        }
+
+        /* --------------------------------------
+           7. MAIN CONTENT SECTIONS
+           -------------------------------------- */
+        .content-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--c1); /* Electric Green */
+            letter-spacing: -0.04em;
+        }
+        
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .project-card h3 {
+            color: var(--c2);
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Experience Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: var(--spacing-md);
+            border-left: 2px solid var(--color-text-secondary);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--c3);
+            border: 3px solid var(--color-bg-primary);
+            box-shadow: 0 0 10px var(--c3);
+        }
+
+        /* --------------------------------------
+           8. SKILLS RADIALS (LIQUID WARP EFFECT)
+           -------------------------------------- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .radial-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            background: var(--color-bg-secondary);
+            position: relative;
+            overflow: hidden;
+            
+            /* Liquid Warp Hover Effect */
+            transition: filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .radial-container:hover {
+            filter: drop-shadow(0 0 10px var(--c3));
+            animation: subtle-warp 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes subtle-warp {
+            from { transform: skewX(0.5deg) scale(1); }
+            to { transform: skewX(-0.5deg) scale(1.01); }
+        }
+
+        .radial-container .circle-progress {
+            stroke: url(#skillGradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        /* --------------------------------------
+           9. RESPONSIVENESS
+           -------------------------------------- */
+        @media (max-width: 1200px) {
+            main {
+                flex-direction: column;
+                padding: var(--spacing-md);
+            }
+            .profile-column {
+                position: static;
+                flex: none;
+                width: 100%;
+            }
+            header {
+                padding: 15px var(--spacing-md);
+            }
+            nav {
+                display: none;
+            }
+            .cta-group {
+                /* Ensure horizontal layout before mobile breakpoint */
+                flex-direction: row; 
+                gap: var(--spacing-md);
+                justify-content: center;
+            }
+        }
+        @media (max-width: 650px) {
+            .cta-group {
+                flex-direction: column; /* Stack on smaller screens */
+                gap: var(--spacing-sm);
+            }
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Reduced Motion Fallbacks */
+        @media (prefers-reduced-motion) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+                filter: none !important;
+            }
+            body { cursor: default !important; }
+            .custom-cursor, #trail-container { display: none !important; }
+            .tagline-container { border-right: none !important; }
+            .tagline-container::after { content: attr(data-full-text) !important; }
+            .btn-primary, .avatar-border, .radial-container { transform: none !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Initializing Vision_S Protocol...</div>
+    </div>
+
+    <div class="custom-cursor" id="customCursor"></div>
+    <div id="trail-container" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;"></div>
+
+    <svg width="0" height="0">
+      <defs>
+        <linearGradient id="skillGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:var(--c2);stop-opacity:1" />
+          <stop offset="50%" style="stop-color:var(--c3);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:var(--c1);stop-opacity:1" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <header>
+        <div class="logo">
+            <h1 class="rgb-text">World of Vision_S</h1>
+        </div>
+        <nav aria-label="Main Navigation">
+            <a href="index.html" class="interactive-element">Home</a>
+            <a href="lap.html" class="interactive-element">Projects</a>
+            <a href="#about" class="interactive-element" aria-current="page">About</a>
+            <a href="contact.html" class="interactive-element">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <aside class="profile-column">
+            <article class="profile-card glass-card">
+                <div class="avatar-border interactive-element" id="avatarContainer" tabindex="0" role="img" aria-label="Saurav Pandey profile image with animated border">
+                    <img src="saurav1.jpg" alt="Portrait of Saurav Pandey, Founder of Vision_S">
+                </div>
+                <h2>Saurav Pandey</h2>
+                <h3 style="color: var(--c2); margin-top: 5px;">Founder, Owner & C.E.O of Vision_S</h3>
+                
+                <div class="tagline-container" id="typewriter" data-full-text="AI-driven visuals."></div>
+
+                <div class="cta-group">
+                    <a href="https://www.youtube.com/@VISIONS-9" class="btn btn-primary magnetic-btn interactive-element">View Projects</a>
+                    <a href="ab1.html" class="btn btn-secondary interactive-element">View team</a>
+                </div>
+            </article>
+        </aside>
+
+        <div class="content-column">
+            <section class="content-section">
+                <h2 id="about">About Saurav Pandey</h2>
+                <p>Saurav Pandey is the founder of Vision_S, a futuristic creative brand exploring the intersection of AI, design, and innovation. Originally from Birgunj, Nepal, he completed his schooling at Kadambari Academy, Shreepur, where he graduated with a perfect GPA of 4.0 in the S.E.E. examination. Currently, he is pursuing his +2 studies in the Science stream with Biology at St. Xavier’s College, Maitighar, Kathmandu.
+
+Driven by curiosity and creativity, Saurav combines his love for artificial intelligence, visual design, and technology to build projects that bridge imagination and reality. Through Vision_S, he experiments with futuristic logo designs, motion effects, AI-powered tools, and interactive web experiences that express individuality and modern aesthetics.
+
+Saurav’s vision is to create a world where technology amplifies human creativity, helping people design, communicate, and build more intuitively. He believes in open learning, innovation, and inspiring young minds to see technology not just as a tool, but as a canvas for limitless creation.</p>
+            </section>
+            
+            <hr style="border: 0; border-top: 1px solid var(--color-glass-border); margin: var(--spacing-md) 0;">
+
+            <section class="content-section">
+                <h2 id="highlights">Vision_S Highlights</h2>
+                <div class="highlights-grid">
+                    <article class="project-card glass-card interactive-element">
+                        <h3 style="color: var(--c2);">Vision_S — Brand Experiments</h3>
+                        <p>Concept design systems, logo animations and web experiments focused on visual storytelling and disruptive aesthetics.</p>
+                    </article>
+                    <article class="project-card glass-card interactive-element">
+                        <h3 style="color: var(--c2);">AI Toolkit</h3>
+                        <p>Small open source utilities for image/audio processing, creative prompts, and generative content workflows.</p>
+                    </article>
+                </div>
+            </section>
+            
+            <hr style="border: 0; border-top: 1px solid var(--color-glass-border); margin: var(--spacing-md) 0;">
+
+            <section class="content-section">
+                <h2>Experience & Timeline</h2>
+                <div class="glass-card" style="padding: var(--spacing-md);">
+                    <div class="timeline-item">
+                        <h4>Founder, Owner & C.E.O— Vision_S</h4>
+                        <p>Birgunj, Nepal | 2023 – Present</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>FREELANCER</h4>
+                        <p>Global | 2022 - Present</p>
+                    </div>
+                     <div class="timeline-item">
+                        <h4>VIDEO EDITOR AND CINEMATOGRAPHER</h4>
+                        <p>Global | 2024 - Present</p>
+                    </div>
+                </div>
+            </section>
+            
+            <hr style="border: 0; border-top: 1px solid var(--color-glass-border); margin: var(--spacing-md) 0;">
+
+            <section class="content-section">
+                <h2>Skills & Expertise</h2>
+                <div class="skills-grid" id="skillsGrid">
+                    <div class="radial-container interactive-element" data-percent="99">
+                        <svg viewBox="0 0 100 100" width="100" height="100">
+                            <circle class="circle-bg" cx="50" cy="50" r="45" stroke-width="8"></circle>
+                            <circle class="circle-progress" cx="50" cy="50" r="45"></circle>
+                            <text class="percentage" x="50" y="55" text-anchor="middle" fill="var(--color-text-primary)">99%</text>
+                        </svg>
+                        <p style="color: var(--color-text-secondary);">Frontend & UI</p>
+                    </div>
+                    <div class="radial-container interactive-element" data-percent="96">
+                        <svg viewBox="0 0 100 100" width="100" height="100">
+                            <circle class="circle-bg" cx="50" cy="50" r="45" stroke-width="8"></circle>
+                            <circle class="circle-progress" cx="50" cy="50" r="45"></circle>
+                            <text class="percentage" x="50" y="55" text-anchor="middle" fill="var(--color-text-primary)">96%</text>
+                        </svg>
+                        <p style="color: var(--color-text-secondary);">Creative AI</p>
+                    </div>
+                    <div class="radial-container interactive-element" data-percent="89">
+                        <svg viewBox="0 0 100 100" width="100" height="100">
+                            <circle class="circle-bg" cx="50" cy="50" r="45" stroke-width="8"></circle>
+                            <circle class="circle-progress" cx="50" cy="50" r="45"></circle>
+                            <text class="percentage" x="50" y="55" text-anchor="middle" fill="var(--color-text-primary)">89%</text>
+                        </svg>
+                        <p style="color: var(--color-text-secondary);">Creative designs</p>
+                    </div>
+                    <div class="radial-container interactive-element" data-percent="97">
+                        <svg viewBox="0 0 100 100" width="100" height="100">
+                            <circle class="circle-bg" cx="50" cy="50" r="45" stroke-width="8"></circle>
+                            <circle class="circle-progress" cx="50" cy="50" r="45"></circle>
+                            <text class="percentage" x="50" y="55" text-anchor="middle" fill="var(--color-text-primary)">97%</text>
+                        </svg>
+                        <p style="color: var(--color-text-secondary);">Teaching & Tutorials</p>
+                    </div>
+                </div>
+            </section>
+            
+            <hr style="border: 0; border-top: 1px solid var(--color-glass-border); margin: var(--spacing-md) 0;">
+
+            <section class="content-section">
+                <h2>MOTO & VISION</h2>
+                <div class="publications-placeholder glass-card">
+                    <p style="margin-bottom: 0; font-style: italic; color: var(--color-text-secondary);">"A Vision Beyond Dimensions."<BR>
+                        "Everything. Everyone. Everywhere — One Vision_S."<BR>
+                            Vision_S is a multidimensional company built to revolutionize every field — technology, lifestyle, creativity, and innovation.
+Our goal is to become the #1 global brand, delivering premium support, limitless possibilities, and intelligent solutions that cater to every need of the modern world.
+Vision_S isn’t just a company — it’s a universe built from imagination and powered by purpose. 
+                    </p>
+                </div>
+            </section>
+            
+            <section class="content-section contact-info" id="contact-info">
+                <h2>Connect & Location</h2>
+                <p>Email: <a href="mailto:worldofvisions.official@gmail.com" class="interactive-element" style="color: var(--c2); text-decoration: none;">worldofvisions.official@gmail.com</a></p>
+                <p>Location: Birgunj, Nepal (Originating point of Vision_S) currently based in kathmandu.</p>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const loader = document.getElementById('loader');
+
+            // 1. Loading Screen Logic
+            window.onload = () => {
+                if (!reducedMotion) {
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.visibility = 'hidden';
+                        }, 1000); // Wait for transition
+                    }, 500);
+                } else {
+                    loader.style.display = 'none';
+                }
+            };
+
+
+            // 2. Typewriter Effect
+            const phrases = ["AI-driven visuals.", "Visionary approach.", "leadership in veins."];
+            const typewriterElement = document.getElementById('typewriter');
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typingSpeed = reducedMotion ? 1 : 80;
+            const deletingSpeed = reducedMotion ? 1 : 40;
+            const pauseTime = reducedMotion ? 1 : 2500;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+
+                if (reducedMotion) {
+                    typewriterElement.textContent = currentPhrase;
+                    return;
+                }
+
+                if (isDeleting) {
+                    typewriterElement.textContent = currentPhrase.substring(0, charIndex--);
+                } else {
+                    typewriterElement.textContent = currentPhrase.substring(0, charIndex++);
+                }
+
+                if (!isDeleting && charIndex > currentPhrase.length) {
+                    isDeleting = true;
+                    setTimeout(type, pauseTime);
+                } else if (isDeleting && charIndex < 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    charIndex = 0;
+                    setTimeout(type, 800);
+                } else {
+                    setTimeout(type, isDeleting ? deletingSpeed : typingSpeed);
+                }
+            }
+            type();
+
+            // 3. Magnetic Button (Primary CTA)
+            const magneticBtn = document.querySelector('.magnetic-btn');
+            const intensity = 0.45;
+            const maxTranslation = 12;
+
+            if (!reducedMotion) {
+                magneticBtn.addEventListener('mousemove', (e) => {
+                    const rect = magneticBtn.getBoundingClientRect();
+                    const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                    const x = e.clientX - center.x;
+                    const y = e.clientY - center.y;
+                    
+                    const moveX = Math.min(Math.max(x * intensity, -maxTranslation), maxTranslation);
+                    const moveY = Math.min(Math.max(y * intensity, -maxTranslation), maxTranslation);
+                    
+                    magneticBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+
+                magneticBtn.addEventListener('mouseleave', () => {
+                    magneticBtn.style.transform = 'translate(0, 0)';
+                });
+            }
+
+            // 4. Radial Skills Animation (on Scroll)
+            const skillRadials = document.querySelectorAll('.radial-container');
+            const radius = 45;
+            const circumference = 2 * Math.PI * radius;
+            
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const radial = entry.target;
+                        const percent = parseInt(radial.dataset.percent);
+                        const circle = radial.querySelector('.circle-progress');
+                        const offset = circumference - (percent / 100) * circumference;
+                        
+                        circle.style.strokeDasharray = circumference;
+                        circle.style.strokeDashoffset = offset;
+                        
+                        observer.unobserve(radial);
+                    }
+                });
+            }, { threshold: 0.7 });
+
+            skillRadials.forEach(radial => {
+                const circle = radial.querySelector('.circle-progress');
+                circle.style.strokeDasharray = circumference;
+                circle.style.strokeDashoffset = circumference; // Start empty
+
+                if (!reducedMotion) {
+                    observer.observe(radial);
+                } else {
+                    const percent = parseInt(radial.dataset.percent);
+                    const offset = circumference - (percent / 100) * circumference;
+                    circle.style.strokeDashoffset = offset;
+                }
+            });
+
+
+            // 5. Custom Cursor & Trail Logic
+            const customCursor = document.getElementById('customCursor');
+            const trailContainer = document.getElementById('trail-container');
+            const interactiveElements = document.querySelectorAll('.interactive-element, .glass-card, .btn');
+            let mouseX = 0, mouseY = 0;
+            let targetX = 0, targetY = 0;
+            const lerpFactor = 0.2;
+            
+            let trailDots = [];
+            const MAX_DOTS = 10;
+            const DOT_SIZE = 5;
+            let lastDotTime = 0;
+            const DOT_SPACING_MS = 30; // Control dot density
+
+            function updateCursor() {
+                // Smooth follow for the main cursor element
+                targetX += (mouseX - targetX) * lerpFactor;
+                targetY += (mouseY - targetY) * lerpFactor;
+                customCursor.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+
+                requestAnimationFrame(updateCursor);
+            }
+
+            function createDot() {
+                const currentTime = Date.now();
+                if (currentTime - lastDotTime < DOT_SPACING_MS || reducedMotion) return;
+                lastDotTime = currentTime;
+
+                const dot = document.createElement('div');
+                dot.classList.add('cursor-trail-dot');
+                
+                dot.style.cssText = `
+                    position: absolute;
+                    width: ${DOT_SIZE}px;
+                    height: ${DOT_SIZE}px;
+                    border-radius: 50%;
+                    background-color: var(--c2);
+                    box-shadow: 0 0 5px var(--c2);
+                    opacity: 0.8;
+                    transform: translate(-50%, -50%);
+                    top: ${mouseY}px;
+                    left: ${mouseX}px;
+                `;
+                trailContainer.appendChild(dot);
+                trailDots.push(dot);
+
+                if (trailDots.length > MAX_DOTS) {
+                    const oldestDot = trailDots.shift();
+                    oldestDot.style.opacity = '0';
+                    oldestDot.style.transform = 'scale(0)';
+                    setTimeout(() => oldestDot.remove(), 400);
+                }
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                createDot();
+            });
+
+            // Start animation loop
+            if (!reducedMotion) {
+                updateCursor();
+            }
+
+            // Hover effects for the custom cursor
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => customCursor.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => customCursor.classList.remove('hovering'));
+            });
+
+            // 6. Avatar Click Ripple (Simplified)
+            const avatarContainer = document.getElementById('avatarContainer');
+            avatarContainer.addEventListener('click', (e) => {
+                 if (reducedMotion) return;
+                 const rect = avatarContainer.getBoundingClientRect();
+                 const ripple = document.createElement('span');
+                 ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    background-color: rgba(0, 255, 153, 0.4); /* Green Ripple */
+                    width: 100px;
+                    height: 100px;
+                    top: ${e.clientY - rect.top - 50}px;
+                    left: ${e.clientX - rect.left - 50}px;
+                    pointer-events: none;
+                    z-index: 10;
+                 `;
+                 
+                 // Inject ripple animation if not present (minimal)
+                 let styleSheet = document.styleSheets[0];
+                 let ruleIndex = -1;
+                 for (let i = 0; i < styleSheet.cssRules.length; i++) {
+                     if (styleSheet.cssRules[i].name === 'ripple') {
+                         ruleIndex = i;
+                         break;
+                     }
+                 }
+                 if (ruleIndex === -1) {
+                     styleSheet.insertRule(`@keyframes ripple { to { transform: scale(2.5); opacity: 0; } }`, styleSheet.cssRules.length);
+                 }
+
+                 avatarContainer.style.position = 'relative';
+                 avatarContainer.querySelectorAll('.ripple').forEach(r => r.remove());
+                 avatarContainer.appendChild(ripple);
+                 ripple.addEventListener('animationend', () => ripple.remove());
+            });
+        });
+    </script>
+</body>
+</html>

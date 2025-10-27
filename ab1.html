@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meet The Team — Vision_S</title>
+  <style>
+    :root{
+      --bg1:#05060a;
+      --bg2:#0b0b10;
+      --card:#0f1720;
+      --muted:#9aa3b2;
+      --accent1:#7c3aed;
+      --accent2:#06b6d4;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#e8eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wrap{max-width:1200px;margin:40px auto;padding:28px;position:relative}
+
+    /* header */
+    .heading{text-align:center;margin-bottom:18px}
+    .title{
+      display:inline-block;font-weight:800;letter-spacing:0.6px;font-size:clamp(22px,4.4vw,44px);
+      line-height:1.02;background: linear-gradient(90deg,#ff4d8a,#7c3aed,#06b6d4);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .cursor{display:inline-block;width:8px;height:28px;margin-left:8px;background:rgba(255,255,255,0.95);vertical-align:middle;animation:blink 1s steps(2) infinite;border-radius:2px}
+    @keyframes blink{0%{opacity:1}50%{opacity:.12}100%{opacity:1}}
+    .subtag{font-family:'Lucida Calligraphy',cursive;margin-top:8px;color:rgba(200,210,220,0.42);font-size:13px}
+
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;justify-items:center}
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:720px){ .grid{grid-template-columns:repeat(1,1fr)} }
+
+    /* card base */
+    .card{
+      width:100%; max-width:300px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(2,6,23,0.6);
+      position:relative; overflow:visible; transition:transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; z-index:1;
+    }
+    .card:hover{ transform:translateY(-8px); box-shadow:0 18px 40px rgba(12,16,40,0.6); }
+
+    /* preserved RGB border gradient exactly */
+    .card::before{
+      content:""; position:absolute; top:0; left:0; right:0; bottom:0; border-radius:16px; padding:2px;
+      background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff7300,
+        #fffb00,
+        #48ff00,
+        #00ffd5,
+        #002bff,
+        #7a00ff,
+        #ff00c8,
+        #ff0000
+      );
+      background-size:400% 400%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; -webkit-mask-composite: xor;
+      z-index:0; opacity:0; transition: opacity .45s ease, background-position 3s linear; pointer-events:none;
+    }
+    .card:hover::before{ opacity:1; animation:glowMove 3s linear infinite }
+    @keyframes glowMove{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+
+    .card > *{ position:relative; z-index:1; }
+
+    /* portrait frame (fixed) */
+    .portraitWrap{
+      width:100%; height:360px; background:#111; border-radius:6px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); overflow:hidden; display:block; position:relative;
+    }
+    .portrait{ width:100%; height:100%; object-fit:cover; display:block; border-radius:6px; -webkit-user-drag:none; user-drag:none; }
+
+    .meta{ margin-top:12px; text-align:center }
+    .name{ font-size:18px; font-weight:700; letter-spacing:0.2px; background: linear-gradient(90deg,#fff,#d7f7ff); -webkit-background-clip:text; color:transparent }
+    .role{ font-size:13px; color:var(--muted); margin-top:6px }
+
+    .plus{ position:absolute; right:14px; top:14px; width:42px;height:42px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .18s ease, box-shadow .18s; z-index:2; }
+    .plus:hover{ transform:scale(1.06); box-shadow:0 8px 22px rgba(92,51,216,0.12) }
+
+    .socialRow{ display:flex; gap:10px; justify-content:center; margin-top:14px; padding-bottom:8px }
+    .sbtn{ width:46px;height:46px;border-radius:10px;background:var(--glass); display:inline-flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.04); transition:transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s; }
+    .sbtn:hover{ transform:translateY(-6px) rotate(-6deg); box-shadow:0 14px 34px rgba(6,182,212,0.08); background:linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.04)) }
+    .tooltip{ position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); font-size:12px; background:rgba(0,0,0,0.6); padding:6px 8px;border-radius:6px; opacity:0; pointer-events:none; transition:all .12s;}
+    .sbtn:hover .tooltip{ opacity:1; transform:translateX(-50%) translateY(-4px) }
+
+    /* modal */
+    .overlay{ position:fixed; inset:0; background:rgba(2,6,23,0.7); display:none; align-items:center; justify-content:center; z-index:120; padding:32px; }
+    .overlay.active{ display:flex }
+    .modal{ width:100%; max-width:880px; background:linear-gradient(180deg, rgba(10,14,20,0.96), rgba(8,12,16,0.96)); border-radius:12px; padding:22px; border:1px solid rgba(255,255,255,0.04); box-shadow:0 30px 80px rgba(2,6,23,0.8); overflow:auto; max-height:88vh; position:relative; }
+    .modalHeader{ display:flex; gap:16px; align-items:center }
+    .modalImg{ width:110px; height:140px; object-fit:cover; border-radius:6px; border:1px solid rgba(255,255,255,0.03) }
+    .modalTitle{ font-size:20px; font-weight:700; margin:0 }
+    .modalClose{ position:absolute; right:14px; top:14px; cursor:pointer; width:40px;height:40px;border-radius:8px; display:flex;align-items:center;justify-content:center; background:rgba(255,255,255,0.02) }
+    .modalBody{ margin-top:12px; color:var(--muted); line-height:1.6; font-size:15px }
+    .modalActions{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap }
+
+    /* ======= SIGNATURE - exactly like your original: fixed 360x120 ======= */
+    .signatureWrap{
+      width:360px;
+      height:120px;
+      margin:36px auto 0;
+      position:relative;
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* background canvas sits behind the signature image but is fixed to 360x120 */
+    #sigBgCanvas{
+      position:absolute;
+      left:0;
+      top:0;
+      width:360px;   /* fixed CSS size — matches your original */
+      height:120px;  /* fixed CSS size — matches your original */
+      z-index:0;
+      pointer-events:none;
+      border-radius:8px;
+    }
+
+    .sigBorderWrap{
+      position:relative;
+      display:inline-block;
+      padding:4px;
+      border-radius:8px;
+      background: linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      background-size: 400% 400%;
+      animation: borderGlow 3s linear infinite;
+      z-index:3;
+    }
+    @keyframes borderGlow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+    /* Keep the signature image exactly sized like your original code */
+    .sigImg{
+      display:block;
+      width:360px;  /* exact fixed width */
+      height:120px; /* exact fixed height */
+      object-fit:contain;
+      border-radius:6px;
+      z-index:4;
+      position:relative;
+      filter: drop-shadow(0 14px 34px rgba(0,0,0,0.6));
+    }
+
+    .sigMask{ position:absolute; left:0; top:0; bottom:0; width:100%; background:var(--bg1); mix-blend-mode:normal; z-index:5; border-radius:6px; }
+    .shimmer{ position:absolute; top:0; bottom:0; left:-80px; width:60px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent); opacity:0.0; pointer-events:none; z-index:6; }
+
+    /* heart popup (CEO hover) */
+    .heart-emoji{ position:absolute; z-index:9999; pointer-events:none; user-select:none; font-size:18px; transform:translate(-50%,-50%) scale(1); opacity:0; transition: transform 480ms cubic-bezier(.2,.9,.2,1), opacity 480ms ease; filter: drop-shadow(0 6px 18px rgba(124,58,237,0.18)); }
+
+    /* sparks and confetti */
+    .spark{ position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.95); pointer-events:none; transform:translate(-50%,-50%); box-shadow:0 4px 8px rgba(124,58,237,0.18); animation:sparkOut 700ms ease-out forwards; z-index:60; }
+    @keyframes sparkOut{0%{opacity:1; transform:translate(-50%,-50%) scale(1)}100%{opacity:0; transform:translate(-50%,-120%) scale(0.2)}}
+    #confettiCanvas{ position:fixed; inset:0; pointer-events:none; z-index:9998; display:none }
+
+    .emojiBit{ position:fixed; pointer-events:none; z-index:9999; font-size:18px; transform-origin:center }
+
+    .muted{ color:var(--muted) }
+    a.smallBtn{ display:inline-block;padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:white; text-decoration:none; font-weight:600; }
+
+    .card:focus-within{ outline:3px solid rgba(124,58,237,0.08); outline-offset:8px; border-radius:16px; }
+
+    @media (prefers-reduced-motion: reduce){
+      .card::before, .sigBorderWrap { animation:none !important; transition:none !important; }
+      #confettiCanvas { display:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="page">
+    <header class="heading">
+      <h1 class="title" id="titleText"></h1><span class="cursor" aria-hidden="true"></span>
+      <div class="subtag">"Young minds redefining the future."</div>
+    </header>
+
+    <main>
+      <section class="grid" id="cards"></section>
+
+      <!-- signature area fixed to original 360x120 -->
+      <div class="signatureWrap" id="sigWrap" aria-hidden="false">
+        <!-- one background canvas fixed to 360x120 (CSS) — JS will size its internal pixel buffer using DPR -->
+        <canvas id="sigBgCanvas" class="sigBgCanvas" aria-hidden="true" width="360" height="120"></canvas>
+
+        <div class="sigBorderWrap" role="img" aria-label="Vision_S signature">
+          <img src="vs.jpg" alt="Vision_S signature" class="sigImg" id="sigImage" />
+        </div>
+
+        <div class="sigMask" id="sigMask"></div>
+        <div class="shimmer" id="sigShimmer"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal overlay -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document" id="modal">
+      <button id="closeModal" class="modalClose" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="modalHeader">
+        <img src="" alt="" class="modalImg" id="modalImg">
+        <div>
+          <h3 class="modalTitle" id="modalName">Name</h3>
+          <div class="muted" id="modalRole">Role</div>
+        </div>
+      </div>
+
+      <div class="modalBody" id="modalBody">Long bio and details will appear here.</div>
+      <div class="modalActions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <script>
+    /* ==========================
+       Data
+       ========================== */
+    const team = [
+      {
+        id:1,
+        name:"RAJAT THAKUR",
+        role:"Operation Coordinator",
+        img:"rajat.jpg",
+        mail:"mailto:worldofvisions.official+rajat@gmail.com",
+        linkedin:"https://www.linkedin.com/in/rajat-thakur-8897ab38b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+        x:"https://x.com/RThakur9816?t=8qrPSNK0MtnBDx3EIlSt2A&s=08",
+        insta:"https://www.instagram.com/rajat_dsvision?utm_source=qr&igsh=eHZiZmVuaGI0aGlo",
+        bio:`Rajat Thakur is the Operations Coordinator at Vision_S, ensuring smooth day-to-day operations and supporting the team in administrative and project tasks. He is currently pursuing his +2 education at KMC College, Bagbazzar, Kathmandu, balancing academics with hands-on experience in operations management.
+
+Rajat is passionate about organization, efficiency, and helping Vision_S grow as a professional and innovative company. He plays a key role in keeping the team coordinated and projects on track.`,
+        achievements:["Managing schedules and logistics","Coordinating internal projects","Supporting CEO on operational tasks"],
+        quote:"Chaos is only a canvas; those who master the rhythm of order can paint entire worlds.",
+        quoteGradient:"linear-gradient(90deg, #06b6d4, #7c3aed, #ff4d8a)"
+      },
+      {
+        id:2,
+        name:"Saurav Pandey",
+        role:"Owner, founder & C.E.O",
+        img:"saurav.jpg",
+        mail:"mailto:worldofvisions.official+saurav@gmail.com",
+        linkedin:"https://www.linkedin.com/in/saurav-pandey999/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+        x:"https://x.com/sauravpandey_vs",
+        insta:"https://www.instagram.com/c.e.o_vs_saurav?igsh=Z3l0czEzemlrM3Z2",
+        bio:`Saurav Pandey is the visionary founder and CEO of Vision_S, leading the company with a mission to create innovative, future-facing products that empower users and foster talent in Nepal. Currently, he is pursuing his +2 education at St. Xavier’s, Maitighar, balancing academics with his passion for technology, AI, and business.`,
+        achievements:["Leading strategy & product work","Building & mentoring teams","Representing Vision_S"],
+        quote:"The future doesn’t whisper; it waits for those who dare to build it from the unseen sparks of today.",
+        quoteGradient:"linear-gradient(90deg, #ff4d8a, #7c3aed, #06b6d4)"
+      },
+      {
+        id:3,
+        name:"Pritam Yadav",
+        role:"Marketing Manager",
+        img:"pritam.jpg",
+        mail:"mailto:worldofvisions.official+pritam@gmail.com",
+        linkedin:"https://www.linkedin.com/",
+        x:"https://x.com/",
+        insta:"https://www.instagram.com/pritamyadav1338?igsh=b2xtM3owYmNlcHNp",
+        bio:`Pritam Yadav is the Marketing Manager at Vision_S, supporting the team in digital marketing, social media campaigns, and content creation. He is currently pursuing his +2 education at Alpine College, Birgunj, combining his academic pursuits with hands-on marketing experience.`,
+        achievements:["Running social media campaigns","Content creation and copywriting","Assisting in brand promotion strategies"],
+        quote:"Ideas are like fireflies — they glow brightest when someone brave enough lets them fly.",
+        quoteGradient:"linear-gradient(90deg, #7c3aed, #06b6d4, #ff4d8a)"
+      }
+    ];
+
+    /* ---------- Typewriter heading ---------- */
+    (function typeWriter(){
+      const t = document.getElementById('titleText');
+      const text = "MEET THE VISIONARY LEADERS OF VISION_S";
+      let i=0; t.textContent='';
+      const timer = setInterval(()=>{ if(i<text.length) t.textContent += text[i++]; else clearInterval(timer); }, 28);
+    })();
+
+    /* ---------- Render cards ---------- */
+    const cards = document.getElementById('cards');
+    function safeHref(h){ return h ? h : '#'; }
+
+    team.forEach(m => {
+      const c = document.createElement('article');
+      c.className = 'card';
+      c.setAttribute('data-id', m.id);
+      c.setAttribute('tabindex','0');
+
+      c.innerHTML = `
+        <div class="plus" data-id="${m.id}" title="More about ${m.name}" aria-label="Open details for ${m.name}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <div class="portraitWrap">
+          <img class="portrait" src="${m.img}" alt="${m.name} photo" loading="lazy" />
+        </div>
+
+        <div class="meta">
+          <div class="name">${m.name}</div>
+          <div class="role">${m.role}</div>
+        </div>
+
+        <div class="socialRow">
+          <a class="sbtn" href="${safeHref(m.mail)}" target="_blank" rel="noreferrer"><span class="tooltip">Email</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 8.5v7A2.5 2.5 0 0 0 5.5 18h13a2.5 2.5 0 0 0 2.5-2.5v-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 7.5L12 13 3 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="sbtn" href="${safeHref(m.linkedin)}" target="_blank" rel="noreferrer"><span class="tooltip">LinkedIn</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16 8a6 6 0 0 1 6 6v6h-4v-6a2 2 0 0 0-4 0v6h-4v-12h4v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="sbtn" href="${safeHref(m.x)}" target="_blank" rel="noreferrer"><span class="tooltip">X</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="sbtn" href="${safeHref(m.insta)}" target="_blank" rel="noreferrer"><span class="tooltip">Instagram</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.2"/><path d="M16 11.37a4 4 0 1 1-4.63-4.63" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      `;
+
+      // CEO styling: RGB animated name + role
+      const roleLC = (m.role||'').toLowerCase();
+      const isCeo = roleLC.includes('c.e.o') || roleLC.includes('ceo') || roleLC.includes('owner, founder & c.e.o');
+      if (isCeo) c.classList.add('ceo');
+
+      cards.appendChild(c);
+
+      // plus: sparkles + confetti + modal
+      const plus = c.querySelector('.plus');
+      plus.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const X = ev.clientX || window.innerWidth/2;
+        const Y = ev.clientY || window.innerHeight/3;
+        sparkleBurstAt(X, Y, 12);
+        launchFullScreenConfetti(X, Y);
+        openModal(m);
+      });
+
+      c.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          const rc = c.getBoundingClientRect();
+          const cx = rc.left + rc.width/2;
+          const cy = rc.top + rc.height/2;
+          sparkleBurstAt(cx, cy, 12);
+          launchFullScreenConfetti(cx, cy);
+          openModal(m);
+        }
+      });
+
+      // CEO heart hover
+      if (isCeo) {
+        let heartTimer = null;
+        function spawnHeart(cx, cy){
+          const heart = document.createElement('div');
+          heart.className = 'heart-emoji';
+          heart.style.left = cx + 'px';
+          heart.style.top = cy + 'px';
+          heart.textContent = '❤️';
+          document.body.appendChild(heart);
+          requestAnimationFrame(()=> {
+            heart.style.opacity = 1;
+            heart.style.transform = `translate(-50%,-50%) scale(${0.9 + Math.random()*0.5}) translateY(-${10 + Math.random()*18}px)`;
+          });
+          setTimeout(()=> { heart.style.opacity = 0; heart.style.transform = `translate(-50%,-50%) scale(.4) translateY(-40px)`; }, 700);
+          setTimeout(()=> heart.remove(), 1100);
+        }
+
+        c.addEventListener('mouseenter', (ev)=>{
+          const rc = c.getBoundingClientRect();
+          for (let i=0;i<6;i++){
+            const rx = rc.left + rc.width*(0.3 + Math.random()*0.4);
+            const ry = rc.top + rc.height*(0.2 + Math.random()*0.6);
+            setTimeout(()=> spawnHeart(rx, ry), i*80);
+          }
+          heartTimer = setInterval(()=> {
+            const rc2 = c.getBoundingClientRect();
+            const rx = rc2.left + rc2.width*(0.3 + Math.random()*0.4);
+            const ry = rc2.top + rc2.height*(0.2 + Math.random()*0.6);
+            spawnHeart(rx, ry);
+          }, 420);
+        });
+        c.addEventListener('mouseleave', ()=> { if (heartTimer) { clearInterval(heartTimer); heartTimer = null; } });
+        c.addEventListener('mousemove', (ev)=> { if (Math.random()>0.85) spawnHeart(ev.clientX + (Math.random()*24-12), ev.clientY + (Math.random()*24-12)); }, {passive:true});
+      }
+    });
+
+    /* ---------- modal ---------- */
+    const overlay = document.getElementById('overlay');
+    const modalImg = document.getElementById('modalImg');
+    const modalName = document.getElementById('modalName');
+    const modalRole = document.getElementById('modalRole');
+    const modalBody = document.getElementById('modalBody');
+    const modalActions = document.getElementById('modalActions');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    function openModal(member){
+      modalImg.src = member.img;
+      modalImg.alt = member.name + ' photo';
+      modalName.innerHTML = `<span style="background: linear-gradient(90deg, #ff4d8a, #7c3aed, #06b6d4); -webkit-background-clip:text; color:transparent; font-weight:700;">${member.name}</span>`;
+      modalRole.innerHTML = `<span style="color:#9aa3b2; font-weight:500;">${member.role}</span>`;
+      modalBody.innerHTML = `
+<p style="white-space:pre-line;">${member.bio}</p>
+<p style="margin-top:6px;font-style:italic;background: ${member.quoteGradient || 'linear-gradient(90deg,#7c3aed,#06b6d4,#ff4d8a)'};-webkit-background-clip:text;color:transparent;font-weight:500;">"${member.quote || ''}"</p>
+<hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.04)" />
+<p class="muted">Detailed responsibilities & achievements:</p>
+<ul style="margin-top:8px;color:var(--muted);line-height:1.6">${(member.achievements||[]).map(a=>`<li>${a}</li>`).join('')}</ul>`;
+      modalActions.innerHTML = `
+        <a class="smallBtn" href="${safeHref(member.linkedin)}" target="_blank" rel="noreferrer">Connect on LinkedIn</a>
+        <a class="smallBtn" href="${safeHref(member.mail)}" target="_blank" rel="noreferrer" style="background:linear-gradient(90deg,#111,#444)">Send Email</a>
+        <a class="smallBtn" href="${safeHref(member.insta)}" target="_blank" rel="noreferrer" style="background:linear-gradient(90deg,#e1306c,#f77737)">Instagram</a>
+      `;
+      overlay.classList.add('active');
+      overlay.setAttribute('aria-hidden','false');
+      closeModalBtn.focus();
+    }
+    function closeModal(){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); }
+    closeModalBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e)=> { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', (e)=> { if (e.key === 'Escape') closeModal(); });
+
+    /* ---------- sparkle mouse ---------- */
+    (function sparkle(){
+      const container = document.getElementById('page');
+      if (!container) return;
+      let clearTimer;
+      container.addEventListener('mousemove', (e)=>{
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const dot = document.createElement('div');
+        dot.className='spark';
+        dot.style.left = (rect.left + x) + 'px';
+        dot.style.top = (rect.top + y) + 'px';
+        document.body.appendChild(dot);
+        setTimeout(()=> dot.remove(), 700);
+        window.clearTimeout(clearTimer);
+        clearTimer = window.setTimeout(()=>{/*noop*/}, 900);
+      });
+    })();
+
+    function sparkleBurstAt(x,y,count=10){
+      for (let i=0;i<count;i++){
+        const d = document.createElement('div');
+        d.className='spark';
+        const rx = (Math.random()*40 - 20);
+        const ry = (Math.random()*40 - 20);
+        d.style.left = (x + rx) + 'px';
+        d.style.top = (y + ry) + 'px';
+        document.body.appendChild(d);
+        setTimeout(()=> d.remove(), 900);
+      }
+    }
+
+    /* ============================
+       FULL-SCREEN CONFETTI (enhanced)
+       ============================ */
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const confettiCtx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
+
+    function launchFullScreenConfetti(originX = window.innerWidth/2, originY = window.innerHeight/3){
+      if (!confettiCtx) return;
+      confettiCanvas.style.display = 'block';
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const pieces = [];
+      const count = 220;
+      for (let i=0;i<count;i++){
+        const angle = Math.random()*Math.PI*2;
+        const speed = 3 + Math.random()*12;
+        const typeRand = Math.random();
+        pieces.push({
+          x: originX + (Math.random()*200 - 100),
+          y: originY + (Math.random()*120 - 60),
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - 6,
+          w: 6 + Math.random()*18,
+          h: 6 + Math.random()*18,
+          angle: Math.random()*360,
+          spin: -0.3 + Math.random()*0.7,
+          life: 100 + Math.floor(Math.random()*120),
+          color: randomColor(),
+          shape: typeRand < 0.5 ? 'rect' : (typeRand < 0.8 ? 'circle' : 'triangle')
+        });
+      }
+
+      const emojis = ['🎉','✨','❤️','⭐','🔥','💫','🥳','💖','👏','🌈'];
+      for (let i=0;i<24;i++){
+        const e = document.createElement('div');
+        e.className = 'emojiBit';
+        e.style.left = (originX + (Math.random()*window.innerWidth - window.innerWidth/2)) + 'px';
+        e.style.top = (originY + (Math.random()*window.innerHeight - window.innerHeight/2)) + 'px';
+        e.style.opacity = '0';
+        e.style.transform = `translate(-50%,-50%) scale(${0.6 + Math.random()*1.0}) rotate(${Math.random()*360}deg)`;
+        e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        document.body.appendChild(e);
+        const inDelay = Math.random()*200;
+        setTimeout(()=> {
+          e.style.transition = `transform 2200ms cubic-bezier(.2,.9,.2,1), opacity 1600ms ease`;
+          e.style.opacity = '1';
+          e.style.transform = `translate(-50%,-50%) translateY(-${60 + Math.random()*320}px) scale(${0.8 + Math.random()*0.8}) rotate(${Math.random()*360}deg)`;
+        }, inDelay);
+        setTimeout(()=> {
+          e.style.opacity = '0';
+          e.style.transform = `translate(-50%,-50%) translateY(-${500 + Math.random()*200}px) scale(0.6) rotate(${Math.random()*360}deg)`;
+        }, 2000 + inDelay + Math.random()*1000);
+        setTimeout(()=> e.remove(), 4200 + inDelay + Math.random()*1200);
+      }
+
+      let frame = 0;
+      function tick(){
+        confettiCtx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+        for (let i=0;i<pieces.length;i++){
+          const p = pieces[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.25;
+          p.angle += p.spin;
+          p.life--;
+          confettiCtx.save();
+          confettiCtx.translate(p.x, p.y);
+          confettiCtx.rotate(p.angle * Math.PI/180);
+          confettiCtx.fillStyle = p.color;
+          if (p.shape === 'rect') confettiCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          else if (p.shape === 'circle'){ confettiCtx.beginPath(); confettiCtx.arc(0,0,p.w/2,0,Math.PI*2); confettiCtx.fill(); }
+          else { confettiCtx.beginPath(); confettiCtx.moveTo(0, -p.h/2); confettiCtx.lineTo(-p.w/2, p.h/2); confettiCtx.lineTo(p.w/2, p.h/2); confettiCtx.closePath(); confettiCtx.fill(); }
+          confettiCtx.restore();
+        }
+        frame++;
+        const alive = pieces.some(p => p.life > 0 && p.y < confettiCanvas.height + 200);
+        if (alive) requestAnimationFrame(tick);
+        else { confettiCtx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height); confettiCanvas.style.display = 'none'; }
+      }
+      tick();
+
+      function randomColor(){ const palette = ['#ff4d8a','#7c3aed','#06b6d4','#ffd166','#06d6a0','#ff7ab6','#ffd54f','#6be7ff','#ff00c8','#00ffd5']; return palette[Math.floor(Math.random()*palette.length)]; }
+    }
+
+    /* ---------- Signature background canvas: RGB heartbeat lines left->right (fixed size) ---------- */
+    (function signatureBgLines(){
+      const canvas = document.getElementById('sigBgCanvas');
+      const wrap = document.getElementById('sigWrap');
+      const img = document.getElementById('sigImage');
+      if (!canvas || !wrap || !img) return;
+      const ctx = canvas.getContext('2d');
+          
+
+      function setCanvasPixelSize() {
+        // canvas CSS size fixed to 360x120; set backing store to DPR for crispness
+        const DPR = window.devicePixelRatio || 1;
+        const cssW = 360;
+        const cssH = 120;
+        canvas.width = Math.max(1, Math.floor(cssW * DPR));
+        canvas.height = Math.max(1, Math.floor(cssH * DPR));
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+      }
+      setCanvasPixelSize();
+      // keep size fixed even on window resize (per your original layout)
+      window.addEventListener('resize', () => { setCanvasPixelSize(); });
+
+      let offset = 0;
+      function roundedRectPath(ctx, x, y, w, h, r){
+        const min = Math.min(w,h);
+        if (r > min/2) r = min/2;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      function draw(){
+        const W = 360;
+        const H = 120;
+        ctx.clearRect(0,0,W,H);
+
+        const thin = Math.max(4, H * 0.08);
+        const mid = Math.max(6, H * 0.12);
+
+        function drawStrip(y, thickness, speedMult, alpha){
+          const g = ctx.createLinearGradient(-W + (offset * speedMult)%(W*2), 0, W + (offset * speedMult)%(W*2), 0);
+          g.addColorStop(0.00, '#ff4d8a');
+          g.addColorStop(0.18, '#7c3aed');
+          g.addColorStop(0.36, '#06b6d4');
+          g.addColorStop(0.54, '#ffd166');
+          g.addColorStop(0.72, '#06d6a0');
+          g.addColorStop(0.90, '#ff00c8');
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = g;
+          roundedRectPath(ctx, 0, y - thickness/2, W, thickness, thickness/2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        drawStrip(H * 0.28, thin, 1.0, 0.92);
+        drawStrip(H * 0.50, mid, 1.4, 0.98);
+        drawStrip(H * 0.72, thin, 0.8, 0.86);
+
+        offset += 1.8;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ---------- signature reveal shimmer (kept) ---------- */
+    (function signatureRevealShimmer(){
+      const mask = document.getElementById('sigMask');
+      const shimmer = document.getElementById('sigShimmer');
+      const img = document.getElementById('sigImage');
+      if (!mask || !shimmer || !img) return;
+      function start(){
+        mask.style.transition = 'none';
+        mask.style.width = '100%';
+        mask.style.left = '0';
+        shimmer.style.left = '-80px';
+        shimmer.style.opacity = '0';
+        setTimeout(()=> {
+          mask.style.transition = 'width 1.2s cubic-bezier(.2,.9,.2,1), left 1.2s cubic-bezier(.2,.9,.2,1)';
+          mask.style.width = '0';
+          mask.style.left = '100%';
+          shimmer.style.transition = 'left 1.1s ease-in-out, opacity 0.45s';
+          shimmer.style.left = '380px';
+          shimmer.style.opacity = '1';
+          setTimeout(()=> shimmer.style.opacity = '0', 700);
+        }, 320);
+      }
+      if (img.complete) setTimeout(start, 400);
+      else { img.addEventListener('load', ()=> setTimeout(start,300)); img.addEventListener('error', ()=> { mask.style.display='none'; shimmer.style.display='none'; const p=document.createElement('div'); p.style.textAlign='center'; p.style.color='var(--muted)'; p.style.marginTop='18px'; p.style.fontSize='13px'; p.textContent='Signature not found. Place vs.jpg next to this file.'; document.getElementById('sigWrap').appendChild(p); }); }
+    })();
+    
+
+    /* ---------- apply CEO gradient to name & role ---------- */
+    (function applyCeoGradient(){
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(c => {
+        const roleEl = c.querySelector('.role');
+        const nameEl = c.querySelector('.name');
+        if (!roleEl || !nameEl) return;
+        const roleText = (roleEl.textContent || '').toLowerCase();
+        if (roleText.includes('c.e.o') || roleText.includes('ceo') || roleText.includes('owner')) {
+          nameEl.style.background = 'linear-gradient(90deg, #ff4d8a, #7c3aed, #06b6d4)';
+          nameEl.style.webkitBackgroundClip = 'text';
+          nameEl.style.color = 'transparent';
+          nameEl.style.backgroundSize = '400% 400%';
+          nameEl.style.animation = 'ceoNameShift 6s linear infinite';
+          nameEl.style.fontWeight = '800';
+
+          roleEl.style.background = 'linear-gradient(90deg,#ff4d8a,#7c3aed,#06b6d4)';
+          roleEl.style.webkitBackgroundClip = 'text';
+          roleEl.style.color = 'transparent';
+          roleEl.style.fontWeight = '600';
+        }
+      });
+
+      const k = document.createElement('style');
+      k.innerHTML = '@keyframes ceoNameShift{0%{background-position:0% 50%}50%{background-position:50% 50%}100%{background-position:100% 50%}}';
+      document.head.appendChild(k);
+    })();
+
+    /* ---------- small accessibility tweak ---------- */
+    (function focusOutline(){
+      function handleFirstTab(e){ if(e.key === 'Tab'){ document.documentElement.classList.add('show-focus'); window.removeEventListener('keydown', handleFirstTab); } }
+      window.addEventListener('keydown', handleFirstTab);
+    })();
+
+    /* ---------- keep confetti canvas sized ---------- */
+    window.addEventListener('resize', ()=> { if (confettiCanvas){ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; } });
+
+    /* ===========================
+       End
+       =========================== */
+  </script>
+</body>
+</html>
+
+
+
