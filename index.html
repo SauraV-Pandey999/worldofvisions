@@ -514,13 +514,12 @@
           hy = s.y;
         const glowR = headRadius * 6;
         const hue = s.hue;
-
-        // 🌈 vivid colored glow
+ // 🌈 vivid colored glow
         const grad = ctx.createRadialGradient(hx, hy, 0, hx, hy, glowR);
-        grad.addColorStop(0, hsla(${hue}, 100%, 75%, ${headAlpha}));
-        grad.addColorStop(0.25, hsla(${hue}, 95%, 65%, ${headAlpha * 0.7}));
-        grad.addColorStop(0.55, hsla(${hue}, 85%, 55%, ${headAlpha * 0.4}));
-        grad.addColorStop(1, rgba(0,0,0,0));
+        grad.addColorStop(0, `hsla(${hue}, 100%, 75%, ${headAlpha})`);
+        grad.addColorStop(0.25, `hsla(${hue}, 95%, 65%, ${headAlpha * 0.7})`);
+        grad.addColorStop(0.55, `hsla(${hue}, 85%, 55%, ${headAlpha * 0.4})`);
+        grad.addColorStop(1, `rgba(0,0,0,0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(hx, hy, glowR, 0, Math.PI * 2);
@@ -528,7 +527,7 @@
 
         // Colored core
         ctx.beginPath();
-        ctx.fillStyle = hsla(${hue}, 100%, 70%, ${headAlpha * 1.1});
+        ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${headAlpha * 1.1})`;
         ctx.arc(hx, hy, Math.max(0.9, headRadius * 1.0), 0, Math.PI * 2);
         ctx.fill();
 
@@ -544,7 +543,7 @@
             const width = Math.max(0.3, (1 - segT) * (2.8 - Math.abs(c) * 0.6));
             const alpha = Math.pow(1 - segT, 1.9) * 0.95 * lifeRatio * (0.45 + (1 - segT) * 0.55) * (0.8 - Math.abs(c) * 0.25);
             ctx.lineWidth = width;
-            ctx.strokeStyle = hsla(${tailHue}, 100%, 60%, ${alpha * 1.2});
+            ctx.strokeStyle = `hsla(${tailHue}, 100%, 60%, ${alpha * 1.2})`;
             ctx.beginPath();
             ctx.moveTo(p0[0], p0[1]);
             ctx.lineTo(p1[0], p1[1]);
@@ -555,14 +554,14 @@
 
         // crisp tiny white sparkle at the core
         ctx.beginPath();
-        ctx.fillStyle = rgba(255,255,255,${Math.min(1, headAlpha * 1.1)});
+        ctx.fillStyle = `rgba(255,255,255,${Math.min(1, headAlpha * 1.1)})`;
         ctx.arc(hx, hy, Math.max(0.7, headRadius * 0.9), 0, Math.PI * 2);
         ctx.fill();
       }
 
       function loop(now) {
         ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = rgba(0,0,0,${FADE_ALPHA});
+        ctx.fillStyle = `rgba(0,0,0,${FADE_ALPHA})`;
         ctx.fillRect(0, 0, w, h);
 
         ctx.globalCompositeOperation = "lighter";
