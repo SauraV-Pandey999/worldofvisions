@@ -198,7 +198,7 @@ body {
         </div>
         <div class="card-number" id="cardNumber">1234 5678 9012 3456</div>
         <div class="card-name" id="cardName">SAURAV PANDEY</div>
-        <div class="card-date" id="cardDate">VALID THRU 12/25</div>
+        <div class="card-date" id="cardDate">VALID Till 12/25</div>
         <div class="card-bottom">
             <div class="card-member-role" id="cardRole">CEO</div>
             <div class="card-footer">VISION-S MEMBERSHIP CARD</div>
@@ -233,10 +233,11 @@ if(code && members[code.toUpperCase()]){
     document.getElementById('cardRank').innerText = member.rank.toUpperCase();
     document.getElementById('cardNumber').innerText = member.number;
     document.getElementById('cardName').innerText = member.name.toUpperCase();
-    document.getElementById('cardDate').innerText = `VALID THRU ${member.date}`;
+    document.getElementById('cardDate').innerText = `VALID Till ${member.date}`;
     document.getElementById('cardRole').innerText = member.role.toUpperCase();
 }
 </script>
 
 </body>
 </html>
+
