@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision_S Membership | Unlock Your Potential</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <style>
+    :root {
+      --bg-dark: #0e0e0e;
+      --text-light: #eaeaea;
+      --bronze: linear-gradient(135deg, #cd7f32, #b56a28, #d19c6b);
+      --silver: linear-gradient(135deg, #c0c0c0, #8c8c8c, #e0e0e0);
+      --gold-tier: linear-gradient(135deg, #ffd700, #ffb300, #ffe066);
+      --diamond: linear-gradient(135deg, #00d4ff, #0099cc, #66f0ff);
+      --platinum: linear-gradient(135deg, #a0e5ff, #66c2ff, #d0f7ff);
+      --crown: linear-gradient(135deg, #ff75a0, #ff3d6e, #ff92b5);
+      --conqueror: linear-gradient(135deg, #ff6f61, #d43d2a, #ff998e);
+      --card-gradient: linear-gradient(135deg, #6a0dad, #8a2be2, #a64ca6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Inter, sans-serif; background: var(--bg-dark); color: var(--text-light); overflow-x: hidden; scroll-behavior: smooth; }
+
+    header { height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(40,40,40,0.9)); position: relative; overflow: hidden; }
+    h1 { font-size: 3rem; letter-spacing: 1px; }
+    .gold { color: #ffd700; }
+    .subtitle { font-size: 1.2rem; opacity: .8; margin-top: 12px; }
+    .btn { margin-top: 25px; padding: 14px 28px; font-size: 1rem; font-weight: bold; border-radius: 12px; cursor: pointer; border: none; transition: .3s; background: linear-gradient(90deg,#ffd700,#ffb300); color: #000; }
+    .btn:hover { transform: scale(1.05) rotate(1deg); box-shadow: 0 0 20px rgba(255,180,0,0.5); }
+
+    section { padding: 80px 8%; text-align: center; perspective: 1000px; }
+    .section-title { font-size: 2rem; margin-bottom: 20px; }
+    .section-desc { opacity: .8; margin-bottom: 40px; }
+
+    .card-container { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 24px; }
+    .card { background: #141414; padding: 24px; border-radius: 14px; border: none; transition: 0.6s; color: #fff; font-weight: 500; cursor: pointer; transform-style: preserve-3d; }
+    .card h3 { margin-bottom: 12px; }
+    .card:hover { transform: rotateY(10deg) rotateX(5deg) scale(1.05); }
+
+    /* Benefits box hover glow */
+    #benefits .card:hover { box-shadow: 0 0 25px rgba(255,255,255,0.4); }
+
+    /* Tier specific gradients & glow */
+    .bronze { background: var(--bronze); }
+    .bronze:hover { box-shadow: 0 0 25px rgba(205,127,50,0.9); }
+    .silver { background: var(--silver); color: #000; }
+    .silver:hover { box-shadow: 0 0 25px rgba(192,192,192,0.9); }
+    .gold-tier { background: var(--gold-tier); color: #000; }
+    .gold-tier:hover { box-shadow: 0 0 25px rgba(255,215,0,0.9); }
+    .diamond { background: var(--diamond); color: #000; }
+    .diamond:hover { box-shadow: 0 0 25px rgba(0,212,255,0.9); }
+    .platinum { background: var(--platinum); color: #000; }
+    .platinum:hover { box-shadow: 0 0 25px rgba(160,229,255,0.9); }
+    .crown { background: var(--crown); color: #fff; }
+    .crown:hover { box-shadow: 0 0 25px rgba(255,117,160,0.9); }
+    .conqueror { background: var(--conqueror); color: #fff; }
+    .conqueror:hover { box-shadow: 0 0 25px rgba(255,111,97,0.9); }
+
+    /* Membership Card Metallic Glossy Gradient & Shine Animation */
+    .member-preview {
+      width: 330px; height: 200px;
+      margin: 35px auto;
+      border-radius: 20px;
+      padding: 22px;
+      font-weight: 600;
+      color: #000;  /* black text */
+      background: linear-gradient(135deg, #2c1e1a 0%, #d4af37 35%, #ff8fa3 65%, #2c1e1a 100%);
+      background-size: 300% 300%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      transform-style: preserve-3d;
+      overflow: hidden;
+      position: relative;
+      animation: cardShine 4s infinite linear;
+    }
+
+    @keyframes cardShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .member-preview:hover { transform: rotateY(10deg) rotateX(5deg); box-shadow: 0 0 35px rgba(255,255,255,0.6); }
+
+    footer { padding:44px 0; text-align:center; opacity:.7; }
+    .toast { position: fixed; top: 20px; right: 20px; background: var(--gold-tier); color: #000; padding: 14px 20px; border-radius: 10px; opacity: 0; transform: translateY(-20px); transition: 0.5s; z-index: 999; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header data-aos="fade-down" data-aos-duration="1200">
+  <h1>Become a <span class="gold">Vision_S</span> Member</h1>
+  <p class="subtitle">Unlock resources, opportunities, recognition, and growth — all for FREE</p>
+  <button class="btn" onclick="showBenefitsToast()">Join Now</button>
+</header>
+
+<section id="benefits" data-aos="fade-up" data-aos-duration="1200">
+  <h2 class="section-title gold">Membership Benefits</h2>
+  <p class="section-desc">Access notes, updates, opportunities, rewards, competitions, mentoring, and early project invites. Benefits grow as you progress in rank.</p>
+  <div class="card-container">
+    <div class="card" data-aos="zoom-in" data-aos-duration="1000"><h3>Digital Resource Vault</h3><p>Notes, templates, and study resources unlocked per tier.</p></div>
+    <div class="card" data-aos="zoom-in" data-aos-duration="1200"><h3>Updates & Notifications</h3><p>Be the first to know about new features and events.</p></div>
+    <div class="card" data-aos="zoom-in" data-aos-duration="1400"><h3>Certificates & Recognition</h3><p>Annual certificates and badges for dedicated members.</p></div>
+    <div class="card" data-aos="zoom-in" data-aos-duration="1600"><h3>Exclusive Access</h3><p>Early access to projects, competitions, and community events.</p></div>
+    <div class="card" data-aos="zoom-in" data-aos-duration="1800"><h3>Mentoring & Guidance</h3><p>Receive tips and guidance from Vision_S mentors based on tier.</p></div>
+    <div class="card" data-aos="zoom-in" data-aos-duration="2000"><h3>Community & Gamification</h3><p>Engage in tasks and simulated progress to experience rank advancement.</p></div>
+  </div>
+</section>
+
+<section id="tiers" data-aos="fade-up" data-aos-duration="1200">
+  <h2 class="section-title gold">Membership Levels</h2>
+  <p class="section-desc">Progress through ranks and unlock rewards. Each tier offers unique benefits.</p>
+  <div class="card-container">
+    <div class="card bronze" data-aos="flip-left" data-aos-duration="800"><h3>Bronze</h3><p>Entry level: notes and updates access</p></div>
+    <div class="card silver" data-aos="flip-left" data-aos-duration="1000"><h3>Silver</h3><p>Active member: notifications and early perks</p></div>
+    <div class="card gold-tier" data-aos="flip-left" data-aos-duration="1200"><h3>Gold</h3><p>More perks: digital resources, templates</p></div>
+    <div class="card diamond" data-aos="flip-left" data-aos-duration="1400"><h3>Diamond</h3><p>Exclusive benefits: mentoring, competitions</p></div>
+    <div class="card platinum" data-aos="flip-left" data-aos-duration="1600"><h3>Platinum</h3><p>Premium perks: workshops and recognition</p></div>
+    <div class="card crown" data-aos="flip-left" data-aos-duration="1800"><h3>Crown</h3><p>Top contributor: special project invites</p></div>
+    <div class="card conqueror" data-aos="flip-left" data-aos-duration="2000"><h3>Conqueror</h3><p>Founding Member — Limited to 50</p></div>
+  </div>
+</section>
+
+<section data-aos="fade-up" data-aos-duration="1200">
+  <h2 class="section-title">Membership Card — Delivered in 24 hours</h2>
+  <div class="member-preview" data-aos="zoom-in" data-aos-duration="1200">
+     <div class="card-rank" id="cardRank" align="left">RANK</div>
+            <div class="card-logo"align="right">VISION-S</div>
+        <div class="card-number" id="cardNumber" align="left">12XX XXXX XXXX</div>
+        <div class="card-name" id="cardName" align="left">FULL NAME</div>
+        <div class="card-date" id="cardDate" align="left">VALID TILL XX/XX</div>
+        <div class="card-qr" id="cardQR"></div>
+        <div class="card-bottom">
+           <div class="card-member-role" id="cardRole" align="left">POSITION</div>
+            <div class="card-footer" align="right">VISION-S MEMBERSHIP CARD</div></div></div>
+  <button class="btn" onclick="window.location.href='membership.html'">Apply for FREE Membership</button>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<footer>
+  © 2025 Vision_S — All Rights Reserved
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({ once: true, offset: 100 });
+
+  function showToast(message){
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(()=>{ toast.classList.remove('show'); }, 3000);
+  }
+
+  function showBenefitsToast(){
+    showToast('Check out the benefits below!');
+    document.getElementById('benefits').scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
