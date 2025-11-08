@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin — Vision_S</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#070913;--card:#07112a;--muted:#bcd3ef}
+    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system; color:#eaf6ff}
+    body{margin:0;background:linear-gradient(180deg,#030417,#07112a);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:860px;border-radius:14px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+    h1{margin:0;font-size:20px}
+    .row{display:flex;gap:10px;margin-top:12px}
+    input,select,button{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    input[type="text"]{flex:1}
+    .actions{display:flex;gap:8px}
+    .btn-primary{background:linear-gradient(90deg,#6ee7b7,#60a5fa);border:none;color:#04102a;font-weight:700}
+    .small{font-size:13px;color:var(--muted)}
+    .result{margin-top:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Admin Console — Vision_S</h1>
+    <div class="small">Protected — enter admin code to continue</div>
+
+    <div id="authArea" style="margin-top:12px">
+      <input id="adminCode" type="text" placeholder="Admin code (ask owner)"/>
+      <button id="authBtn" class="btn-primary">Unlock Admin</button>
+    </div>
+
+    <div id="adminPanel" style="display:none; margin-top:14px">
+      <div class="small">Lookup user by email (recommended) or paste UID.</div>
+
+      <div class="row">
+        <input id="lookupEmail" type="text" placeholder="user@example.com (or enter UID below)"/>
+        <input id="lookupUID" type="text" placeholder="(optional) user UID" />
+        <div class="actions">
+          <button id="findBtn" class="btn-primary">Find</button>
+          <button id="createBtn">Create user doc</button>
+        </div>
+      </div>
+
+      <div id="userMeta" style="display:none;margin-top:14px">
+        <div class="small">Editing user: <span id="editingId"></span></div>
+        <div class="row" style="margin-top:10px">
+          <input id="editName" type="text" placeholder="Full name"/>
+          <input id="editEmail" type="text" placeholder="Email"/>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <input id="editLevel" type="number" min="1" max="7" placeholder="Level (1-7)"/>
+          <input id="editProgress" type="number" min="0" max="999" placeholder="Progress (0-999)"/>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <input id="editMCode" type="text" placeholder="Membership Code (e.g. VS-ABC123)"/>
+          <input id="editPhotoURL" type="text" placeholder="Photo URL (optional)"/>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <button id="saveBtn" class="btn-primary">Save to Firestore</button>
+          <button id="deleteDocBtn" style="background:#ff4d4d">Delete doc</button>
+        </div>
+
+        <div id="result" class="result"></div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
+  authDomain: "login-6e215.firebaseapp.com",
+  projectId: "login-6e215",
+  storageBucket: "login-6e215.firebasestorage.app",
+  messagingSenderId: "503897234336",
+  appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
+  measurementId: "G-6D44B4444K"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* DOM */
+const adminCodeInput = document.getElementById('adminCode');
+const authBtn = document.getElementById('authBtn');
+const adminPanel = document.getElementById('adminPanel');
+const lookupEmail = document.getElementById('lookupEmail');
+const lookupUID = document.getElementById('lookupUID');
+const findBtn = document.getElementById('findBtn');
+const createBtn = document.getElementById('createBtn');
+const userMeta = document.getElementById('userMeta');
+const editingId = document.getElementById('editingId');
+const editName = document.getElementById('editName');
+const editEmail = document.getElementById('editEmail');
+const editLevel = document.getElementById('editLevel');
+const editProgress = document.getElementById('editProgress');
+const editMCode = document.getElementById('editMCode');
+const editPhotoURL = document.getElementById('editPhotoURL');
+const saveBtn = document.getElementById('saveBtn');
+const resultBox = document.getElementById('result');
+const deleteDocBtn = document.getElementById('deleteDocBtn');
+
+const ADMIN_CODE = 'vision_s_admin_2025';
+
+authBtn.addEventListener('click', () => {
+  const code = adminCodeInput.value.trim();
+  if(code === ADMIN_CODE){
+    adminPanel.style.display = 'block';
+    document.getElementById('authArea').style.display = 'none';
+  } else alert('Wrong admin code.');
+});
+
+/* find user by email (search users collection) */
+findBtn.addEventListener('click', async () => {
+  resultBox.textContent = 'Searching…';
+  const email = lookupEmail.value.trim();
+  const uidInput = lookupUID.value.trim();
+
+  try {
+    // if uid provided, fetch directly
+    if(uidInput){
+      const dref = doc(db, 'users', uidInput);
+      const dsnap = await getDoc(dref);
+      if(!dsnap.exists()) return resultBox.textContent = 'No user doc for that UID.';
+      const data = dsnap.data();
+      editingId.textContent = uidInput;
+      populateForm(uidInput, data);
+      userMeta.style.display = 'block';
+      resultBox.textContent = 'Loaded by UID.';
+      return;
+    }
+
+    if(!email) return resultBox.textContent = 'Enter an email or UID.';
+
+    const usersRef = collection(db,'users');
+    const q = query(usersRef, where('email','==', email));
+    const snaps = await getDocs(q);
+    if(snaps.empty){
+      resultBox.textContent = 'No user document found for that email. You can create one.';
+      userMeta.style.display = 'none';
+      return;
+    }
+    const dsnap = snaps.docs[0];
+    editingId.textContent = dsnap.id;
+    populateForm(dsnap.id, dsnap.data());
+    userMeta.style.display = 'block';
+    resultBox.textContent = 'User loaded.';
+  } catch (e) {
+    console.error(e);
+    resultBox.textContent = 'Error: ' + e.message;
+  }
+});
+
+/* create doc for a UID or email (when user exists in Auth but no doc) */
+createBtn.addEventListener('click', async () => {
+  const email = lookupEmail.value.trim();
+  const uidInput = lookupUID.value.trim();
+  if(!email && !uidInput) return resultBox.textContent = 'Provide email or UID to create doc.';
+  // prefer UID if given
+  const docId = uidInput || email.replace(/[^a-z0-9]/gi,'_').toLowerCase(); // fallback id if no uid (not ideal)
+  const dref = doc(db, 'users', docId);
+  await setDoc(dref, {
+    name: editName.value || (email?email.split('@')[0]:'User'),
+    email: email || '',
+    level: Number(editLevel.value) || 1,
+    progress: Number(editProgress.value) || 0,
+    membershipCode: editMCode.value || null,
+    photoURL: editPhotoURL.value || null,
+    lastLogin: serverTimestamp()
+  });
+  editingId.textContent = docId;
+  userMeta.style.display = 'block';
+  resultBox.textContent = 'User doc created/overwritten with id: '+docId;
+});
+
+/* populate form helper */
+function populateForm(id, data){
+  editName.value = data.name ?? '';
+  editEmail.value = data.email ?? '';
+  editLevel.value = data.level ?? 1;
+  editProgress.value = data.progress ?? 0;
+  editMCode.value = data.membershipCode ?? '';
+  editPhotoURL.value = data.photoURL ?? '';
+  editingId.textContent = id;
+}
+
+/* save changes */
+saveBtn.addEventListener('click', async () => {
+  const id = editingId.textContent.trim();
+  if(!id) return resultBox.textContent = 'No user selected.';
+  const ref = doc(db, 'users', id);
+  await updateDoc(ref, {
+    name: editName.value || null,
+    email: editEmail.value || null,
+    level: Number(editLevel.value) || 1,
+    progress: Number(editProgress.value) || 0,
+    membershipCode: editMCode.value || null,
+    photoURL: editPhotoURL.value || null,
+    lastLogin: serverTimestamp()
+  });
+  resultBox.textContent = 'Saved changes to user doc: ' + id;
+});
+
+/* delete doc */
+deleteDocBtn.addEventListener('click', async () => {
+  const id = editingId.textContent.trim();
+  if(!id) return resultBox.textContent = 'No user selected.';
+  if(!confirm('Delete users/'+id+' ?')) return;
+  await deleteDoc(doc(db,'users',id));
+  resultBox.textContent = 'Deleted users/'+id;
+  userMeta.style.display = 'none';
+});
+
+</script>
+</body>
+</html>
