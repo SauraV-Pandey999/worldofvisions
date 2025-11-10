@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CEE MCQ AI Test</title>
+<style>
+    body { font-family: Arial; background: #0f0f15; color: white; text-align: center; }
+    button { padding: 10px 20px; margin: 5px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .option { margin: 10px; padding: 12px; border-radius: 6px; background: #222; cursor: pointer; }
+    .correct { background: #009900 !important; }
+    .wrong { background: #990000 !important; }
+</style>
+</head>
+<body>
+
+<h2>CEE Interactive MCQ Test (AI Powered)</h2>
+
+<button onclick="startTest('past')">Past Year</button>
+<button onclick="startTest('mock')">Mock</button>
+<button onclick="startTest('probable')">Probable</button>
+<button onclick="startTest('mixed')">Mixed</button>
+
+<div id="exam" style="margin-top:30px;"></div>
+
+<script>
+
+const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev";  // ✅ Update here
+
+async function startTest(type) {
+    document.getElementById("exam").innerHTML = "Generating Question...";
+    
+    const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            messages: [
+                {
+                    role: "user",
+                    content: `Generate one ${type} CEE MCQ with:
+                    - 4 options (A,B,C,D)
+                    - correct answer index
+                    - explanation`
+                }
+            ]
+        })
+    });
+
+    const data = await res.json();
+    const text = data.choices[0].message.content;
+
+    renderMCQ(text);
+}
+
+function renderMCQ(raw) {
+    const examDiv = document.getElementById("exam");
+
+    const questionMatch = raw.match(/Question:(.*)/i);
+    const optionsMatch = raw.match(/Options:(.*)/is);
+    const answerMatch = raw.match(/Answer:(.*)/i);
+    const explanationMatch = raw.match(/Explanation:(.*)/is);
+
+    let question = questionMatch ? questionMatch[1].trim() : "Generated Question";
+    let answer = answerMatch ? answerMatch[1].trim()[0] : null;
+    let explanation = explanationMatch ? explanationMatch[1].trim() : "";
+
+    let options = optionsMatch
+        ? optionsMatch[1].trim().split("\n").filter(o => o.trim() !== "")
+        : [];
+
+    examDiv.innerHTML = `<h3>${question}</h3><div id="options"></div>`;
+
+    options.forEach((opt, index) => {
+        document.getElementById("options").innerHTML += `
+            <div class="option" onclick="selectOption(this, '${opt[0]}', '${answer}', \`${explanation}\`)">${opt}</div>
+        `;
+    });
+}
+
+function selectOption(element, selected, correct, explanation) {
+    if (selected === correct) {
+        element.classList.add("correct");
+    } else {
+        element.classList.add("wrong");
+    }
+
+    document.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "none");
+
+    document.getElementById("exam").innerHTML += `<p><br><b>Explanation:</b> ${explanation}</p>`;
+}
+
+</script>
+</body>
+</html>
