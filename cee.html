@@ -2,92 +2,213 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CEE MCQ AI Test</title>
+<title>CEE AI Exam Portal</title>
 <style>
-    body { font-family: Arial; background: #0f0f15; color: white; text-align: center; }
-    button { padding: 10px 20px; margin: 5px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .option { margin: 10px; padding: 12px; border-radius: 6px; background: #222; cursor: pointer; }
-    .correct { background: #009900 !important; }
-    .wrong { background: #990000 !important; }
+  body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg,#1f1c2c,#928dab);
+    margin:0;
+    padding:0;
+    color:#fff;
+  }
+  .container { max-width: 900px; margin: auto; padding: 20px; }
+  h1 { text-align:center; margin-bottom:20px; text-shadow: 1px 1px 5px #000; }
+  .button-group { text-align:center; margin-bottom:30px; }
+  .btn {
+    background: linear-gradient(45deg,#ff7e5f,#feb47b);
+    border:none;
+    padding:10px 20px;
+    margin:5px;
+    font-size:16px;
+    font-weight:bold;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+  }
+  .btn:hover { transform:scale(1.1); }
+  .quiz-card {
+    background: rgba(0,0,0,0.6);
+    padding:20px;
+    border-radius:12px;
+    box-shadow: 0 0 20px #000;
+    margin-bottom:20px;
+  }
+  .question-text { font-size:20px; margin-bottom:20px; }
+  .option-btn {
+    display:block;
+    width:100%;
+    background:#222;
+    border:none;
+    color:#fff;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+  }
+  .option-btn:hover { background:#555; }
+  .correct { background:#00cc66 !important; color:#fff; }
+  .wrong { background:#cc0000 !important; color:#fff; }
+  .explanation { background: rgba(255,255,255,0.1); padding:10px; border-radius:6px; margin-top:10px; display:none; }
+  .next-btn {
+    background:#3498db;
+    color:#fff;
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    display:none;
+    margin-top:15px;
+  }
+  .progress { height: 20px; background:#444; border-radius:10px; overflow:hidden; margin-bottom:15px; }
+  .progress-bar { height:100%; width:0%; background:#00ccff; transition:0.3s; }
+  #timer { font-size:18px; text-align:right; margin-bottom:10px; }
+  #result { text-align:center; font-size:20px; margin-top:30px; }
 </style>
 </head>
 <body>
+<div class="container">
+  <h1>CEE AI Exam Portal</h1>
 
-<h2>CEE Interactive MCQ Test (AI Powered)</h2>
+  <div class="button-group" id="start-buttons">
+    <button class="btn" onclick="startTest('past')">Past Year</button>
+    <button class="btn" onclick="startTest('mock')">Mock</button>
+    <button class="btn" onclick="startTest('probable')">Probable</button>
+    <button class="btn" onclick="startTest('mixed')">Mixed</button>
+  </div>
 
-<button onclick="startTest('past')">Past Year</button>
-<button onclick="startTest('mock')">Mock</button>
-<button onclick="startTest('probable')">Probable</button>
-<button onclick="startTest('mixed')">Mixed</button>
+  <div id="timer"></div>
+  <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
 
-<div id="exam" style="margin-top:30px;"></div>
+  <div id="quiz"></div>
+  <div id="result"></div>
+</div>
 
 <script>
+const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev"; // Your Worker URL
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let totalQuestions = 200; // full paper
+let timerSeconds = 180*60; // example 3 hours = 180 min
 
-const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev";  // ✅ Update here
+// Timer
+let timerInterval;
 
-async function startTest(type) {
-    document.getElementById("exam").innerHTML = "Generating Question...";
-    
-    const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            messages: [
-                {
-                    role: "user",
-                    content: `Generate one ${type} CEE MCQ with:
-                    - 4 options (A,B,C,D)
-                    - correct answer index
-                    - explanation`
-                }
-            ]
-        })
-    });
-
-    const data = await res.json();
-    const text = data.choices[0].message.content;
-
-    renderMCQ(text);
-}
-
-function renderMCQ(raw) {
-    const examDiv = document.getElementById("exam");
-
-    const questionMatch = raw.match(/Question:(.*)/i);
-    const optionsMatch = raw.match(/Options:(.*)/is);
-    const answerMatch = raw.match(/Answer:(.*)/i);
-    const explanationMatch = raw.match(/Explanation:(.*)/is);
-
-    let question = questionMatch ? questionMatch[1].trim() : "Generated Question";
-    let answer = answerMatch ? answerMatch[1].trim()[0] : null;
-    let explanation = explanationMatch ? explanationMatch[1].trim() : "";
-
-    let options = optionsMatch
-        ? optionsMatch[1].trim().split("\n").filter(o => o.trim() !== "")
-        : [];
-
-    examDiv.innerHTML = `<h3>${question}</h3><div id="options"></div>`;
-
-    options.forEach((opt, index) => {
-        document.getElementById("options").innerHTML += `
-            <div class="option" onclick="selectOption(this, '${opt[0]}', '${answer}', \`${explanation}\`)">${opt}</div>
-        `;
-    });
-}
-
-function selectOption(element, selected, correct, explanation) {
-    if (selected === correct) {
-        element.classList.add("correct");
-    } else {
-        element.classList.add("wrong");
+function startTimer() {
+  timerInterval = setInterval(() => {
+    if(timerSeconds <=0){
+      clearInterval(timerInterval);
+      showResult();
+      return;
     }
-
-    document.querySelectorAll(".option").forEach(opt => opt.style.pointerEvents = "none");
-
-    document.getElementById("exam").innerHTML += `<p><br><b>Explanation:</b> ${explanation}</p>`;
+    timerSeconds--;
+    const h = Math.floor(timerSeconds/3600);
+    const m = Math.floor((timerSeconds%3600)/60);
+    const s = timerSeconds%60;
+    document.getElementById('timer').textContent = `Time Remaining: ${h}h ${m}m ${s}s`;
+  },1000);
 }
 
+// Start test
+async function startTest(type){
+  document.getElementById('start-buttons').style.display = 'none';
+  startTimer();
+  loadQuestion(type);
+}
+
+// Load question from AI
+async function loadQuestion(type){
+  if(currentIndex >= totalQuestions){
+    showResult();
+    return;
+  }
+
+  document.getElementById('quiz').innerHTML = '<p>Loading question...</p>';
+
+  try{
+    const res = await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        messages:[
+          {role:'user', content:`Generate 1 ${type} CEE question JSON with 4 options, correct index, explanation covering Physics/Chemistry/Biology/GK. Question number: ${currentIndex+1}`}  
+        ]
+      })
+    });
+    const data = await res.json();
+    // Parse JSON from GPT
+    const qjson = JSON.parse(data.choices[0].message.content);
+    questions.push(qjson);
+    renderQuestion(qjson);
+  }catch(e){
+    document.getElementById('quiz').innerHTML = '<p style="color:red;">Error generating question. Try again.</p>';
+    console.error(e);
+  }
+}
+
+// Render question UI
+function renderQuestion(q){
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = `
+    <div class="quiz-card">
+      <div class="question-text">Q${currentIndex+1}: ${q.question}</div>
+      <div id="options"></div>
+      <div class="explanation" id="explanation">${q.explanation}</div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+    </div>
+  `;
+  const optionsDiv = document.getElementById('options');
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement('button');
+    btn.className='option-btn';
+    btn.textContent=opt;
+    btn.onclick=()=>selectOption(btn, idx, q.correct);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+// Handle option selection
+function selectOption(btn, selected, correct){
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  if(selected === correct){
+    btn.classList.add('correct');
+    score++;
+  }else{
+    btn.classList.add('wrong');
+    allBtns[correct].classList.add('correct');
+  }
+  document.getElementById('explanation').style.display='block';
+  document.getElementById('next-btn').style.display='inline-block';
+  updateProgress();
+}
+
+// Next question
+function nextQuestion(){
+  currentIndex++;
+  const type = document.querySelector('.button-group').style.display==='none'? '' : 'mixed';
+  loadQuestion(type || 'mixed');
+}
+
+// Update progress bar
+function updateProgress(){
+  const percent = ((currentIndex+1)/totalQuestions)*100;
+  document.getElementById('progress-bar').style.width = percent+'%';
+}
+
+// Show final result
+function showResult(){
+  clearInterval(timerInterval);
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('timer').style.display='none';
+  document.getElementById('progress-bar').style.width='100%';
+  document.getElementById('result').innerHTML = `
+    <h2>Exam Completed!</h2>
+    <p>Your Score: ${score} / ${totalQuestions}</p>
+  `;
+}
 </script>
 </body>
 </html>
