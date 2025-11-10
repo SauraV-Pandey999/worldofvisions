@@ -139,7 +139,20 @@ async function loadQuestion(type){
     });
     const data = await res.json();
     // Parse JSON from GPT
-    const qjson = JSON.parse(data.choices[0].message.content);
+   let qjson;
+try{
+  qjson = JSON.parse(data);
+} catch(e){
+  qjson = {
+    question: "Failed to load question. Please click Next.",
+    options: ["Option A","Option B","Option C","Option D"],
+    correct: 0,
+    explanation: "Error in generating question."
+  };
+}
+questions.push(qjson);
+renderQuestion(qjson);
+
     questions.push(qjson);
     renderQuestion(qjson);
   }catch(e){
