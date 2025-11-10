@@ -3,225 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <title>CEE AI Exam Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg,#1f1c2c,#928dab);
-    margin:0;
-    padding:0;
-    color:#fff;
-  }
-  .container { max-width: 900px; margin: auto; padding: 20px; }
-  h1 { text-align:center; margin-bottom:20px; text-shadow: 1px 1px 5px #000; }
-  .button-group { text-align:center; margin-bottom:30px; }
-  .btn {
-    background: linear-gradient(45deg,#ff7e5f,#feb47b);
-    border:none;
-    padding:10px 20px;
-    margin:5px;
-    font-size:16px;
-    font-weight:bold;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-  }
-  .btn:hover { transform:scale(1.1); }
-  .quiz-card {
-    background: rgba(0,0,0,0.6);
-    padding:20px;
-    border-radius:12px;
-    box-shadow: 0 0 20px #000;
-    margin-bottom:20px;
-  }
-  .question-text { font-size:20px; margin-bottom:20px; }
-  .option-btn {
-    display:block;
-    width:100%;
-    background:#222;
-    border:none;
-    color:#fff;
-    padding:12px;
-    margin:8px 0;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-  }
-  .option-btn:hover { background:#555; }
-  .correct { background:#00cc66 !important; color:#fff; }
-  .wrong { background:#cc0000 !important; color:#fff; }
-  .explanation { background: rgba(255,255,255,0.1); padding:10px; border-radius:6px; margin-top:10px; display:none; }
-  .next-btn {
-    background:#3498db;
-    color:#fff;
-    padding:12px 25px;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-    display:none;
-    margin-top:15px;
-  }
-  .progress { height: 20px; background:#444; border-radius:10px; overflow:hidden; margin-bottom:15px; }
-  .progress-bar { height:100%; width:0%; background:#00ccff; transition:0.3s; }
-  #timer { font-size:18px; text-align:right; margin-bottom:10px; }
-  #result { text-align:center; font-size:20px; margin-top:30px; }
+/* ---------------- Body & Fonts ---------------- */
+body {
+  margin:0; padding:0;
+  font-family:'Roboto', sans-serif;
+  background: linear-gradient(135deg,#1f1c2c,#928dab);
+  color:#fff;
+}
+.container {
+  max-width:960px; margin:auto; padding:20px;
+}
+h1 {
+  text-align:center; margin-bottom:20px;
+  font-size:2.2em; text-shadow:2px 2px 12px #000;
+}
+
+/* ---------------- Buttons ---------------- */
+.button-group {
+  text-align:center; margin-bottom:25px;
+}
+.btn {
+  background: linear-gradient(45deg,#ff7e5f,#feb47b);
+  border:none; padding:14px 24px; margin:5px;
+  font-size:16px; font-weight:bold; border-radius:12px;
+  cursor:pointer; transition:0.4s; box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+.btn:hover { transform:scale(1.08); box-shadow:0 6px 16px rgba(0,0,0,0.6); }
+
+/* ---------------- Timer & Progress ---------------- */
+#timer {
+  text-align:right; font-size:18px; margin-bottom:10px;
+}
+.progress {
+  height:20px; background:#444; border-radius:10px; overflow:hidden; margin-bottom:15px;
+}
+.progress-bar {
+  height:100%; width:0%; background:#00ccff; transition:0.3s;
+}
+
+/* ---------------- Quiz Card ---------------- */
+.quiz-card {
+  background: rgba(0,0,0,0.75);
+  padding:28px; border-radius:14px; box-shadow:0 0 35px #000;
+  margin-bottom:20px; animation: fadeIn 0.5s; position:relative;
+  transform-origin: center;
+}
+@keyframes fadeIn { from{opacity:0; transform:translateY(25px);} to{opacity:1; transform:translateY(0);} }
+
+.question-text { font-size:21px; margin-bottom:22px; line-height:1.5; }
+.option-btn {
+  display:block; width:100%; background:#222; border:none; color:#fff;
+  padding:16px; margin:10px 0; border-radius:12px; cursor:pointer; transition:0.3s; font-size:16px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+.option-btn:hover { background:#555; transform:translateX(2px); }
+.correct { background:#00cc66 !important; color:#fff; box-shadow:0 0 15px #00ff88; }
+.wrong { background:#cc0000 !important; color:#fff; box-shadow:0 0 15px #ff5555; }
+
+.explanation {
+  background: rgba(255,255,255,0.1); padding:14px; border-radius:10px; margin-top:12px;
+  display:none; font-size:15px; line-height:1.5;
+}
+.next-btn {
+  background:#3498db; color:#fff; padding:14px 28px; border:none;
+  border-radius:10px; font-size:16px; cursor:pointer; display:none; margin-top:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+.next-btn:hover { transform:scale(1.05); }
+
+/* ---------------- Subject Labels ---------------- */
+.subject-label {
+  display:inline-block; padding:5px 10px; border-radius:8px; font-size:13px; margin-bottom:8px;
+  font-weight:bold; color:#fff;
+}
+.subject-Physics { background:#ff6f61; }
+.subject-Chemistry { background:#6a5acd; }
+.subject-Biology { background:#3cb371; }
+.subject-GK { background:#f4d03f; color:#000; }
+
+/* ---------------- Result ---------------- */
+#result { text-align:center; font-size:22px; margin-top:30px; }
+.bar-chart { display:flex; justify-content:space-around; margin-top:20px; }
+.bar { width:60px; background:#00ccff; text-align:center; border-radius:6px; transition:0.5s; }
+
+/* ---------------- Animations ---------------- */
+@keyframes slideIn { from{opacity:0; transform:translateX(50px);} to{opacity:1; transform:translateX(0);} }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>CEE AI Exam Portal</h1>
+<h1>CEE AI Exam Portal</h1>
+<div class="button-group" id="start-buttons">
+  <button class="btn" onclick="startTest('past')">Past Year</button>
+  <button class="btn" onclick="startTest('mock')">Mock</button>
+  <button class="btn" onclick="startTest('probable')">Probable</button>
+  <button class="btn" onclick="startTest('mixed')">Mixed</button>
+</div>
 
-  <div class="button-group" id="start-buttons">
-    <button class="btn" onclick="startTest('past')">Past Year</button>
-    <button class="btn" onclick="startTest('mock')">Mock</button>
-    <button class="btn" onclick="startTest('probable')">Probable</button>
-    <button class="btn" onclick="startTest('mixed')">Mixed</button>
-  </div>
-
-  <div id="timer"></div>
-  <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
-
-  <div id="quiz"></div>
-  <div id="result"></div>
+<div id="timer"></div>
+<div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+<div id="quiz"></div>
+<div id="result"></div>
 </div>
 
 <script>
-const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev"; // Your Worker URL
-let questions = [];
-let currentIndex = 0;
-let score = 0;
-let totalQuestions = 200; // full paper
-let timerSeconds = 180*60; // example 3 hours = 180 min
+// ---------------- Global Variables ----------------
+const WORKER_URL="https://rapid-truth-3395.visionsyt99.workers.dev"; // Cloudflare Worker
+let questions=[], currentIndex=0, score=0;
+let subjectScores={Physics:0,Chemistry:0,Biology:0,GK:0};
+let totalQuestions=200, timerSeconds=180*60, timerInterval;
 
-// Timer
-let timerInterval;
-
-function startTimer() {
-  timerInterval = setInterval(() => {
-    if(timerSeconds <=0){
-      clearInterval(timerInterval);
-      showResult();
-      return;
-    }
+// ---------------- Timer ----------------
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    if(timerSeconds<=0){ clearInterval(timerInterval); showResult(); return; }
     timerSeconds--;
-    const h = Math.floor(timerSeconds/3600);
-    const m = Math.floor((timerSeconds%3600)/60);
-    const s = timerSeconds%60;
-    document.getElementById('timer').textContent = `Time Remaining: ${h}h ${m}m ${s}s`;
+    const h=Math.floor(timerSeconds/3600);
+    const m=Math.floor((timerSeconds%3600)/60);
+    const s=timerSeconds%60;
+    document.getElementById('timer').textContent=`Time Remaining: ${h}h ${m}m ${s}s`;
   },1000);
 }
 
-// Start test
+// ---------------- Start Test ----------------
 async function startTest(type){
-  document.getElementById('start-buttons').style.display = 'none';
+  document.getElementById('start-buttons').style.display='none';
   startTimer();
   loadQuestion(type);
 }
 
-// Load question from AI
+// ---------------- Load Question ----------------
 async function loadQuestion(type){
-  if(currentIndex >= totalQuestions){
-    showResult();
-    return;
-  }
-
-  document.getElementById('quiz').innerHTML = '<p>Loading question...</p>';
-
+  if(currentIndex>=totalQuestions){ showResult(); return; }
+  document.getElementById('quiz').innerHTML='<p>Loading question...</p>';
   try{
-    const res = await fetch(WORKER_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        messages:[
-          {role:'user', content:`Generate 1 ${type} CEE question JSON with 4 options, correct index, explanation covering Physics/Chemistry/Biology/GK. Question number: ${currentIndex+1}`}  
-        ]
+    const res=await fetch(WORKER_URL,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages:[{role:'user', content:`Generate 1 ${type} CEE question JSON with 4 options, correct index, explanation, and subject (Physics/Chemistry/Biology/GK). Question number: ${currentIndex+1}`}]
       })
     });
-    const data = await res.json();
-    // Parse JSON from GPT
-   let qjson;
-try{
-  qjson = JSON.parse(data);
-} catch(e){
-  qjson = {
-    question: "Failed to load question. Please click Next.",
-    options: ["Option A","Option B","Option C","Option D"],
-    correct: 0,
-    explanation: "Error in generating question."
-  };
-}
-questions.push(qjson);
-renderQuestion(qjson);
-
+    let qjson=await res.json();
+    if(typeof qjson==="string") qjson=JSON.parse(qjson);
+    if(!qjson.subject) qjson.subject="GK";
     questions.push(qjson);
     renderQuestion(qjson);
   }catch(e){
-    document.getElementById('quiz').innerHTML = '<p style="color:red;">Error generating question. Try again.</p>';
     console.error(e);
+    const qjson={question:"Failed to load question. Click Next.", options:["A","B","C","D"], correct:0, explanation:"Error generating question.", subject:"GK"};
+    renderQuestion(qjson);
   }
 }
 
-// Render question UI
+// ---------------- Render Question ----------------
 function renderQuestion(q){
-  const quizDiv = document.getElementById('quiz');
-  quizDiv.innerHTML = `
-    <div class="quiz-card">
+  const quizDiv=document.getElementById('quiz');
+  quizDiv.innerHTML=`
+    <div class="quiz-card" style="animation:slideIn 0.5s;">
+      <div class="subject-label subject-${q.subject}">${q.subject}</div>
       <div class="question-text">Q${currentIndex+1}: ${q.question}</div>
       <div id="options"></div>
       <div class="explanation" id="explanation">${q.explanation}</div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
     </div>
   `;
-  const optionsDiv = document.getElementById('options');
-  q.options.forEach((opt, idx)=>{
-    const btn = document.createElement('button');
-    btn.className='option-btn';
-    btn.textContent=opt;
-    btn.onclick=()=>selectOption(btn, idx, q.correct);
+  const optionsDiv=document.getElementById('options');
+  q.options.forEach((opt,idx)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn'; btn.textContent=opt;
+    btn.onclick=()=>selectOption(btn,idx,q.correct,q.subject);
     optionsDiv.appendChild(btn);
   });
 }
 
-// Handle option selection
-function selectOption(btn, selected, correct){
-  const allBtns = document.querySelectorAll('.option-btn');
+// ---------------- Option Selection ----------------
+function selectOption(btn,selected,correct,subject){
+  const allBtns=document.querySelectorAll('.option-btn');
   allBtns.forEach(b=>b.disabled=true);
-  if(selected === correct){
-    btn.classList.add('correct');
-    score++;
-  }else{
-    btn.classList.add('wrong');
-    allBtns[correct].classList.add('correct');
-  }
+  if(selected===correct){ btn.classList.add('correct'); score++; subjectScores[subject]++; }
+  else{ btn.classList.add('wrong'); allBtns[correct].classList.add('correct'); }
   document.getElementById('explanation').style.display='block';
   document.getElementById('next-btn').style.display='inline-block';
   updateProgress();
 }
 
-// Next question
-function nextQuestion(){
-  currentIndex++;
-  const type = document.querySelector('.button-group').style.display==='none'? '' : 'mixed';
-  loadQuestion(type || 'mixed');
-}
+// ---------------- Next Question ----------------
+function nextQuestion(){ currentIndex++; loadQuestion('mixed'); }
 
-// Update progress bar
+// ---------------- Update Progress ----------------
 function updateProgress(){
-  const percent = ((currentIndex+1)/totalQuestions)*100;
-  document.getElementById('progress-bar').style.width = percent+'%';
+  const percent=((currentIndex+1)/totalQuestions)*100;
+  document.getElementById('progress-bar').style.width=percent+'%';
 }
 
-// Show final result
+// ---------------- Show Final Result ----------------
 function showResult(){
   clearInterval(timerInterval);
   document.getElementById('quiz').style.display='none';
   document.getElementById('timer').style.display='none';
   document.getElementById('progress-bar').style.width='100%';
-  document.getElementById('result').innerHTML = `
+  const resultDiv=document.getElementById('result');
+  resultDiv.innerHTML=`
     <h2>Exam Completed!</h2>
-    <p>Your Score: ${score} / ${totalQuestions}</p>
+    <p>Total Score: ${score} / ${totalQuestions}</p>
+    <p>Physics: ${subjectScores.Physics}, Chemistry: ${subjectScores.Chemistry}, Biology: ${subjectScores.Biology}, GK: ${subjectScores.GK}</p>
+    <div class="bar-chart">
+      <div class="bar" style="height:${subjectScores.Physics*2}px;">${subjectScores.Physics}</div>
+      <div class="bar" style="height:${subjectScores.Chemistry*2}px;">${subjectScores.Chemistry}</div>
+      <div class="bar" style="height:${subjectScores.Biology*2}px;">${subjectScores.Biology}</div>
+      <div class="bar" style="height:${subjectScores.GK*2}px;">${subjectScores.GK}</div>
+    </div>
   `;
 }
 </script>
 </body>
 </html>
+
+
