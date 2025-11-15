@@ -1,660 +1,1131 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="dark">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CEE AI — Neon Cyberpunk Exam Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-<style>
-/* =======================================================
-   NEON CYBERPUNK THEME - CEE AI EXAM PORTAL
-   Extensive CSS for premium look and animations
-   ======================================================= */
-:root{
-  --bg1: #07030b;
-  --bg2: #140824;
-  --glass: rgba(255,255,255,0.03);
-  --card: rgba(255,255,255,0.03);
-  --muted: rgba(255,255,255,0.65);
-  --neon-a: #7ef1ff;
-  --neon-b: #b37cff;
-  --neon-c: #ff6fb5;
-  --correct: #00ff9e;
-  --wrong: #ff4d6d;
-  --accent-glow: 0 10px 40px rgba(179,124,255,0.12), 0 2px 6px rgba(126,241,255,0.06);
-  --glass-border: rgba(255,255,255,0.04);
-}
-*{box-sizing:border-box}
-html,body{height:100%; margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; background: radial-gradient(800px 500px at 10% 10%, rgba(179,124,255,0.04), transparent), linear-gradient(120deg,var(--bg1),var(--bg2)); color:#fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-.container { max-width:1180px; margin:26px auto; padding:18px; display:grid; grid-template-columns: 1fr 360px; gap:20px; align-items:start; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CEE Exam Platform</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons (for flags, etc.) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-/* Header */
-.header { grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
-.brand { display:flex; gap:12px; align-items:center; }
-.logo { width:64px; height:64px; border-radius:12px; background: linear-gradient(135deg,var(--neon-a),var(--neon-b)); display:flex; align-items:center; justify-content:center; color:#041024; font-weight:800; font-size:20px; box-shadow: var(--accent-glow); }
-.title { font-size:20px; font-weight:800; letter-spacing:0.4px; }
-.subtitle { color:var(--muted); font-size:13px; margin-top:2px; }
+    <style>
+        /* --- Custom Styles --- */
+        :root {
+            --bg-dark: #111827; /* gray-900 */
+            --bg-medium: #1F2937; /* gray-800 */
+            --bg-light: #374151; /* gray-700 */
+            --text-primary: #F9FAFB; /* gray-100 */
+            --text-secondary: #9CA3AF; /* gray-400 */
+            --neon-blue: #0ea5e9; /* sky-500 */
+            --neon-pink: #ec4899; /* pink-500 */
+            --neon-green: #22c55e; /* green-500 */
+            --neon-red: #ef4444; /* red-500 */
+            --neon-yellow: #eab308; /* yellow-500 */
+        }
 
-/* Left: main card */
-.card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius:14px; padding:18px; box-shadow: 0 20px 45px rgba(0,0,0,0.6); border: 1px solid var(--glass-border);
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
 
-/* Mode buttons */
-.modes { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
-.mode-btn {
-  background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); padding:8px 14px; border-radius:12px; cursor:pointer; font-weight:700; transition: all .18s; font-size:13px;
-}
-.mode-btn.active { color:#041024; background: linear-gradient(90deg, var(--neon-a), var(--neon-b)); box-shadow: var(--accent-glow); transform:translateY(-3px); }
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-medium);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563; /* gray-600 */
+        }
 
-/* top bar: q meta / progress / timer */
-.topbar { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.qmeta { display:flex; gap:12px; align-items:center; min-width:260px; }
-.subject { padding:6px 10px; border-radius:10px; font-weight:800; color:#041024; background: linear-gradient(90deg,var(--neon-a),var(--neon-b)); box-shadow: var(--accent-glow); font-size:13px; }
-.qcount { color:var(--muted); font-weight:600; font-size:13px; }
-.progress { flex:1; height:12px; background: rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; margin:0 6px; border:1px solid rgba(255,255,255,0.02); }
-.progress-inner { height:100%; width:0%; background:linear-gradient(90deg,var(--neon-a),var(--neon-b)); transition:width .28s ease; box-shadow: 0 6px 18px rgba(126,241,255,0.06);}
-.timer { min-width:170px; text-align:right; color: var(--neon-a); font-weight:800; }
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes score-up {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bar-grow {
+            from { width: 0%; }
+            to { /* width is set inline */ }
+        }
 
-/* question area */
-.question-area { margin-top:6px; }
-.question-card {
-  border-radius:12px; padding:20px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.02); box-shadow: 0 18px 50px rgba(0,0,0,0.6);
-  transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .18s;
-}
-.question-text { font-size:18px; line-height:1.5; color:#fff; margin-bottom:16px; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        .fade-out { animation: fadeOut 0.3s ease-in; }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--bg-light);
+            border-top-color: var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .skeleton {
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* --- Question Nav Grid --- */
+        #question-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 0.5rem;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            background-color: var(--bg-medium);
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid var(--bg-light);
+        }
+        .nav-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.3); /* neon-blue */
+            color: var(--text-primary);
+            border-color: var(--neon-blue);
+        }
+        .nav-item.current {
+            background-color: var(--neon-blue);
+            color: white;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+        .nav-item.visited {
+            background-color: #4B5563; /* gray-600 */
+            color: var(--text-primary);
+        }
+        .nav-item.answered {
+            background-color: var(--neon-green);
+            color: white;
+            border-color: var(--neon-green);
+        }
+        /* Status icons on nav items */
+        .nav-item .icon-status {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-item .icon-status i {
+            font-size: 12px;
+            color: white;
+        }
+        .nav-item .icon-flag {
+            background-color: var(--neon-pink);
+        }
+        .nav-item .icon-mark {
+            background-color: var(--neon-yellow);
+        }
 
-/* options grid */
-.options { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-.opt {
-  display:flex; gap:12px; align-items:flex-start; cursor:pointer; padding:14px; border-radius:12px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35)); border:1px solid rgba(255,255,255,0.03);
-  transition: transform .12s, box-shadow .12s, border-color .12s, background .12s;
-}
-.opt:hover { transform:translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.6); }
-.opt .letter { width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; color:var(--muted); background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); }
-.opt .text { font-size:15px; color:#f7f9fb; line-height:1.35; }
+        /* --- Question Card --- */
+        .option-card {
+            border: 2px solid var(--bg-light);
+            transition: all 0.2s ease;
+        }
+        .option-card:hover {
+            border-color: var(--neon-blue);
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+        .option-card.selected {
+            border-color: var(--neon-blue);
+            background-color: rgba(14, 165, 233, 0.2);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        .option-card.correct {
+            border-color: var(--neon-green);
+            background-color: rgba(34, 197, 94, 0.15);
+        }
+        .option-card.incorrect {
+            border-color: var(--neon-red);
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+        
+        /* Explanation Box */
+        .explanation-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .explanation-box.visible {
+            max-height: 500px; /* arbitrary large value */
+        }
+        
+        /* --- Buttons --- */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid transparent;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            color: white;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+        .btn-secondary {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            border-color: var(--bg-light);
+        }
+        .btn-secondary:hover {
+            background-color: #4B5563; /* gray-600 */
+        }
+        .btn-flag.active {
+            background-color: var(--neon-pink);
+            color: white;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        .btn-mark.active {
+            background-color: var(--neon-yellow);
+            color: #111827;
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
 
-/* selected / correct / wrong states */
-.opt.selected { border-color: rgba(126,241,255,0.16); background: linear-gradient(90deg, rgba(126,241,255,0.06), rgba(179,124,255,0.04)); box-shadow: 0 12px 32px rgba(126,241,255,0.04); }
-.opt.correct { background: linear-gradient(90deg, rgba(0,255,158,0.08), rgba(0,255,158,0.03)); border-color: rgba(0,255,158,0.12); box-shadow: 0 12px 30px rgba(0,255,158,0.06); }
-.opt.wrong { background: linear-gradient(90deg, rgba(255,77,109,0.08), rgba(255,77,109,0.03)); border-color: rgba(255,77,109,0.12); box-shadow: 0 12px 30px rgba(255,77,109,0.06); }
-.opt.disabled { opacity:0.95; cursor:default; transform:none; }
+        /* --- Toast Notifications --- */
+        #toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast {
+            background-color: var(--bg-medium);
+            color: var(--text-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--neon-blue);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease;
+            transition: opacity 0.3s ease;
+        }
+        .toast.success { border-color: var(--neon-green); }
+        .toast.error { border-color: var(--neon-red); }
+        .toast.warning { border-color: var(--neon-yellow); }
+        .toast.fading-out { opacity: 0; }
 
-.explanation { display:none; margin-top:12px; padding:12px; border-radius:10px; background: rgba(255,255,255,0.02); color:var(--muted); font-size:14px; line-height:1.45; }
-
-/* nav row */
-.nav-row { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; }
-.left-nav { display:flex; gap:10px; align-items:center; }
-.btn { padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--muted); cursor:pointer; font-weight:700; transition:all .12s; }
-.btn:hover { transform:translateY(-3px); color:#fff; border-color: rgba(255,255,255,0.08); }
-.btn.primary { background: linear-gradient(90deg,var(--neon-a),var(--neon-c)); color:#041024; border:none; box-shadow: var(--accent-glow); }
-
-/* side column */
-.side { display:flex; flex-direction:column; gap:14px; }
-.panel { padding:12px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.02); box-shadow: var(--shadow); }
-.small { color:var(--muted); font-size:13px; }
-.grid { display:grid; grid-template-columns: repeat(5,1fr); gap:8px; margin-top:10px; }
-.cell { height:42px; border-radius:8px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.02); color:var(--muted); cursor:pointer; border:1px solid rgba(255,255,255,0.02); font-weight:700; }
-.cell.visited { background: linear-gradient(90deg,var(--neon-a),var(--neon-b)); color:#041024; box-shadow: var(--accent-glow); }
-.cell.marked { outline: 2px dashed rgba(255,255,255,0.04); }
-
-/* result bars */
-.result-bars { display:flex; gap:10px; justify-content:space-around; margin-top:12px; }
-.result-bar { width:64px; border-radius:8px; background: rgba(255,255,255,0.03); padding:8px; text-align:center; }
-.result-bar .val { font-weight:900; color:var(--neon-a); margin-top:8px; }
-
-/* footer small */
-.footer { grid-column:1/-1; margin-top:12px; text-align:center; color:var(--muted); font-size:13px; }
-
-/* responsive */
-@media (max-width: 980px) {
-  .container { grid-template-columns: 1fr; padding:12px; }
-  .side { order:2; }
-}
-</style>
+        /* --- Result Page --- */
+        #result-score {
+            font-size: 5rem;
+            font-weight: 800;
+            animation: score-up 0.5s ease-out;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .chart-bar-bg {
+            background-color: var(--bg-light);
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+        .chart-bar {
+            height: 1.5rem;
+            border-radius: 0.25rem;
+            background-image: linear-gradient(to right, var(--neon-blue), var(--neon-green));
+            animation: bar-grow 1s ease-out;
+            transition: width 0.5s ease;
+        }
+    </style>
 </head>
-<body>
-<div class="container">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="brand">
-      <div class="logo">VS</div>
-      <div>
-        <div class="title">CEE AI — Neon Cyberpunk</div>
-        <div class="subtitle">200 MCQs • Single-question view • Global timer • Keyboard controls</div>
-      </div>
-    </div>
+<body class="bg-gray-900 text-gray-100 h-screen overflow-hidden">
 
-    <div>
-      <button id="saveBtn" class="btn">Save</button>
-      <button id="resumeBtn" class="btn">Resume</button>
-      <button id="resetBtn" class="btn">Reset</button>
-    </div>
-  </div>
+    <!-- ===== Main App Container ===== -->
+    <div id="app-container" class="h-full">
 
-  <!-- Left: main -->
-  <div class="card">
-    <div class="modes">
-      <button class="mode-btn" data-mode="past">Past Year</button>
-      <button class="mode-btn" data-mode="mock">Mock Test</button>
-      <button class="mode-btn" data-mode="probable">Probable Qs</button>
-      <button class="mode-btn active" data-mode="mixed">Mixed</button>
-    </div>
-
-    <div class="topbar">
-      <div class="qmeta">
-        <div id="subjectBadge" class="subject">Mixed</div>
-        <div class="qcount" id="qCount">Q 0 / 200</div>
-      </div>
-      <div class="progress"><div id="progressInner" class="progress-inner"></div></div>
-      <div class="timer" id="timer">--:--:--</div>
-    </div>
-
-    <div id="questionArea" class="question-area">
-      <div class="question-card">
-        <div class="question-text">Click a test mode to begin your CEE practice test.</div>
-      </div>
-    </div>
-
-    <div class="nav-row">
-      <div class="left-nav">
-        <button id="prevBtn" class="btn">◀ Prev</button>
-        <button id="nextBtn" class="btn">Next ▶</button>
-        <button id="markBtn" class="btn">Mark</button>
-        <button id="jumpBtn" class="btn">Jump</button>
-      </div>
-      <div>
-        <button id="submitBtn" class="btn primary">Submit Test</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right: side column -->
-  <div class="side">
-    <div class="panel">
-      <div class="small">Question Grid</div>
-      <div id="gridWrap" class="grid"></div>
-    </div>
-
-    <div class="panel">
-      <div class="small">Summary</div>
-      <div style="display:flex; gap:12px; margin-top:10px;">
-        <div style="flex:1">
-          <div class="small">Score</div>
-          <div style="font-size:20px; font-weight:900" id="scoreView">0</div>
+        <!-- ===== Loading View ===== -->
+        <div id="loading-view" class="h-full flex flex-col items-center justify-center gap-6">
+            <div class="spinner"></div>
+            <h2 class="text-2xl font-semibold text-gray-300">Preparing Your Exam...</h2>
+            <p class="text-gray-400">Fetching questions from AI. Please wait.</p>
         </div>
-        <div style="flex:1">
-          <div class="small">Marked</div>
-          <div style="font-size:20px; font-weight:900" id="markedView">0</div>
+
+        <!-- ===== Exam View ===== -->
+        <div id="exam-view" class="h-full flex flex-col hidden">
+            <!-- Header -->
+            <header class="flex-shrink-0 bg-gray-800 border-b border-gray-700 shadow-lg">
+                <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+                    <!-- Left: Exam Mode -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl font-bold bg-gradient-to-r from-sky-500 to-pink-500 text-transparent bg-clip-text">AI CEE Exam</span>
+                        <span id="exam-mode-badge" class="px-3 py-1 bg-sky-600 text-white text-sm font-semibold rounded-full uppercase">Mock</span>
+                    </div>
+                    
+                    <!-- Middle: Progress Bar -->
+                    <div class="w-1/2 hidden md:block">
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-gradient-to-r from-sky-500 to-pink-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div id="progress-text" class="text-center text-sm text-gray-400 mt-1">0 / 200 Answered</div>
+                    </div>
+                    
+                    <!-- Right: Timer -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 text-sky-400">
+                            <i class="ph-fill ph-timer text-2xl"></i>
+                            <span id="timer-display" class="text-xl font-semibold tabular-nums">03:00:00</span>
+                        </div>
+                        <button id="submit-btn" class="btn btn-primary">
+                            <i class="ph-fill ph-check-circle"></i>
+                            <span>Submit</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content (Nav + Question) -->
+            <main class="flex-1 flex overflow-hidden">
+                
+                <!-- Left Panel: Question Navigation -->
+                <aside id="question-nav-panel" class="w-1/4 h-full bg-gray-800 border-r border-gray-700 p-4 overflow-y-auto">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">Question Navigation</h3>
+                    <div id="question-nav-grid">
+                        <!-- Nav items will be injected by JS -->
+                    </div>
+                </aside>
+
+                <!-- Right Panel: Question Card -->
+                <section id="question-panel" class="flex-1 h-full p-6 md:p-10 lg:p-12 overflow-y-auto">
+                    <div id="question-card-container" class="max-w-4xl mx-auto">
+                        
+                        <!-- Skeleton Loader for Question -->
+                        <div id="question-skeleton" class="hidden space-y-8">
+                            <div class="skeleton h-8 w-3/4"></div>
+                            <div class="space-y-4">
+                                <div class="skeleton h-16 w-full"></div>
+                                <div class="skeleton h-16 w-full"></div>
+                                <div class="skeleton h-16 w-full"></div>
+                                <div class="skeleton h-16 w-full"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actual Question Content -->
+                        <div id="question-content">
+                            <!-- Question Header -->
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-2xl font-semibold">
+                                    <span id="question-number" class="text-sky-400"></span>
+                                    <span id="question-subject" class="ml-2 px-3 py-1 bg-gray-700 text-sky-300 text-sm font-medium rounded-full"></span>
+                                </h2>
+                                <div class="flex gap-2">
+                                    <button id="flag-btn" class="btn btn-secondary btn-flag">
+                                        <i class="ph-fill ph-flag"></i>
+                                        <span class="hidden md:inline">Flag</span>
+                                    </button>
+                                    <button id="mark-btn" class="btn btn-secondary btn-mark">
+                                        <i class="ph-fill ph-bookmark-simple"></i>
+                                        <span class="hidden md:inline">Mark for Review</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Question Text -->
+                            <p id="question-text" class="text-xl text-gray-200 leading-relaxed mb-8" style="white-space: pre-wrap;"></p>
+
+                            <!-- Options -->
+                            <div id="options-container" class="space-y-4 mb-8">
+                                <!-- Options will be injected by JS -->
+                            </div>
+
+                            <!-- Explanation (Collapsible) -->
+                            <div id="explanation-container" class="explanation-box">
+                                <h4 class="text-lg font-semibold text-green-400 mb-2">Detailed Explanation</h4>
+                                <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+                                    <p id="explanation-text" class="text-gray-300 leading-relaxed" style="white-space: pre-wrap;"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Navigation -->
+                        <footer class="mt-12 pt-6 border-t border-gray-700 flex justify-between items-center">
+                            <button id="prev-btn" class="btn btn-secondary">
+                                <i class="ph-fill ph-arrow-left"></i>
+                                <span>Previous</span>
+                            </button>
+                            <button id="next-btn" class="btn btn-secondary">
+                                <span>Next</span>
+                                <i class="ph-fill ph-arrow-right"></i>
+                            </button>
+                        </footer>
+                    </div>
+                </section>
+            </main>
         </div>
-      </div>
+
+        <!-- ===== Result View ===== -->
+        <div id="result-view" class="h-full p-6 md:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto">
+                <h1 class="text-4xl font-bold text-center mb-4">Exam Result</h1>
+                
+                <!-- Score Summary -->
+                <div class="text-center mb-12">
+                    <p class="text-2xl text-gray-400 mb-2">Your Final Score</p>
+                    <div id="result-score" class="tabular-nums">0</div>
+                    <p id="result-summary-text" class="text-xl text-gray-300 mt-2"></p>
+                </div>
+
+                <!-- Subject-wise Chart -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-xl mb-12">
+                    <h3 class="text-2xl font-semibold mb-6">Subject-wise Performance</h3>
+                    <div id="subject-charts" class="space-y-4">
+                        <!-- Charts injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Full Question Review -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-6">Full Question Review</h3>
+                    <div id="review-container" class="space-y-8">
+                        <!-- Review questions injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <!-- ===== Toast Container ===== -->
+    <div id="toast-container"></div>
+    
+    <!-- ===== JavaScript Logic ===== -->
+    <script type="module">
+        // =================================================================================
+        // !! The URL has been updated with your deployed worker !!
+        // =================================================================================
 
-    <div class="panel">
-      <div class="small">Subject Breakdown</div>
-      <div class="result-bars">
-        <div class="result-bar"><div>Physics</div><div class="val" id="phyVal">0</div></div>
-        <div class="result-bar"><div>Chem</div><div class="val" id="chemVal">0</div></div>
-        <div class="result-bar"><div>Bio</div><div class="val" id="bioVal">0</div></div>
-        <div class="result-bar"><div>GK</div><div class="val" id="gkVal">0</div></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="small">Tools</div>
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <button id="downloadBtn" class="btn">Download JSON</button>
-        <button id="prefetchBtn" class="btn">Warm Buffer</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">Made with ❤️ for CEE aspirants — Neon Cyberpunk theme by VisionS</div>
-</div>
-
-<!-- small audio elements -->
-<audio id="soundCorrect" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YcAAAAA="></audio>
-<audio id="soundWrong" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YcAAAAA="></audio>
-
-<script>
-/* =========================================================
-   Neon Cyberpunk Frontend Logic
-   - Single-file: fetch from your Worker, render questions,
-     manage timer, keyboard, save/resume, prefetch, navigation.
-   ========================================================= */
-
-/* ---------------- CONFIG ---------------- */
-const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev/"; // <- your worker
-const TOTAL_QUESTIONS = 200;            // change if needed
-const GLOBAL_SECONDS = 3 * 60 * 60;    // 3 hours default
-const PREFETCH_COUNT = 2;              // how many ahead to fetch
-const SAVE_KEY = "cee_neon_state_v1";
-
-/* ---------------- STATE ---------------- */
-let state = {
-  mode: "mixed",
-  timerSeconds: GLOBAL_SECONDS,
-  current: 0,
-  questions: Array(TOTAL_QUESTIONS).fill(null),
-  answers: Array(TOTAL_QUESTIONS).fill(null),
-  visited: Array(TOTAL_QUESTIONS).fill(false),
-  marked: Array(TOTAL_QUESTIONS).fill(false),
-  score: 0,
-  subjectScores: { Physics:0, Chemistry:0, Biology:0, GK:0 }
-};
-let timerInterval = null;
-let isFetching = {}; // index->bool
-let soundEnabled = true;
-
-/* ---------------- HELPERS ---------------- */
-const $ = id => document.getElementById(id);
-function qAll(sel){ return Array.from(document.querySelectorAll(sel)); }
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-function pad(n, len=2){ return String(n).padStart(len,'0'); }
-function fmtTime(s){
-  if(s < 0) s = 0;
-  const h = Math.floor(s/3600);
-  const m = Math.floor((s%3600)/60);
-  const sec = s%60;
-  return `${pad(h)}:${pad(m)}:${pad(sec)}`;
-}
-function safeParse(objOrStr){
-  if(!objOrStr) return null;
-  if(typeof objOrStr === "object") return objOrStr;
-  try{ return JSON.parse(objOrStr); } catch(e){
-    const m = String(objOrStr).match(/\{[\s\S]*\}/);
-    if(m) try{ return JSON.parse(m[0]); }catch(e2){ return null; }
-    return null;
-  }
-}
-
-/* ---------------- UI RENDER ---------------- */
-function renderHeader(){
-  $("qCount").textContent = `Q ${state.current+1} / ${TOTAL_QUESTIONS}`;
-  const percent = Math.round((state.current / TOTAL_QUESTIONS) * 100);
-  $("progressInner").style.width = `${percent}%`;
-  $("timer").textContent = fmtTime(state.timerSeconds);
-  $("scoreView").textContent = state.score;
-  $("markedView").textContent = state.marked.filter(Boolean).length;
-  $("phyVal").textContent = state.subjectScores.Physics;
-  $("chemVal").textContent = state.subjectScores.Chemistry;
-  $("bioVal").textContent = state.subjectScores.Biology;
-  $("gkVal").textContent = state.subjectScores.GK;
-}
-
-function buildGrid(){
-  const wrap = $("gridWrap");
-  wrap.innerHTML = "";
-  for(let i=0;i<TOTAL_QUESTIONS;i++){
-    const cell = document.createElement("div");
-    cell.className = "cell" + (state.visited[i] ? " visited" : "") + (state.marked[i] ? " marked" : "");
-    cell.textContent = i+1;
-    cell.title = `Go to Q ${i+1}`;
-    cell.addEventListener("click", ()=> goTo(i));
-    wrap.appendChild(cell);
-  }
-}
-
-/* render a single question (if null, show loading) */
-function renderQuestion(index){
-  state.current = index = clamp(index,0,TOTAL_QUESTIONS-1);
-  renderHeader();
-
-  const area = $("questionArea");
-  const q = state.questions[index];
-
-  // update subject badge
-  $("subjectBadge").textContent = q && q.subject ? q.subject : capitalize(state.mode);
-
-  if(!q){
-    area.innerHTML = `<div class="question-card"><div class="question-text">Loading question ${index+1}...</div></div>`;
-    return;
-  }
-
-  // build options markup
-  const answered = state.answers[index] !== null;
-  let optionsHTML = "";
-  for(let i=0;i<4;i++){
-    const letter = String.fromCharCode(65 + i);
-    const optText = q.options[i] || ("Option " + letter);
-    let classes = "opt";
-    if(answered){
-      if(i === q.correct) classes += " correct";
-      if(state.answers[index] === i && i !== q.correct) classes += " wrong";
-      classes += " disabled";
-    }
-    optionsHTML += `<div class="${classes}" data-opt="${i}" tabindex="0">
-      <div class="letter">${letter}</div>
-      <div class="text">${escapeHtml(optText)}</div>
-    </div>`;
-  }
-
-  area.innerHTML = `
-    <div class="question-card" id="card_${index}">
-      <div class="question-text">${escapeHtml(q.question)}</div>
-      <div class="options">${optionsHTML}</div>
-      <div class="explanation" id="explain_${index}">${escapeHtml(q.explanation || '')}</div>
-    </div>
-  `;
-
-  // attach handlers
-  const optionEls = area.querySelectorAll(".opt");
-  optionEls.forEach(el => {
-    el.addEventListener("click", () => {
-      const idx = Number(el.getAttribute("data-opt"));
-      if(state.answers[index] !== null) return;
-      submitAnswer(index, idx);
-    });
-    el.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); }
-    });
-  });
-
-  // show explanation if answered
-  if(state.answers[index] !== null){
-    const expl = $(`explain_${index}`);
-    if(expl) expl.style.display = "block";
-  }
-
-  state.visited[index] = true;
-  buildGrid();
-  renderHeader();
-}
-
-/* escape */
-function escapeHtml(s){
-  if(s === null || s === undefined) return "";
-  return String(s).replace(/[&<>"'`]/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '`':'&#96;'})[m]; });
-}
-function capitalize(s){ if(!s) return ''; return s[0].toUpperCase()+s.slice(1); }
-
-/* ---------------- NAVIGATION ---------------- */
-function goTo(index){
-  index = clamp(index,0,TOTAL_QUESTIONS-1);
-  state.current = index;
-  saveStateDebounced();
-  if(state.questions[index]) {
-    renderQuestion(index);
-    prefetch();
-  } else {
-    renderQuestion(index); // loading message
-    fetchQuestion(index).then(()=> { renderQuestion(index); prefetch(); });
-  }
-}
-function prev(){ goTo(state.current - 1); }
-function next(){ goTo(state.current + 1); }
-
-/* ---------------- ANSWERS ---------------- */
-function submitAnswer(qIdx, chosenIdx){
-  const q = state.questions[qIdx];
-  if(!q) return;
-  state.answers[qIdx] = chosenIdx;
-  // scoring: if correct, increment; avoid double counting if user revisits (we only record first answer)
-  if(chosenIdx === q.correct) {
-    state.score += 1;
-    state.subjectScores[q.subject] = (state.subjectScores[q.subject] || 0) + 1;
-    if(soundEnabled) try{ $("soundCorrect").play(); }catch(e){}
-  } else {
-    if(soundEnabled) try{ $("soundWrong").play(); }catch(e){}
-  }
-  renderQuestion(qIdx);
-  saveStateDebounced();
-}
-
-/* ---------------- MARK/FLAG ---------------- */
-function toggleMark(){ state.marked[state.current] = !state.marked[state.current]; buildGrid(); renderHeader(); saveStateDebounced(); }
-function toggleFlag(){ /* placeholder if needed */ saveStateDebounced(); }
-
-/* ---------------- FETCH / PREFETCH ---------------- */
-async function fetchQuestion(index, attempt=0){
-  if(isFetching[index]) return;
-  isFetching[index] = true;
-  try {
-    const payload = { mode: state.mode, index: index+1 };
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      cache: "no-store"
-    });
-    // parse
-    let data = null;
-    try { data = await res.json(); } catch(e){
-      const txt = await res.text();
-      data = safeParse(txt);
-    }
-    let q = safeParse(data);
-    // fallback if invalid
-    if(!q || !q.question || !Array.isArray(q.options) || q.options.length < 1){
-      if(attempt < 2){
-        // retry once after short delay
-        await new Promise(r=>setTimeout(r, 800));
-        return fetchQuestion(index, attempt+1);
-      } else {
-        q = {
-          question: "Failed to generate question. Click Next.",
-          options: ["Option A","Option B","Option C","Option D"],
-          correct: 0,
-          explanation: "AI/Worker returned invalid output. Check Worker logs or API key.",
-          subject: "GK"
+        // === CONFIGURATION ===
+        const WORKER_URL = 'https://rapid-truth-3395.visionsyt99.workers.dev/'; // <-- This is your deployed URL
+        const TOTAL_QUESTIONS = 200;
+        const EXAM_DURATION_SECONDS = 3 * 60 * 60; // 3 hours
+        const QUESTIONS_PER_BATCH = 10; // How many questions to fetch from the AI at once
+        const PREFETCH_BUFFER_INDEX = 5; // Start prefetching next batch when user reaches this index in current batch
+        
+        // === STATE ===
+        const state = {
+            currentView: 'loading',
+            currentQuestionIndex: 0,
+            examMode: 'mock',
+            questions: new Array(TOTAL_QUESTIONS).fill(null),
+            userAnswers: new Array(TOTAL_QUESTIONS).fill(null),
+            questionStates: new Array(TOTAL_QUESTIONS).fill(0).map(() => ({
+                visited: false,
+                answered: false,
+                flagged: false,
+                marked: false,
+            })),
+            timerHandle: null,
+            secondsRemaining: EXAM_DURATION_SECONDS,
+            isSubmitting: false,
+            fetchedBatchMarkers: new Set(),
         };
-      }
-    } else {
-      // normalize to exactly 4 options
-      q.options = q.options.slice(0,4);
-      while(q.options.length < 4) q.options.push("Option");
-      // sanitize subject
-      const allowed = ["Physics","Chemistry","Biology","GK"];
-      if(!q.subject || !allowed.includes(q.subject)) {
-        const s = String(q.subject||"").toLowerCase();
-        if(s.includes("phys")) q.subject = "Physics";
-        else if(s.includes("chem")) q.subject = "Chemistry";
-        else if(s.includes("bio")) q.subject = "Biology";
-        else q.subject = "GK";
-      }
-    }
-    state.questions[index] = q;
-  } catch (err) {
-    console.error("Fetch question error:", err);
-    state.questions[index] = {
-      question: "Worker/AI error. Click Next.",
-      options: ["A","B","C","D"],
-      correct: 0,
-      explanation: "Network/Worker error: " + (err && err.message ? err.message : "unknown"),
-      subject: "GK"
-    };
-  } finally {
-    isFetching[index] = false;
-  }
-}
 
-/* load window-sized buffer ahead */
-function prefetch(){
-  for(let i=1;i<=PREFETCH_COUNT;i++){
-    const idx = state.current + i;
-    if(idx < TOTAL_QUESTIONS && !state.questions[idx] && !isFetching[idx]) {
-      fetchQuestion(idx);
-    }
-  }
-}
+        // === DOM ELEMENTS ===
+        const $ = (selector) => document.querySelector(selector);
+        const dom = {
+            loadingView: $('#loading-view'),
+            examView: $('#exam-view'),
+            resultView: $('#result-view'),
+            examModeBadge: $('#exam-mode-badge'),
+            progressBar: $('#progress-bar'),
+            progressText: $('#progress-text'),
+            timerDisplay: $('#timer-display'),
+            submitBtn: $('#submit-btn'),
+            questionNavGrid: $('#question-nav-grid'),
+            questionPanel: $('#question-panel'),
+            questionCardContainer: $('#question-card-container'),
+            questionSkeleton: $('#question-skeleton'),
+            questionContent: $('#question-content'),
+            questionNumber: $('#question-number'),
+            questionSubject: $('#question-subject'),
+            questionText: $('#question-text'),
+            optionsContainer: $('#options-container'),
+            explanationContainer: $('#explanation-container'),
+            explanationText: $('#explanation-text'),
+            prevBtn: $('#prev-btn'),
+            nextBtn: $('#next-btn'),
+            flagBtn: $('#flag-btn'),
+            markBtn: $('#mark-btn'),
+            toastContainer: $('#toast-container'),
+            resultScore: $('#result-score'),
+            resultSummaryText: $('#result-summary-text'),
+            subjectCharts: $('#subject-charts'),
+            reviewContainer: $('#review-container'),
+        };
 
-/* warm buffer across whole test start */
-function warmBuffer(){
-  for(let i=0;i<Math.min(6, TOTAL_QUESTIONS); i++){
-    if(!state.questions[i]) fetchQuestion(i);
-  }
-  alert("Prefetch started for first questions.");
-}
+        // === CORE LOGIC ===
 
-/* ---------------- TIMER ---------------- */
-function startTimer(){
-  if(timerInterval) return;
-  timerInterval = setInterval(() => {
-    state.timerSeconds -= 1;
-    if(state.timerSeconds <= 0){
-      clearInterval(timerInterval);
-      alert("Time's up. Auto submitting...");
-      submitTest();
-    }
-    renderHeader();
-    saveStateDebounced();
-  }, 1000);
-}
+        /**
+         * Initializes the application
+         */
+        async function init() {
+            console.log('Initializing Exam Platform...');
+            // Setup keyboard listeners
+            document.addEventListener('keydown', handleKeyDown);
 
-/* ---------------- SUBMIT / RESULT ---------------- */
-function submitTest(){
-  // show result summary
-  clearInterval(timerInterval);
-  const correct = state.score;
-  const total = TOTAL_QUESTIONS;
-  const area = $("questionArea");
-  area.innerHTML = `
-    <div class="question-card">
-      <div style="text-align:center">
-        <h2 style="margin:6px 0 6px 0">Test Completed</h2>
-        <div style="font-size:22px; color:var(--neon-a); font-weight:900">${correct} / ${total}</div>
-        <div style="margin-top:8px; color:var(--muted)">Subject breakdown below</div>
-      </div>
-      <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-        <div class="result-bar"><div>Physics</div><div class="val">${state.subjectScores.Physics}</div></div>
-        <div class="result-bar"><div>Chemistry</div><div class="val">${state.subjectScores.Chemistry}</div></div>
-        <div class="result-bar"><div>Biology</div><div class="val">${state.subjectScores.Biology}</div></div>
-        <div class="result-bar"><div>GK</div><div class="val">${state.subjectScores.GK}</div></div>
-      </div>
-      <div style="text-align:center; margin-top:16px">
-        <button class="btn primary" id="downloadReport">Download Report</button>
-      </div>
-    </div>
-  `;
-  $("downloadReport").addEventListener("click", ()=> {
-    const payload = {
-      meta: { date: new Date().toISOString(), mode: state.mode, total },
-      score: { correct, total },
-      subjectScores: state.subjectScores,
-      answers: state.answers,
-      questions: state.questions.map((q,i)=> q ? { index:i+1, question:q.question, options:q.options, correct:q.correct, subject:q.subject, chosen: state.answers[i] } : null)
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "cee_report.json"; a.click(); a.remove(); URL.revokeObjectURL(url);
-  });
-}
+            // Setup button listeners
+            dom.submitBtn.addEventListener('click', () => confirmSubmit());
+            dom.prevBtn.addEventListener('click', () => navigateQuestion('prev'));
+            dom.nextBtn.addEventListener('click', () => navigateQuestion('next'));
+            dom.flagBtn.addEventListener('click', toggleFlag);
+            dom.markBtn.addEventListener('click', toggleMark);
+            
+            // Build the question nav
+            renderQuestionNav();
 
-/* ---------------- SAVE / LOAD ---------------- */
-function saveState(){
-  try {
-    const copy = {
-      mode: state.mode, timerSeconds: state.timerSeconds, current: state.current,
-      questions: state.questions, answers: state.answers, visited: state.visited,
-      marked: state.marked, score: state.score, subjectScores: state.subjectScores
-    };
-    localStorage.setItem(SAVE_KEY, JSON.stringify(copy));
-    alert("Progress saved locally.");
-  } catch(e){ console.warn("save failed", e); alert("Save failed."); }
-}
-let saveTimer = null;
-function saveStateDebounced(){
-  if(saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveState, 700);
-}
-function loadState(){
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if(!raw) return false;
-    const p = JSON.parse(raw);
-    state.mode = p.mode ?? state.mode;
-    state.timerSeconds = typeof p.timerSeconds === "number" ? p.timerSeconds : state.timerSeconds;
-    state.current = typeof p.current === "number" ? p.current : state.current;
-    state.questions = p.questions ?? state.questions;
-    state.answers = p.answers ?? state.answers;
-    state.visited = p.visited ?? state.visited;
-    state.marked = p.marked ?? state.marked;
-    state.score = p.score ?? state.score;
-    state.subjectScores = p.subjectScores ?? state.subjectScores;
-    return true;
-  } catch(e){ console.warn("load failed", e); return false; }
-}
+            // Start fetching the first batch of questions
+            await fetchQuestionBatch(0);
 
-/* ---------------- KEYBOARD ---------------- */
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "ArrowRight"){ next(); startTimer(); }
-  else if(e.key === "ArrowLeft"){ prev(); startTimer(); }
-  else if(["a","A"].includes(e.key)){ chooseLetter(0); }
-  else if(["b","B"].includes(e.key)){ chooseLetter(1); }
-  else if(["c","C"].includes(e.key)){ chooseLetter(2); }
-  else if(["d","D"].includes(e.key)){ chooseLetter(3); }
-  else if(e.key === "Enter"){ if(state.answers[state.current] !== null) next(); }
-});
-function chooseLetter(i){ if(state.answers[state.current] !== null) return; submitAnswer(state.current, i); }
+            // Once first batch is loaded, show the exam
+            if (state.questions[0]) {
+                updateView('exam');
+                renderQuestion(0);
+                startTimer();
+                // Start prefetching the next batch
+                fetchQuestionBatch(QUESTIONS_PER_BATCH);
+            } else {
+                // Handle critical fetch failure
+                updateView('loading');
+                dom.loadingView.innerHTML = `
+                    <i class="ph-fill ph-wifi-slash text-5xl text-red-500"></i>
+                    <h2 class="text-2xl font-semibold text-red-400">Failed to load exam</h2>
+                    <p class="text-gray-400">Could not connect to the AI server. Please check your connection and refresh.</p>
+                `;
+                showToast('Failed to load initial questions.', 'error');
+            }
+        }
 
-/* ---------------- BIND UI ---------------- */
-qAll(".mode-btn").forEach(btn => {
-  btn.addEventListener("click", ()=>{
-    qAll(".mode-btn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    state.mode = btn.getAttribute("data-mode") || "mixed";
-    state.current = 0;
-    saveStateDebounced();
-    goTo(0);
-    startTimer();
-    warmBuffer();
-  });
-});
-$("prevBtn").addEventListener("click", ()=>{ prev(); startTimer(); });
-$("nextBtn").addEventListener("click", ()=>{ next(); startTimer(); });
-$("markBtn").addEventListener("click", ()=> toggleMark());
-$("jumpBtn").addEventListener("click", ()=> {
-  const n = prompt("Jump to question number (1 - " + TOTAL_QUESTIONS + ")");
-  const k = Number(n);
-  if(Number.isInteger(k) && k >=1 && k <= TOTAL_QUESTIONS) goTo(k-1);
-});
-$("submitBtn").addEventListener("click", ()=> {
-  if(confirm("Submit the test now?")) submitTest();
-});
-$("saveBtn").addEventListener("click", ()=> saveState());
-$("resumeBtn").addEventListener("click", ()=> {
-  if(loadState()){ alert("Loaded saved progress"); buildGrid(); renderHeader(); goTo(state.current); startTimer(); } else alert("No saved progress found");
-});
-$("resetBtn").addEventListener("click", ()=> {
-  if(confirm("Reset all progress?")) { localStorage.removeItem(SAVE_KEY); location.reload(); }
-});
-$("downloadBtn").addEventListener("click", ()=> {
-  const payload = { date: new Date().toISOString(), mode: state.mode, answers: state.answers, questions: state.questions };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
-  const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href=url; a.download="cee_export.json"; a.click(); a.remove(); URL.revokeObjectURL(url);
-});
-$("prefetchBtn").addEventListener("click", ()=> warmBuffer());
+        /**
+         * Fetches a batch of questions from the AI worker
+         * @param {number} startIndex - The starting index for the batch
+         */
+        async function fetchQuestionBatch(startIndex) {
+            if (startIndex >= TOTAL_QUESTIONS || state.fetchedBatchMarkers.has(startIndex)) {
+                return; // Already fetched or out of bounds
+            }
+            
+            console.log(`Fetching questions from index ${startIndex}...`);
+            state.fetchedBatchMarkers.add(startIndex);
 
-/* ---------------- INIT ---------------- */
-(function init(){
-  // initial UI
-  buildGrid();
-  renderHeader();
-  renderQuestion(0);
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        requestType: 'getQuestions',
+                        mode: state.examMode,
+                        startIndex: startIndex,
+                        count: QUESTIONS_PER_BATCH,
+                    }),
+                });
 
-  // if saved state exists, offer to restore
-  const raw = localStorage.getItem(SAVE_KEY);
-  if(raw){
-    if(confirm("Saved progress found. Restore?")) {
-      loadState();
-      buildGrid();
-      renderHeader();
-      goTo(state.current);
-      startTimer();
-    }
-  }
-  // warm some initial questions
-  warmBuffer();
-})();
+                if (!response.ok) {
+                    throw new Error(`Worker request failed with status ${response.status}`);
+                }
 
-/* ---------------- UTILITY: buildGrid wrapper ---------------- */
-function buildGrid(){ const wrap = $("gridWrap"); wrap.innerHTML=""; for(let i=0;i<TOTAL_QUESTIONS;i++){ const cell=document.createElement("div"); cell.className="cell"+(state.visited[i]?" visited":"")+(state.marked[i]?" marked":""); cell.textContent=i+1; cell.title=`Go to Q ${i+1}`; cell.addEventListener("click", ()=> goTo(i)); wrap.appendChild(cell);} }
+                const newQuestions = await response.json();
 
-/* ---------------- END ---------------- */
-</script>
+                if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
+                    throw new Error('Invalid data received from AI');
+                }
+
+                // Populate the main questions array
+                newQuestions.forEach((q, i) => {
+                    const index = startIndex + i;
+                    if (index < TOTAL_QUESTIONS) {
+                        state.questions[index] = q;
+                    }
+                });
+
+                console.log(`Successfully fetched batch ${startIndex}`);
+                
+                // If the user is currently viewing a question that was just fetched, re-render it
+                if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
+                    renderQuestion(state.currentQuestionIndex, true); // force re-render
+                }
+
+            } catch (error) {
+                console.error(`Failed to fetch batch ${startIndex}:`, error);
+                showToast(`Error fetching questions (Batch ${startIndex}). Retrying...`, 'error');
+                state.fetchedBatchMarkers.delete(startIndex); // Allow retry
+                // Simple retry logic
+                setTimeout(() => fetchQuestionBatch(startIndex), 5000);
+            }
+        }
+
+        /**
+         * Renders a specific question
+         * @param {number} index - The question index to render
+         * @param {boolean} [force=false] - Force re-render even if index is same
+         */
+        function renderQuestion(index, force = false) {
+            if (index < 0 || index >= TOTAL_QUESTIONS || state.isSubmitting) return;
+            if (index === state.currentQuestionIndex && !force) return;
+
+            // --- Animation ---
+            dom.questionCardContainer.classList.add('fade-out');
+            
+            setTimeout(() => {
+                state.currentQuestionIndex = index;
+                const questionData = state.questions[index];
+
+                if (questionData) {
+                    // --- Question data is available ---
+                    dom.questionContent.classList.remove('hidden');
+                    dom.questionSkeleton.classList.add('hidden');
+
+                    dom.questionNumber.textContent = `Question ${index + 1}`;
+                    dom.questionSubject.textContent = questionData.subject;
+                    dom.questionText.textContent = questionData.question;
+
+                    // Render options
+                    dom.optionsContainer.innerHTML = '';
+                    const userAnswerIndex = state.userAnswers[index];
+                    const hasAnswered = userAnswerIndex !== null;
+
+                    questionData.options.forEach((option, i) => {
+                        const optionEl = document.createElement('div');
+                        optionEl.className = 'option-card p-4 rounded-lg cursor-pointer flex items-start gap-4';
+                        optionEl.innerHTML = `
+                            <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center border-2 border-gray-500 rounded-full font-semibold text-gray-300">${String.fromCharCode(65 + i)}</span>
+                            <span class="flex-1 text-lg text-gray-200" style="white-space: pre-wrap;">${option}</span>
+                        `;
+                        
+                        optionEl.addEventListener('click', () => handleOptionSelect(index, i));
+                        
+                        // Apply styles if already answered
+                        if (hasAnswered) {
+                            if (i === questionData.correct) {
+                                optionEl.classList.add('correct');
+                            } else if (i === userAnswerIndex) {
+                                optionEl.classList.add('incorrect');
+                            }
+                            if (i === userAnswerIndex) {
+                                optionEl.classList.add('selected');
+                            }
+                        }
+
+                        dom.optionsContainer.appendChild(optionEl);
+                    });
+
+                    // Handle explanation visibility
+                    if (hasAnswered) {
+                        dom.explanationText.textContent = questionData.explanation;
+                        dom.explanationContainer.classList.add('visible');
+                    } else {
+                        dom.explanationContainer.classList.remove('visible');
+                    }
+
+                } else {
+                    // --- Question data not fetched yet, show skeleton ---
+                    dom.questionContent.classList.add('hidden');
+                    dom.questionSkeleton.classList.remove('hidden');
+                    
+                    // Trigger fetch for this batch if not already triggered
+                    const batchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH;
+                    fetchQuestionBatch(batchStartIndex);
+                }
+
+                // Update states
+                state.questionStates[index].visited = true;
+                
+                // Update UI elements
+                updateButtonStates();
+                updateQuestionNav();
+                updateProgressBar();
+
+                // --- Prefetching Logic ---
+                const batchIndex = index % QUESTIONS_PER_BATCH;
+                if (batchIndex >= PREFETCH_BUFFER_INDEX) {
+                    const nextBatchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH + QUESTIONS_PER_BATCH;
+                    fetchQuestionBatch(nextBatchStartIndex);
+                }
+                
+                // --- Animation ---
+                dom.questionCardContainer.classList.remove('fade-out');
+                dom.questionCardContainer.classList.add('fade-in');
+                
+                // Scroll panel to top
+                dom.questionPanel.scrollTop = 0;
+
+            }, 300); // Match fadeOut duration
+        }
+
+        /**
+         * Handles the selection of an answer option
+         * @param {number} questionIndex
+         * @param {number} optionIndex
+         */
+        function handleOptionSelect(questionIndex, optionIndex) {
+            if (state.userAnswers[questionIndex] !== null) {
+                showToast('Answer already submitted for this question.', 'warning');
+                return; // Already answered
+            }
+
+            state.userAnswers[questionIndex] = optionIndex;
+            state.questionStates[questionIndex].answered = true;
+
+            const questionData = state.questions[questionIndex];
+            const isCorrect = optionIndex === questionData.correct;
+            
+            // Re-render the options to show feedback
+            renderQuestion(questionIndex, true); 
+
+            showToast(isCorrect ? 'Correct!' : 'Incorrect.', isCorrect ? 'success' : 'error');
+
+            // Update nav and progress
+            updateQuestionNav();
+            updateProgressBar();
+        }
+
+        /**
+         * Handles keyboard navigation and actions
+         * @param {Event} e
+         */
+        function handleKeyDown(e) {
+            if (state.currentView !== 'exam') return;
+
+            // Prevent default for arrow keys to stop scrolling
+            if (['ArrowLeft', 'ArrowRight', '1', '2', '3', '4', 'f', 'F'].includes(e.key)) {
+                e.preventDefault();
+            }
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                    navigateQuestion('prev');
+                    break;
+                case 'ArrowRight':
+                    navigateQuestion('next');
+                    break;
+                case '1':
+                case 'a':
+                case 'A':
+                    handleOptionSelect(state.currentQuestionIndex, 0);
+                    break;
+                case '2':
+                case 'b':
+                case 'B':
+                    handleOptionSelect(state.currentQuestionIndex, 1);
+                    break;
+                case '3':
+                case 'c':
+                case 'C':
+                    handleOptionSelect(state.currentQuestionIndex, 2);
+                    break;
+                case '4':
+                case 'd':
+                case 'D':
+                    handleOptionSelect(state.currentQuestionIndex, 3);
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFlag();
+                    break;
+            }
+        }
+
+        /**
+         * Navigates to the next or previous question
+         * @param {'next' | 'prev'} direction
+         */
+        function navigateQuestion(direction) {
+            let newIndex = state.currentQuestionIndex;
+            if (direction === 'next') {
+                newIndex = Math.min(TOTAL_QUESTIONS - 1, newIndex + 1);
+            } else {
+                newIndex = Math.max(0, newIndex - 1);
+            }
+            if (newIndex !== state.currentQuestionIndex) {
+                renderQuestion(newIndex);
+            }
+        }
+
+        // === UI UPDATE FUNCTIONS ===
+
+        /**
+         * Switches the main view
+         * @param {'loading' | 'exam' | 'result'} viewName
+         */
+        function updateView(viewName) {
+            state.currentView = viewName;
+            dom.loadingView.classList.add('hidden');
+            dom.examView.classList.add('hidden');
+            dom.resultView.classList.add('hidden');
+            
+            if (viewName === 'loading') dom.loadingView.classList.remove('hidden');
+            if (viewName === 'exam') dom.examView.classList.remove('hidden');
+            if (viewName === 'result') dom.resultView.classList.remove('hidden');
+        }
+
+        /**
+         * Updates the progress bar and text
+         */
+        function updateProgressBar() {
+            const answeredCount = state.questionStates.filter(s => s.answered).length;
+            const percentage = (answeredCount / TOTAL_QUESTIONS) * 100;
+            dom.progressBar.style.width = `${percentage}%`;
+            dom.progressText.textContent = `${answeredCount} / ${TOTAL_QUESTIONS} Answered`;
+        }
+
+        /**
+         * Renders the entire 200-question navigation grid
+         */
+        function renderQuestionNav() {
+            let navHtml = '';
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                navHtml += `<div class="nav-item" data-index="${i}">${i + 1}</div>`;
+            }
+            dom.questionNavGrid.innerHTML = navHtml;
+            
+            // Add event listeners
+            dom.questionNavGrid.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.dataset.index);
+                    renderQuestion(index);
+                });
+            });
+            
+            updateQuestionNav(); // Apply initial styles
+        }
+
+        /**
+         * Updates the styles of the question navigation items
+         */
+        function updateQuestionNav() {
+            dom.questionNavGrid.querySelectorAll('.nav-item').forEach((item, i) => {
+                const qState = state.questionStates[i];
+                item.className = 'nav-item'; // Reset classes
+                
+                if (qState.answered) item.classList.add('answered');
+                else if (qState.visited) item.classList.add('visited');
+                
+                if (i === state.currentQuestionIndex) item.classList.add('current');
+                
+                // Handle icons
+                let iconHtml = '';
+                if (qState.flagged) {
+                    iconHtml += `<span class="icon-status icon-flag"><i class="ph-fill ph-flag"></i></span>`;
+                }
+                if (qState.marked) {
+                    iconHtml += `<span class="icon-status icon-mark"><i class="ph-fill ph-bookmark-simple"></i></span>`;
+                }
+                item.innerHTML = `${i + 1}${iconHtml}`;
+            });
+        }
+
+        /**
+         * Updates the state of the prev/next/flag/mark buttons
+         */
+        function updateButtonStates() {
+            // Prev/Next
+            dom.prevBtn.disabled = state.currentQuestionIndex === 0;
+            dom.nextBtn.disabled = state.currentQuestionIndex === TOTAL_QUESTIONS - 1;
+            dom.prevBtn.classList.toggle('opacity-50', dom.prevBtn.disabled);
+            dom.nextBtn.classList.toggle('opacity-50', dom.nextBtn.disabled);
+            
+            // Flag/Mark
+            const qState = state.questionStates[state.currentQuestionIndex];
+            dom.flagBtn.classList.toggle('active', qState.flagged);
+            dom.markBtn.classList.toggle('active', qState.marked);
+        }
+
+        /**
+         * Toggles the 'flagged' state for the current question
+         */
+        function toggleFlag() {
+            const index = state.currentQuestionIndex;
+            const qState = state.questionStates[index];
+            qState.flagged = !qState.flagged;
+            showToast(qState.flagged ? 'Question flagged' : 'Flag removed', 'info');
+            updateQuestionNav();
+            updateButtonStates();
+        }
+
+        /**
+         * Toggles the 'marked' state for the current question
+         */
+        function toggleMark() {
+            const index = state.currentQuestionIndex;
+            const qState = state.questionStates[index];
+            qState.marked = !qState.marked;
+            showToast(qState.marked ? 'Question marked for review' : 'Mark removed', 'info');
+            updateQuestionNav();
+            updateButtonStates();
+        }
+
+        // === TIMER LOGIC ===
+
+        /**
+         * Starts the exam timer
+         */
+        function startTimer() {
+            // Set initial timer display
+            dom.timerDisplay.textContent = formatTime(state.secondsRemaining);
+            
+            state.timerHandle = setInterval(() => {
+                state.secondsRemaining--;
+                dom.timerDisplay.textContent = formatTime(state.secondsRemaining);
+
+                // Timer warnings
+                if (state.secondsRemaining === 300) { // 5 minutes
+                    showToast('5 minutes remaining!', 'warning');
+                    dom.timerDisplay.classList.add('text-yellow-400');
+                } else if (state.secondsRemaining === 60) { // 1 minute
+                    showToast('1 minute remaining!', 'error');
+                    dom.timerDisplay.classList.remove('text-yellow-400');
+                    dom.timerDisplay.classList.add('text-red-500', 'animate-pulse');
+                }
+
+                // Time's up!
+                if (state.secondsRemaining <= 0) {
+                    clearInterval(state.timerHandle);
+                    dom.timerDisplay.textContent = '00:00:00';
+                    showToast("Time's up! Submitting your exam.", 'error');
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        /**
+         * Formats seconds into HH:MM:SS
+         * @param {number} totalSeconds
+         * @returns {string}
+         */
+        function formatTime(totalSeconds) {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return [hours, minutes, seconds].map(v => v.toString().padStart(2, '0')).join(':');
+        }
+
+        // === SUBMISSION & RESULT LOGIC ===
+
+        /**
+         * Asks for confirmation before submitting
+         */
+        function confirmSubmit() {
+            // A custom modal would be better, but `confirm` is blocked.
+            // We will use a custom toast notification as a pseudo-confirmation.
+            if (state.isSubmitting) return;
+
+            showToast('Click Submit again to confirm.', 'warning');
+            dom.submitBtn.removeEventListener('click', confirmSubmit);
+            dom.submitBtn.addEventListener('click', submitExam);
+
+            // Revert if not clicked again in 5 seconds
+            setTimeout(() => {
+                if (!state.isSubmitting) {
+                    dom.submitBtn.removeEventListener('click', submitExam);
+                    dom.submitBtn.addEventListener('click', confirmSubmit);
+                }
+            }, 5000);
+        }
+
+        /**
+         * Submits the exam and calculates results
+         */
+        function submitExam() {
+            if (state.isSubmitting) return;
+            state.isSubmitting = true;
+            
+            console.log('Submitting exam...');
+            clearInterval(state.timerHandle);
+            
+            // Calculate score
+            let score = 0;
+            let attempted = 0;
+            const subjectStats = { Physics: { correct: 0, total: 0 }, Chemistry: { correct: 0, total: 0 }, Biology: { correct: 0, total: 0 }, GK: { correct: 0, total: 0 } };
+
+            state.questions.forEach((q, i) => {
+                if (!q) return; // Skip unanswered/unloaded questions
+                
+                const userAnswer = state.userAnswers[i];
+                const subject = q.subject || 'GK'; // Default to GK if subject missing
+                
+                if (!subjectStats[subject]) { // Handle potential unknown subjects
+                    subjectStats[subject] = { correct: 0, total: 0 };
+                }
+
+                subjectStats[subject].total++;
+
+                if (userAnswer !== null) {
+                    attempted++;
+                    if (userAnswer === q.correct) {
+                        score++;
+                        subjectStats[subject].correct++;
+                    }
+                }
+            });
+
+            console.log('Score:', score);
+            console.log('Subject Stats:', subjectStats);
+
+            // Render the result page
+            renderResultPage(score, attempted, subjectStats);
+            updateView('result');
+        }
+
+        /**
+         * Renders the final result page
+         * @param {number} score
+         * @param {number} attempted
+         * @param {object} subjectStats
+         */
+        function renderResultPage(score, attempted, subjectStats) {
+            // Animate score
+            let currentScore = 0;
+            const scoreInterval = setInterval(() => {
+                if (score === 0) {
+                    dom.resultScore.textContent = 0;
+                    clearInterval(scoreInterval);
+                    return;
+                }
+                currentScore++;
+                dom.resultScore.textContent = currentScore;
+                if (currentScore >= score) clearInterval(scoreInterval);
+            }, 20);
+
+            dom.resultSummaryText.textContent = `You scored ${score} out of ${TOTAL_QUESTIONS} (${attempted} attempted)`;
+
+            // Render subject charts
+            dom.subjectCharts.innerHTML = '';
+            for (const [subject, stats] of Object.entries(subjectStats)) {
+                if (stats.total === 0) continue;
+                const percentage = (stats.correct / stats.total) * 100 || 0;
+                const chartEl = document.createElement('div');
+                chartEl.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-lg">${subject}</span>
+                        <span class="text-gray-300">${stats.correct} / ${stats.total} (${percentage.toFixed(0)}%)</span>
+                    </div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                dom.subjectCharts.appendChild(chartEl);
+            }
+
+            // Render full review
+            dom.reviewContainer.innerHTML = '';
+            state.questions.forEach((q, i) => {
+                if (!q) return; // Skip unloaded
+                
+                const userAnswer = state.userAnswers[i];
+                const isCorrect = userAnswer === q.correct;
+                const isAttempted = userAnswer !== null;
+                
+                const reviewEl = document.createElement('div');
+                reviewEl.className = 'p-6 bg-gray-800 rounded-lg border border-gray-700';
+                
+                let optionHtml = '';
+                q.options.forEach((opt, j) => {
+                    let classes = 'p-3 rounded border';
+                    if (j === q.correct) {
+                        classes += ' bg-green-900 border-green-700'; // Correct answer
+                    } else if (j === userAnswer && !isCorrect) {
+                        classes += ' bg-red-900 border-red-700'; // Wrong user answer
+                    } else {
+                        classes += ' bg-gray-700 border-gray-600';
+                    }
+                    
+                    optionHtml += `<li class="${classes}">${String.fromCharCode(65 + j)}. ${opt}</li>`;
+                });
+                
+                reviewEl.innerHTML = `
+                    <h4 class="text-xl font-semibold mb-3">
+                        <span class="text-sky-400">Q.${i + 1}</span> (${q.subject})
+                    </h4>
+                    <p class="text-lg text-gray-200 mb-4" style="white-space: pre-wrap;">${q.question}</p>
+                    <ul class="space-y-2 mb-4">${optionHtml}</ul>
+                    <div class="mt-4">
+                        <h5 class="font-semibold text-green-400 mb-2">Explanation:</h5>
+                        <p class="text-gray-300" style="white-space: pre-wrap;">${q.explanation}</p>
+                    </div>
+                `;
+                dom.reviewContainer.appendChild(reviewEl);
+            });
+        }
+
+        // === UTILITY FUNCTIONS ===
+
+        /**
+         * Shows a toast notification
+         * @param {string} message
+         * @param {'info' | 'success' | 'warning' | 'error'} type
+         */
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            dom.toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('fading-out');
+                toast.addEventListener('transitionend', () => {
+                    toast.remove();
+                });
+            }, 3000);
+        }
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', init);
+        
+    </script>
 </body>
 </html>
