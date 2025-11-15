@@ -1,224 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CEE AI Exam Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CEE AI Exam — Premium Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ---------------- Body & Fonts ---------------- */
-body {
-  margin:0; padding:0;
-  font-family:'Roboto', sans-serif;
-  background: linear-gradient(135deg,#1f1c2c,#928dab);
-  color:#fff;
+:root{
+  --bg1:#0f1020;
+  --bg2:#28143a;
+  --card:#0b0b10;
+  --accent1:#6EE7F3;
+  --accent2:#A78BFA;
+  --muted:rgba(255,255,255,0.65);
+  --green:#00c46b;
+  --red:#ff4d6d;
 }
-.container {
-  max-width:960px; margin:auto; padding:20px;
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background: linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:#fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
 }
-h1 {
-  text-align:center; margin-bottom:20px;
-  font-size:2.2em; text-shadow:2px 2px 12px #000;
+.app{
+  max-width:1100px; margin:28px auto; padding:20px;
+}
+.header{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;
+}
+.brand{
+  display:flex; gap:12px; align-items:center;
+}
+.logo {
+  width:56px;height:56px;border-radius:12px;
+  background: linear-gradient(135deg,var(--accent1),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:#061024;font-size:20px;
+  box-shadow:0 6px 20px rgba(10,10,20,0.6);
+}
+.title { font-size:20px; font-weight:700; letter-spacing:0.2px; }
+.subtitle { color:var(--muted); font-size:13px; margin-top:2px; }
+
+.controls { text-align:right; }
+.mode-btn{ background:transparent;border:1px solid rgba(255,255,255,0.06); color:var(--muted); padding:8px 12px; border-radius:10px; cursor:pointer; margin-left:8px; transition:all .18s; }
+.mode-btn.active{ border-color:rgba(255,255,255,0.14); color:#fff; background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent); }
+.mode-btn:hover{ transform:translateY(-2px) }
+
+.main{
+  display:grid; grid-template-columns: 1fr 320px; gap:20px;
 }
 
-/* ---------------- Buttons ---------------- */
-.button-group {
-  text-align:center; margin-bottom:25px;
+/* left: quiz area */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius:14px; padding:20px; box-shadow: 0 10px 30px rgba(5,5,10,0.6);
 }
-.btn {
-  background: linear-gradient(45deg,#ff7e5f,#feb47b);
-  border:none; padding:14px 24px; margin:5px;
-  font-size:16px; font-weight:bold; border-radius:12px;
-  cursor:pointer; transition:0.4s; box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
-.btn:hover { transform:scale(1.08); box-shadow:0 6px 16px rgba(0,0,0,0.6); }
+.top-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }
+.timer { font-weight:700; font-size:15px; color:var(--accent1); }
+.progress-wrap{ flex:1; margin-left:14px; margin-right:14px; }
+.progress { height:12px; background:rgba(255,255,255,0.06); border-radius:999px; overflow:hidden; }
+.progress-inner { height:100%; width:0%; background:linear-gradient(90deg,var(--accent1),var(--accent2)); transition:width .25s ease; }
 
-/* ---------------- Timer & Progress ---------------- */
-#timer {
-  text-align:right; font-size:18px; margin-bottom:10px;
-}
-.progress {
-  height:20px; background:#444; border-radius:10px; overflow:hidden; margin-bottom:15px;
-}
-.progress-bar {
-  height:100%; width:0%; background:#00ccff; transition:0.3s;
-}
+/* question area */
+.question-meta { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.subject { padding:6px 10px; border-radius:8px; font-weight:700; font-size:13px; color:#04121a; }
+.s-Physics{ background:#ffb4a9; }
+.s-Chemistry{ background:#b9a0ff; }
+.s-Biology{ background:#a2f5c9; color:#043822; }
+.s-GK{ background:#ffeaa7; color:#1a1200; }
 
-/* ---------------- Quiz Card ---------------- */
-.quiz-card {
-  background: rgba(0,0,0,0.75);
-  padding:28px; border-radius:14px; box-shadow:0 0 35px #000;
-  margin-bottom:20px; animation: fadeIn 0.5s; position:relative;
-  transform-origin: center;
-}
-@keyframes fadeIn { from{opacity:0; transform:translateY(25px);} to{opacity:1; transform:translateY(0);} }
+.q-number { color:var(--muted); font-size:13px; }
 
-.question-text { font-size:21px; margin-bottom:22px; line-height:1.5; }
-.option-btn {
-  display:block; width:100%; background:#222; border:none; color:#fff;
-  padding:16px; margin:10px 0; border-radius:12px; cursor:pointer; transition:0.3s; font-size:16px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-}
-.option-btn:hover { background:#555; transform:translateX(2px); }
-.correct { background:#00cc66 !important; color:#fff; box-shadow:0 0 15px #00ff88; }
-.wrong { background:#cc0000 !important; color:#fff; box-shadow:0 0 15px #ff5555; }
+.question-card{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; margin-bottom:12px; animation:cardIn .28s ease; }
+@keyframes cardIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+.question-text { font-size:18px; line-height:1.45; margin-bottom:14px; color:#fff; }
+.options { display:flex; flex-direction:column; gap:10px; }
 
-.explanation {
-  background: rgba(255,255,255,0.1); padding:14px; border-radius:10px; margin-top:12px;
-  display:none; font-size:15px; line-height:1.5;
+/* option styles */
+.option {
+  background:rgba(0,0,0,0.45); border-radius:10px; padding:12px 14px; cursor:pointer; border:1px solid rgba(255,255,255,0.03); transition: transform .12s, box-shadow .12s, background .12s;
+  display:flex; gap:12px; align-items:flex-start;
 }
-.next-btn {
-  background:#3498db; color:#fff; padding:14px 28px; border:none;
-  border-radius:10px; font-size:16px; cursor:pointer; display:none; margin-top:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+.option:hover{ transform:translateY(-3px); box-shadow:0 8px 22px rgba(0,0,0,0.45); }
+.opt-letter { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--muted); }
+.opt-text{ flex:1; color:#f6f7fb; font-size:15px; }
+.option.correct{ background:linear-gradient(90deg, rgba(0,196,107,0.15), rgba(0,196,107,0.06)); border-color: rgba(0,196,107,0.2); box-shadow:0 8px 30px rgba(0,196,107,0.12); }
+.option.wrong{ background:linear-gradient(90deg, rgba(255,77,109,0.14), rgba(255,77,109,0.06)); border-color: rgba(255,77,109,0.18); box-shadow:0 8px 30px rgba(255,77,109,0.12); }
+.option.disabled{ opacity:0.85; cursor:default; transform:none; }
+
+/* explanation */
+.expl { margin-top:12px; display:none; background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; color:var(--muted); font-size:14px; line-height:1.45; }
+
+/* bottom controls */
+.controls-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+.nav { display:flex; gap:8px; align-items:center; }
+.icon-btn{ background:transparent; border:1px solid rgba(255,255,255,0.04); padding:10px 12px; border-radius:10px; cursor:pointer; color:var(--muted); transition:all .14s; }
+.icon-btn:hover{ transform:translateY(-3px); color:#fff; border-color:rgba(255,255,255,0.08); }
+.next-btn{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#041024; padding:10px 18px; border-radius:10px; font-weight:700; border:none; cursor:pointer; box-shadow:0 8px 26px rgba(10,10,30,0.6); }
+.mark { background:transparent; border:1px dashed rgba(255,255,255,0.06); padding:8px 10px; border-radius:8px; color:var(--muted); cursor:pointer; }
+
+/* right column: review / stats */
+.side {
+  display:flex; flex-direction:column; gap:12px;
 }
-.next-btn:hover { transform:scale(1.05); }
+.panel { padding:14px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow:0 10px 30px rgba(0,0,0,0.6); }
+.small { font-size:13px; color:var(--muted); }
+.qgrid { display:grid; grid-template-columns: repeat(5,1fr); gap:8px; margin-top:10px; }
+.qcell { height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.02); color:var(--muted); cursor:pointer; border:1px solid rgba(255,255,255,0.02); }
+.qcell.visited{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#041024; font-weight:700; box-shadow:0 8px 18px rgba(10,10,20,0.45); }
+.qcell.marked{ outline:3px solid rgba(255,255,255,0.06); border-style:dashed; }
 
-/* ---------------- Subject Labels ---------------- */
-.subject-label {
-  display:inline-block; padding:5px 10px; border-radius:8px; font-size:13px; margin-bottom:8px;
-  font-weight:bold; color:#fff;
+/* final result */
+.result-title{ text-align:center; font-size:20px; margin-bottom:12px; }
+.result-grid{ display:flex; gap:12px; justify-content:space-around; margin-top:12px; }
+.result-bar{ width:80px; border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); padding:10px; text-align:center; }
+.result-bar .val{ font-weight:700; font-size:18px; color:var(--accent1); margin-top:8px; }
+
+/* responsive */
+@media (max-width:980px){
+  .main { grid-template-columns: 1fr; }
+  .side { order:2; }
 }
-.subject-Physics { background:#ff6f61; }
-.subject-Chemistry { background:#6a5acd; }
-.subject-Biology { background:#3cb371; }
-.subject-GK { background:#f4d03f; color:#000; }
-
-/* ---------------- Result ---------------- */
-#result { text-align:center; font-size:22px; margin-top:30px; }
-.bar-chart { display:flex; justify-content:space-around; margin-top:20px; }
-.bar { width:60px; background:#00ccff; text-align:center; border-radius:6px; transition:0.5s; }
-
-/* ---------------- Animations ---------------- */
-@keyframes slideIn { from{opacity:0; transform:translateX(50px);} to{opacity:1; transform:translateX(0);} }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>CEE AI Exam Portal</h1>
-<div class="button-group" id="start-buttons">
-  <button class="btn" onclick="startTest('past')">Past Year</button>
-  <button class="btn" onclick="startTest('mock')">Mock</button>
-  <button class="btn" onclick="startTest('probable')">Probable</button>
-  <button class="btn" onclick="startTest('mixed')">Mixed</button>
-</div>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">VS</div>
+      <div>
+        <div class="title">CEE AI Exam — VisionS</div>
+        <div class="subtitle">200 MCQs • Single question view • Global timer • Arrow & keyboard support</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="saveBtn" class="mode-btn">Save Progress</button>
+      <button id="resetBtn" class="mode-btn">Reset</button>
+    </div>
+  </div>
 
-<div id="timer"></div>
-<div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
-<div id="quiz"></div>
-<div id="result"></div>
+  <div class="main">
+    <div> 
+      <div class="card">
+        <div class="top-bar">
+          <div class="q-number small">Question <span id="qIndex">0</span> / <span id="qTotal">200</span></div>
+          <div class="progress-wrap">
+            <div class="progress"><div id="progressInner" class="progress-inner"></div></div>
+          </div>
+          <div id="timer" class="timer">Time Remaining: --:--:--</div>
+        </div>
+
+        <div id="questionArea">
+          <!-- question UI injected here -->
+          <div class="question-card">
+            <div class="question-text">Click a mode to begin the test.</div>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <div class="nav">
+            <button id="prevBtn" class="icon-btn" title="Previous (Left arrow)">◀ Prev</button>
+            <button id="nextBtn" class="icon-btn" title="Next (Right arrow)">Next ▶</button>
+            <button id="markBtn" class="mark" title="Mark for review">Mark for review</button>
+          </div>
+
+          <div>
+            <button id="finishBtn" class="icon-btn" title="Submit Test">Submit</button>
+            <button id="nextPrimary" class="next-btn" style="display:none">Continue ▶</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="small">Test Mode</div>
+        <div style="margin-top:8px; display:flex; gap:8px;">
+          <button class="mode-btn" data-mode="past">Past Year</button>
+          <button class="mode-btn" data-mode="mock">Mock</button>
+          <button class="mode-btn" data-mode="probable">Probable</button>
+          <button class="mode-btn active" data-mode="mixed">Mixed</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="small">Question Grid <span style="float:right;color:var(--muted);font-size:12px">Click to jump</span></div>
+        <div class="qgrid" id="qGrid"></div>
+      </div>
+
+      <div class="panel">
+        <div class="small">Summary</div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <div style="flex:1">
+            <div class="small">Score</div>
+            <div style="font-weight:700;font-size:22px" id="scoreView">0</div>
+          </div>
+          <div style="flex:1">
+            <div class="small">Marked</div>
+            <div style="font-weight:700;font-size:22px" id="markedView">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="small">Subject Breakdown</div>
+        <div style="display:flex; gap:8px; margin-top:10px; justify-content:space-around;">
+          <div class="result-bar">
+            <div>Physics</div><div class="val" id="phyVal">0</div>
+          </div>
+          <div class="result-bar">
+            <div>Chemistry</div><div class="val" id="chemVal">0</div>
+          </div>
+          <div class="result-bar">
+            <div>Biology</div><div class="val" id="bioVal">0</div>
+          </div>
+          <div class="result-bar">
+            <div>GK</div><div class="val" id="gkVal">0</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <script>
-// ---------------- Global Variables ----------------
-const WORKER_URL="https://rapid-truth-3395.visionsyt99.workers.dev"; // Cloudflare Worker
-let questions=[], currentIndex=0, score=0;
-let subjectScores={Physics:0,Chemistry:0,Biology:0,GK:0};
-let totalQuestions=200, timerSeconds=180*60, timerInterval;
+/* ---------------- CONFIG ---------------- */
+const WORKER_URL = "https://rapid-truth-3395.visionsyt99.workers.dev"; // <-- your worker URL
+const TOTAL_QUESTIONS = 200;       // change to 300/400 if you want
+const EXAM_SECONDS = 180 * 60;     // total time (seconds) - default 3 hours
+const SAVE_KEY = "cee_ai_progress_v1";
 
-// ---------------- Timer ----------------
-function startTimer(){
-  timerInterval=setInterval(()=>{
-    if(timerSeconds<=0){ clearInterval(timerInterval); showResult(); return; }
-    timerSeconds--;
-    const h=Math.floor(timerSeconds/3600);
-    const m=Math.floor((timerSeconds%3600)/60);
-    const s=timerSeconds%60;
-    document.getElementById('timer').textContent=`Time Remaining: ${h}h ${m}m ${s}s`;
-  },1000);
+/* ---------------- STATE ---------------- */
+let mode = "mixed";
+let timer = EXAM_SECONDS;
+let timerInterval = null;
+let currentIndex = 0;               // zero-based
+let questions = new Array(TOTAL_QUESTIONS).fill(null); // store question objects when fetched
+let answers = new Array(TOTAL_QUESTIONS).fill(null);   // store chosen indices
+let marked = new Array(TOTAL_QUESTIONS).fill(false);   // mark for review
+let loadedFlags = new Array(TOTAL_QUESTIONS).fill(false);
+let score = 0;
+let subjectScores = { Physics:0, Chemistry:0, Biology:0, GK:0 };
+let testStarted = false;
+
+/* ---------------- HELPERS ---------------- */
+function el(id){ return document.getElementById(id); }
+function fmtTime(s){
+  if(s < 0) s = 0;
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
-
-// ---------------- Start Test ----------------
-async function startTest(type){
-  document.getElementById('start-buttons').style.display='none';
-  startTimer();
-  loadQuestion(type);
-}
-
-// ---------------- Load Question ----------------
-async function loadQuestion(type){
-  if(currentIndex>=totalQuestions){ showResult(); return; }
-  document.getElementById('quiz').innerHTML='<p>Loading question...</p>';
-  try{
-    const res=await fetch(WORKER_URL,{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        messages:[{role:'user', content:`Generate 1 ${type} CEE question JSON with 4 options, correct index, explanation, and subject (Physics/Chemistry/Biology/GK). Question number: ${currentIndex+1}`}]
-      })
-    });
-    let qjson=await res.json();
-    if(typeof qjson==="string") qjson=JSON.parse(qjson);
-    if(!qjson.subject) qjson.subject="GK";
-    questions.push(qjson);
-    renderQuestion(qjson);
-  }catch(e){
-    console.error(e);
-    const qjson={question:"Failed to load question. Click Next.", options:["A","B","C","D"], correct:0, explanation:"Error generating question.", subject:"GK"};
-    renderQuestion(qjson);
+function safeParse(resp){
+  // Worker should return JSON object already, but handle string or malformed
+  if(!resp) return null;
+  if(typeof resp === "object") return resp;
+  try{ return JSON.parse(resp); } catch(e){ 
+    // try extract braces
+    const m = String(resp).match(/\{[\s\S]*\}/);
+    if(m) try{ return JSON.parse(m[0]); } catch(e2){ return null; }
+    return null;
   }
 }
 
-// ---------------- Render Question ----------------
-function renderQuestion(q){
-  const quizDiv=document.getElementById('quiz');
-  quizDiv.innerHTML=`
-    <div class="quiz-card" style="animation:slideIn 0.5s;">
-      <div class="subject-label subject-${q.subject}">${q.subject}</div>
-      <div class="question-text">Q${currentIndex+1}: ${q.question}</div>
-      <div id="options"></div>
-      <div class="explanation" id="explanation">${q.explanation}</div>
-      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question</button>
+/* ---------------- PERSISTENCE ---------------- */
+function saveProgress(){
+  const payload = {
+    timer, currentIndex, mode, answers, marked, questions, loadedFlags
+  };
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+    alert("Progress saved locally.");
+  }catch(e){
+    console.warn("Save failed", e);
+    alert("Could not save progress.");
+  }
+}
+function loadProgressIfAny(){
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(!raw) return false;
+  try{
+    const p = JSON.parse(raw);
+    timer = p.timer ?? timer;
+    currentIndex = p.currentIndex ?? currentIndex;
+    mode = p.mode ?? mode;
+    answers = p.answers ?? answers;
+    marked = p.marked ?? marked;
+    if(p.questions) {
+      questions = p.questions;
+      loadedFlags = p.loadedFlags ?? loadedFlags;
+    }
+    return true;
+  }catch(e){ return false; }
+}
+function resetAll(){
+  if(!confirm("Reset test? This clears progress.")) return;
+  localStorage.removeItem(SAVE_KEY);
+  timer = EXAM_SECONDS;
+  currentIndex = 0; questions = new Array(TOTAL_QUESTIONS).fill(null);
+  answers = new Array(TOTAL_QUESTIONS).fill(null); marked = new Array(TOTAL_QUESTIONS).fill(false);
+  loadedFlags = new Array(TOTAL_QUESTIONS).fill(false);
+  score = 0; subjectScores = { Physics:0, Chemistry:0, Biology:0, GK:0};
+  testStarted = false;
+  renderShell();
+  renderQuestionPlaceholder("Click a test mode to begin.");
+}
+
+/* ---------------- UI RENDER ---------------- */
+function renderShell(){
+  el("qTotal").textContent = TOTAL_QUESTIONS;
+  el("qIndex").textContent = (currentIndex+1);
+  updateProgressBar();
+  el("scoreView").textContent = score;
+  el("markedView").textContent = marked.filter(Boolean).length;
+  el("phyVal").textContent = subjectScores.Physics;
+  el("chemVal").textContent = subjectScores.Chemistry;
+  el("bioVal").textContent = subjectScores.Biology;
+  el("gkVal").textContent = subjectScores.GK;
+  renderGrid();
+}
+
+function updateProgressBar(){
+  const percent = Math.round(((currentIndex)/TOTAL_QUESTIONS)*100);
+  el("progressInner").style.width = `${percent}%`;
+  el("qIndex").textContent = (currentIndex+1);
+  el("scoreView").textContent = score;
+  el("markedView").textContent = marked.filter(Boolean).length;
+}
+
+/* small placeholder */
+function renderQuestionPlaceholder(text){
+  const area = el("questionArea");
+  area.innerHTML = `<div class="question-card"><div class="question-text">${text}</div></div>`;
+}
+
+/* render question object q for index idx */
+function renderQuestion(q, idx){
+  currentIndex = idx;
+  testStarted = true;
+  renderShell();
+  // question card
+  const area = el("questionArea");
+  if(!q) { renderQuestionPlaceholder("Loading question..."); return; }
+
+  const subject = q.subject || "GK";
+  const subjectClass = "s-" + subject;
+  const qNumDisplay = `Q${idx+1}`;
+
+  // build options
+  let optionsHtml = "";
+  (q.options || ["A","B","C","D"]).forEach((opt, i) => {
+    optionsHtml += `<div class="option ${ (answers[idx] !== null && answers[idx] === i) ? (i === q.correct ? 'correct' : 'wrong') : '' } ${ (answers[idx] !== null) ? 'disabled' : '' }" data-opt="${i}">
+      <div class="opt-letter">${String.fromCharCode(65+i)}</div>
+      <div class="opt-text">${escapeHtml(opt)}</div>
+    </div>`;
+  });
+
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="question-meta">
+        <div class="subject ${subjectClass}">${subject}</div>
+        <div class="q-number small" style="margin-left:8px;">${qNumDisplay}</div>
+      </div>
+      <div class="question-text">${escapeHtml(q.question)}</div>
+      <div class="options">${optionsHtml}</div>
+      <div class="expl expl" id="expl">${escapeHtml(q.explanation || "")}</div>
     </div>
   `;
-  const optionsDiv=document.getElementById('options');
-  q.options.forEach((opt,idx)=>{
-    const btn=document.createElement('button');
-    btn.className='option-btn'; btn.textContent=opt;
-    btn.onclick=()=>selectOption(btn,idx,q.correct,q.subject);
-    optionsDiv.appendChild(btn);
+
+  // attach clicks for options
+  const optionEls = area.querySelectorAll('.option');
+  optionEls.forEach(elm => {
+    elm.addEventListener('click', () => {
+      const i = Number(elm.getAttribute('data-opt'));
+      if(answers[idx] !== null) return; // already answered
+      submitAnswer(idx, i);
+    });
+  });
+
+  // show explanation if already answered
+  if(answers[idx] !== null){
+    el("expl").style.display = "block";
+  } else {
+    el("expl").style.display = "none";
+  }
+
+  // update mark button state
+  document.getElementById("markBtn").textContent = marked[idx] ? "Unmark" : "Mark for review";
+
+  // show nextPrimary if answered
+  document.getElementById("nextPrimary").style.display = (answers[idx] !== null) ? "inline-block" : "none";
+  document.getElementById("nextPrimary").onclick = () => goToIndex(Math.min(TOTAL_QUESTIONS-1, idx+1));
+}
+
+/* escape simple text to avoid HTML injection */
+function escapeHtml(s){
+  if(!s && s !== 0) return "";
+  return String(s).replace(/[&<>"'`]/g, function(m){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '`':'&#96;'})[m];
   });
 }
 
-// ---------------- Option Selection ----------------
-function selectOption(btn,selected,correct,subject){
-  const allBtns=document.querySelectorAll('.option-btn');
-  allBtns.forEach(b=>b.disabled=true);
-  if(selected===correct){ btn.classList.add('correct'); score++; subjectScores[subject]++; }
-  else{ btn.classList.add('wrong'); allBtns[correct].classList.add('correct'); }
-  document.getElementById('explanation').style.display='block';
-  document.getElementById('next-btn').style.display='inline-block';
-  updateProgress();
+/* ---------------- GRID ---------------- */
+function renderGrid(){
+  const grid = el("qGrid");
+  grid.innerHTML = "";
+  for(let i=0;i<TOTAL_QUESTIONS;i++){
+    const cell = document.createElement("div");
+    cell.className = "qcell" + (loadedFlags[i] ? " visited" : "") + (marked[i] ? " marked" : "");
+    cell.textContent = i+1;
+    cell.addEventListener("click", ()=> goToIndex(i));
+    grid.appendChild(cell);
+  }
 }
 
-// ---------------- Next Question ----------------
-function nextQuestion(){ currentIndex++; loadQuestion('mixed'); }
-
-// ---------------- Update Progress ----------------
-function updateProgress(){
-  const percent=((currentIndex+1)/totalQuestions)*100;
-  document.getElementById('progress-bar').style.width=percent+'%';
+/* ---------------- ANSWER LOGIC ---------------- */
+function submitAnswer(idx, chosenIndex){
+  const q = questions[idx];
+  if(!q) return;
+  answers[idx] = chosenIndex;
+  loadedFlags[idx] = true;
+  // score logic (no negative marking)
+  if(chosenIndex === q.correct){
+    score++;
+    subjectScores[q.subject] = (subjectScores[q.subject]||0) + 1;
+  }
+  // reveal explanation + styling
+  renderQuestion(q, idx);
+  updateProgressBar();
+  // auto-scroll to top of question
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ---------------- Show Final Result ----------------
-function showResult(){
-  clearInterval(timerInterval);
-  document.getElementById('quiz').style.display='none';
-  document.getElementById('timer').style.display='none';
-  document.getElementById('progress-bar').style.width='100%';
-  const resultDiv=document.getElementById('result');
-  resultDiv.innerHTML=`
-    <h2>Exam Completed!</h2>
-    <p>Total Score: ${score} / ${totalQuestions}</p>
-    <p>Physics: ${subjectScores.Physics}, Chemistry: ${subjectScores.Chemistry}, Biology: ${subjectScores.Biology}, GK: ${subjectScores.GK}</p>
-    <div class="bar-chart">
-      <div class="bar" style="height:${subjectScores.Physics*2}px;">${subjectScores.Physics}</div>
-      <div class="bar" style="height:${subjectScores.Chemistry*2}px;">${subjectScores.Chemistry}</div>
-      <div class="bar" style="height:${subjectScores.Biology*2}px;">${subjectScores.Biology}</div>
-      <div class="bar" style="height:${subjectScores.GK*2}px;">${subjectScores.GK}</div>
+/* ---------------- NAVIGATION ---------------- */
+function goToIndex(idx){
+  if(idx < 0) idx = 0;
+  if(idx >= TOTAL_QUESTIONS) idx = TOTAL_QUESTIONS - 1;
+  currentIndex = idx;
+  el("qIndex").textContent = (currentIndex+1);
+  updateProgressBar();
+
+  // if we already have question, render; else fetch
+  if(questions[idx]){
+    renderQuestion(questions[idx], idx);
+  } else {
+    fetchQuestion(idx);
+  }
+}
+
+/* prev / next */
+function prev(){ goToIndex(Math.max(0, currentIndex-1)); }
+function next(){ goToIndex(Math.min(TOTAL_QUESTIONS-1, currentIndex+1)); }
+
+/* toggle mark */
+function toggleMark(){
+  marked[currentIndex] = !marked[currentIndex];
+  document.getElementById("markBtn").textContent = marked[currentIndex] ? "Unmark" : "Mark for review";
+  renderShell();
+  renderGrid();
+}
+
+/* submit test */
+function finishTest(){
+  if(!confirm("Submit test now?")) return;
+  showResultsScreen();
+}
+
+/* ---------------- FETCH from Worker ---------------- */
+async function fetchQuestion(idx){
+  // show loading placeholder
+  renderQuestionPlaceholder("Loading question...");
+  try{
+    // prepare payload
+    const payload = { mode: mode, index: idx+1 };
+    const resp = await fetch(WORKER_URL, {
+      method:"POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ messages:[ { role:"user", content: `Please create 1 CEE-style multiple choice question for Nepal CEE. Provide JSON with fields: question, options (4 items), correct (0-3), explanation, subject (Physics/Chemistry/Biology/GK). Use medium-hard difficulty. QuestionNumber:${idx+1}, Mode:${mode}` } ] })
+    });
+    // worker returns JSON content (object) or string
+    let data = null;
+    try { data = await resp.json(); } catch(e){
+      const txt = await resp.text();
+      data = safeParse(txt);
+    }
+    // Worker returns directly the parsed question object OR the JSON string; handle both
+    let qobj = safeParse(data);
+    // if data already object but doesn't have fields, try nested
+    if(!qobj || !qobj.question || !Array.isArray(qobj.options)){
+      // if response is shape {question:...} inside data, maybe data itself
+      if(typeof data === "object" && data.question){
+        qobj = data;
+      } else {
+        // fallback dummy
+        qobj = {
+          question: "Error generating question. Click Next to continue.",
+          options: ["Option A","Option B","Option C","Option D"],
+          correct: 0,
+          explanation: "AI did not return a valid question. Try next.",
+          subject: "GK"
+        };
+      }
+    }
+
+    // store and render
+    questions[idx] = qobj;
+    loadedFlags[idx] = true;
+    renderQuestion(qobj, idx);
+    renderGrid();
+    renderShell();
+  }catch(e){
+    console.error("Fetch question failed", e);
+    questions[idx] = {
+      question: "Error generating question. Click Next to continue.",
+      options: ["Option A","Option B","Option C","Option D"],
+      correct: 0,
+      explanation: "Worker error or invalid API key.",
+      subject: "GK"
+    };
+    loadedFlags[idx] = true;
+    renderQuestion(questions[idx], idx);
+    renderShell();
+  }
+}
+
+/* ---------------- RESULTS ---------------- */
+function showResultsScreen(){
+  // hide main question area and show result summary
+  // compute final stats
+  const correctTotal = score;
+  const resultHtml = `
+    <div class="card">
+      <div class="result-title">Exam Completed</div>
+      <div style="text-align:center; font-size:18px; margin-bottom:10px">Score: <strong style="font-size:26px;color:var(--accent1)">${correctTotal}</strong> / ${TOTAL_QUESTIONS}</div>
+      <div class="result-grid">
+        <div style="flex:1;">
+          <div class="small">Subject breakdown</div>
+          <div style="display:flex;gap:8px; margin-top:10px; justify-content:space-around;">
+            <div class="result-bar"><div>Physics</div><div class="val" id="rPhy">${subjectScores.Physics}</div></div>
+            <div class="result-bar"><div>Chemistry</div><div class="val" id="rChem">${subjectScores.Chemistry}</div></div>
+            <div class="result-bar"><div>Biology</div><div class="val" id="rBio">${subjectScores.Biology}</div></div>
+            <div class="result-bar"><div>GK</div><div class="val" id="rGk">${subjectScores.GK}</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:20px">
+        <button class="next-btn" onclick="downloadReport()">Download Report (JSON)</button>
+      </div>
     </div>
   `;
+  el("questionArea").innerHTML = resultHtml;
+  // stop timer
+  clearInterval(timerInterval);
+  el("timer").textContent = "Test submitted";
 }
+
+/* ---------------- REPORT ---------------- */
+function downloadReport(){
+  const report = {
+    totalQuestions: TOTAL_QUESTIONS,
+    correct: score,
+    answers,
+    marked,
+    subjectScores,
+    questionsLoaded: questions.map((q,i) => q ? {index:i+1, question:q.question, options:q.options, correct:q.correct, subject:q.subject} : null)
+  };
+  const blob = new Blob([JSON.stringify(report, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "cee_exam_report.json"; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+
+/* ---------------- TIMER HANDLING ---------------- */
+function startClockIfNeeded(){
+  if(timerInterval) return;
+  timerInterval = setInterval(()=>{
+    timer--;
+    el("timer").textContent = "Time Remaining: " + fmtTime(timer);
+    if(timer <= 0){
+      clearInterval(timerInterval);
+      alert("Time up! Submitting automatically.");
+      showResultsScreen();
+    }
+  }, 1000);
+}
+
+/* ---------------- KEYBOARD SUPPORT ---------------- */
+document.addEventListener('keydown', (e)=>{
+  if(!testStarted) return;
+  if(e.key === "ArrowRight") { next(); }
+  else if(e.key === "ArrowLeft") { prev(); }
+  else if(["a","A"].includes(e.key)) chooseByLetter(0);
+  else if(["b","B"].includes(e.key)) chooseByLetter(1);
+  else if(["c","C"].includes(e.key)) chooseByLetter(2);
+  else if(["d","D"].includes(e.key)) chooseByLetter(3);
+  else if(e.key === "Enter") {
+    // if current answered, go next; else do nothing
+    if(answers[currentIndex] !== null) next();
+  }
+});
+function chooseByLetter(i){
+  if(!questions[currentIndex]) return;
+  if(answers[currentIndex] !== null) return;
+  submitAnswer(currentIndex, i);
+}
+
+/* ---------------- UI HOOKS ---------------- */
+document.querySelectorAll('.mode-btn[data-mode]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode-btn[data-mode]').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.getAttribute('data-mode');
+  });
+});
+el("prevBtn").addEventListener('click', ()=>{ prev(); startClockIfNeeded(); });
+el("nextBtn").addEventListener('click', ()=>{ next(); startClockIfNeeded(); });
+el("markBtn").addEventListener('click', ()=> toggleMark());
+el("finishBtn").addEventListener('click', finishTest);
+el("saveBtn").addEventListener('click', saveProgress);
+el("resetBtn").addEventListener('click', resetAll);
+el("nextPrimary").addEventListener('click', ()=> next());
+
+/* ---------------- INIT ---------------- */
+(function init(){
+  el("qTotal").textContent = TOTAL_QUESTIONS;
+  // load any saved progress
+  if(loadProgressIfAny()){
+    if(confirm("Found saved progress — resume?")){
+      startClockIfNeeded();
+      goToIndex(currentIndex);
+    } else {
+      localStorage.removeItem(SAVE_KEY);
+      renderQuestionPlaceholder("Click a test mode to begin.");
+    }
+  } else {
+    renderShell();
+    renderQuestionPlaceholder("Click a test mode to begin.");
+  }
+
+  // attach top mode buttons
+  document.querySelectorAll('#start-buttons .btn').forEach(btn=>{
+    btn.addEventListener('click', (ev)=>{
+      const m = btn.textContent.toLowerCase().includes("past") ? "past" : (btn.textContent.toLowerCase().includes("mock") ? "mock" : (btn.textContent.toLowerCase().includes("prob") ? "probable" : "mixed"));
+      mode = m;
+      // mark mode buttons right side
+      document.querySelectorAll('.mode-btn[data-mode]').forEach(x=> x.classList.remove('active'));
+      const rightBtn = document.querySelector(`.mode-btn[data-mode="${mode}"]`);
+      if(rightBtn) rightBtn.classList.add('active');
+      // begin
+      startClockIfNeeded();
+      goToIndex(0);
+    });
+  });
+})();
 </script>
 </body>
 </html>
-
-
