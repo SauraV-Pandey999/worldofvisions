@@ -1,300 +1,284 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Vision_S — Dashboard</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg1: #07070b;
-      --glass: rgba(255,255,255,0.04);
-      --glass-2: rgba(255,255,255,0.02);
-      --accent1:#6ee7b7;
-      --accent2:#60a5fa;
-      --accent3:#a78bfa;
-      --accent-grad: linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
-      --muted: #b9d0ef;
-      --max-level: 7;
-    }
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,-apple-system;color:#eaf6ff}
-    html,body{height:100%;margin:0;background:
-      radial-gradient(1000px 600px at 10% 10%, rgba(96,165,250,0.06), transparent 5%),
-      radial-gradient(900px 500px at 90% 90%, rgba(167,139,250,0.05), transparent 10%),
-      linear-gradient(180deg,#06040b,#0b0433 40%,#1a044b 100%);
-      overflow-y:auto;
-    }
-    .page {
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:36px;
-    }
+  <meta charset="utf-8" />
+  <title>Vision_S — Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1: #07070b;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      --accent1:#6ee7b7;
+      --accent2:#60a5fa;
+      --accent3:#a78bfa;
+      --accent-grad: linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
+      --muted: #b9d0ef;
+      --max-level: 7;
+    }
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,-apple-system;color:#eaf6ff}
+    html,body{height:100%;margin:0;background:
+      radial-gradient(1000px 600px at 10% 10%, rgba(96,165,250,0.06), transparent 5%),
+      radial-gradient(900px 500px at 90% 90%, rgba(167,139,250,0.05), transparent 10%),
+      linear-gradient(180deg,#06040b,#0b0433 40%,#1a044b 100%);
+      overflow-y:auto;
+    }
+    .page {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:36px;
+    }
 
-    .shell {
-      width:100%;
-      max-width:1100px;
-      border-radius:20px;
-      padding:26px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 20px 60px rgba(2,6,23,0.6), 0 6px 18px rgba(0,0,0,0.5);
-      position:relative;
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.03);
-    }
+    .shell {
+      width:100%;
+      max-width:1100px;
+      border-radius:20px;
+      padding:26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6), 0 6px 18px rgba(0,0,0,0.5);
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
 
-    /* header */
-    .header {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .logo-wrap {
-      width:68px; height:68px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      background: var(--accent-grad);
-      box-shadow: 0 8px 24px rgba(96,165,250,0.08);
-      overflow:hidden;
-    }
-    .logo-wrap img { width:56px; height:auto; display:block; object-fit:contain; }
+    /* header */
+    .header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo-wrap {
+      width:68px; height:68px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      background: var(--accent-grad);
+      box-shadow: 0 8px 24px rgba(96,165,250,0.08);
+      overflow:hidden;
+    }
+    .logo-wrap img { width:56px; height:auto; display:block; object-fit:contain; }
 
-    .title { font-weight:700; font-size:20px; color:#eaf6ff }
-    .subtitle { color:var(--muted); font-size:13px; margin-top:2px; }
+    .title { font-weight:700; font-size:20px; color:#eaf6ff }
+    .subtitle { color:var(--muted); font-size:13px; margin-top:2px; }
 
-    .header-actions { display:flex; gap:10px; align-items:center; }
+    .header-actions { display:flex; gap:10px; align-items:center; }
 
-    .tag {
-      background: rgba(255,255,255,0.03);
-      padding:8px 12px; border-radius:12px; font-size:13px; color:var(--muted);
-    }
-    .btn {
-      background: transparent; border: 1px solid rgba(255,255,255,0.04);
-      padding:8px 12px; border-radius:10px; cursor:pointer; color:inherit;
-    }
-    .btn.primary {
-      background: var(--accent-grad); color:#04102a; border:none; font-weight:700;
-      box-shadow: 0 6px 20px rgba(96,165,250,0.12);
-    }
+    .tag {
+      background: rgba(255,255,255,0.03);
+      padding:8px 12px; border-radius:12px; font-size:13px; color:var(--muted);
+    }
+    .btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.04);
+      padding:8px 12px; border-radius:10px; cursor:pointer; color:inherit;
+    }
+    .btn.primary {
+      background: var(--accent-grad); color:#04102a; border:none; font-weight:700;
+      box-shadow: 0 6px 20px rgba(96,165,250,0.12);
+    }
 
-    /* main layout */
-    .main {
-      display:flex;
-      gap:24px;
-      margin-top:18px;
-      align-items:flex-start;
-    }
+    /* main layout */
+    .main {
+      display:flex;
+      gap:24px;
+      margin-top:18px;
+      align-items:flex-start;
+    }
 
-    /* left column */
-    .left {
-      width:360px;
-      border-radius:14px;
-      padding:16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.02);
-    }
+    /* left column */
+    .left {
+      width:360px;
+      border-radius:14px;
+      padding:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.02);
+    }
 
-    .profile-row { display:flex; gap:12px; align-items:center; }
-    .avatar-wrap {
-      width:86px; height:86px; border-radius:999px; overflow:hidden; position:relative;
-      display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.03), transparent 30%);
-      transition: transform .18s ease;
-      border: 3px solid rgba(255,255,255,0.03);
-    }
-    .avatar-wrap:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(63,94,255,0.08); }
+    .profile-row { display:flex; gap:12px; align-items:center; }
+    .avatar-wrap {
+      width:86px; height:86px; border-radius:999px; overflow:hidden; position:relative;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.03), transparent 30%);
+      transition: transform .18s ease;
+      border: 3px solid rgba(255,255,255,0.03);
+    }
+    .avatar-wrap:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(63,94,255,0.08); }
 
-    .avatar { width:100%; height:100%; object-fit:cover; display:block; }
+    .avatar { width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* camera overlay */
-    .avatar-overlay {
-      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-      background: linear-gradient(180deg, rgba(3,6,23,0.35), rgba(3,6,23,0.45));
-      opacity:0; transition: opacity .15s ease;
-    }
-    .avatar-wrap:hover .avatar-overlay { opacity:1; cursor:pointer; }
-    .camera-dot {
-      width:44px; height:44px; border-radius:999px; display:flex;align-items:center;justify-content:center;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.06);
-      font-weight:700; color:#fff;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
-    }
+    /* camera overlay */
+    .avatar-overlay {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(180deg, rgba(3,6,23,0.35), rgba(3,6,23,0.45));
+      opacity:0; transition: opacity .15s ease;
+    }
+    .avatar-wrap:hover .avatar-overlay { opacity:1; cursor:pointer; }
+    .camera-dot {
+      width:44px; height:44px; border-radius:999px; display:flex;align-items:center;justify-content:center;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.06);
+      font-weight:700; color:#fff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    }
 
-    .user-meta { display:flex; flex-direction:column; }
-    .user-name { font-size:18px; font-weight:700; }
-    .user-email { font-size:12.5px; color:var(--muted); margin-top:6px; word-break:break-all; }
+    .user-meta { display:flex; flex-direction:column; }
+    .user-name { font-size:18px; font-weight:700; }
+    .user-email { font-size:12.5px; color:var(--muted); margin-top:6px; word-break:break-all; }
 
-    .streak { margin-top:14px; padding:12px; border-radius:10px; background:var(--glass-2); text-align:center; }
-    .streak .count { font-size:20px; font-weight:800; margin-top:6px; }
+    .streak { margin-top:14px; padding:12px; border-radius:10px; background:var(--glass-2); text-align:center; }
+    .streak .count { font-size:20px; font-weight:800; margin-top:6px; }
 
-    .progress-card { margin-top:18px; padding:12px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); }
-    .level-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .level-name { font-weight:800; font-size:16px; }
-    .level-badge { padding:8px 14px; border-radius:999px; background: linear-gradient(90deg,#ffd47a,#d4af37); color:#241600; font-weight:800; }
+    .progress-card { margin-top:18px; padding:12px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); }
+    .level-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .level-name { font-weight:800; font-size:16px; }
+    .level-badge { padding:8px 14px; border-radius:999px; background: linear-gradient(90deg,#ffd47a,#d4af37); color:#241600; font-weight:800; }
 
-    .progress-bar { margin-top:12px; height:16px; border-radius:999px; background: rgba(255,255,255,0.03); overflow:hidden; }
-    .progress-fill { height:100%; width:0%; background: var(--accent-grad); transition: width .6s cubic-bezier(.2,.9,.2,1); }
+    .progress-bar { margin-top:12px; height:16px; border-radius:999px; background: rgba(255,255,255,0.03); overflow:hidden; }
+    .progress-fill { height:100%; width:0%; background: var(--accent-grad); transition: width .6s cubic-bezier(.2,.9,.2,1); }
 
-    .progress-meta { display:flex; justify-content:space-between; margin-top:10px; color:var(--muted); font-size:13px; }
+    .progress-meta { display:flex; justify-content:space-between; margin-top:10px; color:var(--muted); font-size:13px; }
 
-    .controls-small { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    /* controls-small removed as per request */
 
-    /* membership */
-    .membership { margin-top:14px; padding:12px; border-radius:10px; background: rgba(255,255,255,0.02); color:#ffdca3; font-weight:700; text-align:center; }
+    /* membership */
+    .membership { margin-top:14px; padding:12px; border-radius:10px; background: rgba(255,255,255,0.02); color:#ffdca3; font-weight:700; text-align:center; }
 
-    /* right column */
-    .right { flex:1; padding:18px; border-radius:12px; }
-    .greeting { font-size:22px; font-weight:700; }
-    .g-sub { color:var(--muted); margin-top:6px; }
+    /* right column */
+    .right { flex:1; padding:18px; border-radius:12px; }
+    .greeting { font-size:22px; font-weight:700; }
+    .g-sub { color:var(--muted); margin-top:6px; }
 
-    .stat-grid { display:flex; gap:12px; margin-top:18px; }
-    .stat { flex:1; padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); text-align:center; }
-    .stat h5 { font-size:12px; color:var(--muted); margin:0 }
-    .stat p { font-weight:800; font-size:18px; margin-top:8px; }
+    .stat-grid { display:flex; gap:12px; margin-top:18px; }
+    .stat { flex:1; padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); text-align:center; }
+    .stat h5 { font-size:12px; color:var(--muted); margin:0 }
+    .stat p { font-weight:800; font-size:18px; margin-top:8px; }
 
-    .notice { margin-top:18px; padding:12px; border-radius:10px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#cfe6ff; font-size:13px; }
-    .logout { margin-top:18px; padding:12px 18px; border-radius:10px; background:#ff5252; border:0; color:#fff; cursor:pointer; }
+    .notice { margin-top:18px; padding:12px; border-radius:10px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#cfe6ff; font-size:13px; }
+    .logout { margin-top:18px; padding:12px 18px; border-radius:10px; background:#ff5252; border:0; color:#fff; cursor:pointer; }
 
-    .admin-box { margin-top:16px; padding:12px; border-radius:12px; background: rgba(255,255,255,0.02); display:none; flex-direction:column; gap:8px; }
-    .admin-row { display:flex; gap:8px; align-items:center; }
-    .small-input { padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:inherit; }
+    /* Admin-related styles removed */
 
-    /* responsive */
-    @media (max-width:960px){ .main{ flex-direction:column; } .left{ width:100%; } .brand{ gap:8px; } .logo-wrap{ width:56px; height:56px; } }
+    /* responsive */
+    @media (max-width:960px){ .main{ flex-direction:column; } .left{ width:100%; } .brand{ gap:8px; } .logo-wrap{ width:56px; height:56px; } }
 
-  </style>
+  </style>
 </head>
 <body>
-  <div class="page">
-    <div class="shell" id="shell">
-      <div class="header">
-        <div class="brand">
-          <div class="logo-wrap" id="logoWrap">
-            <!-- Replace LOGO_URL_HERE with your company logo URL (PNG/SVG) -->
-            <img id="companyLogo" src="LOGO_URL_HERE" alt="Logo" onerror="this.style.display='none'">
-            <!-- If image missing, fallback to text -->
-            <div id="logoText" style="display:none;font-weight:800;color:#04102a;padding:8px 12px;border-radius:8px;">VISION_S</div>
-          </div>
-          <div>
-            <div class="title">Vision_S Dashboard</div>
-            <div class="subtitle">Member Area — Premium</div>
-          </div>
-        </div>
+  <div class="page">
+    <div class="shell" id="shell">
+      <div class="header">
+        <div class="brand">
+          <div class="logo-wrap" id="logoWrap">
+                        <img id="companyLogo" src="LOGO_URL_HERE" alt="Logo" onerror="this.style.display='none'">
+                        <div id="logoText" style="display:none;font-weight:800;color:#04102a;padding:8px 12px;border-radius:8px;">VISION_S</div>
+          </div>
+          <div>
+            <div class="title">Vision_S Dashboard</div>
+            <div class="subtitle">Member Area — Premium</div>
+          </div>
+        </div>
 
-        <div class="header-actions">
-          <div class="tag" id="levelTag">Level 0 · Bronze</div>
-          <button class="btn" id="adminPageBtn">Admin Page</button>
-          <button class="btn" id="refreshBtn">Refresh</button>
-        </div>
-      </div>
+        <div class="header-actions">
+          <div class="tag" id="levelTag">Level 0 · Bronze</div>
+          <button class="btn" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
 
-      <div class="main">
-        <div class="left">
+      <div class="main">
+        <div class="left">
 
-          <div class="profile-row">
-            <div class="avatar-wrap" id="avatarWrap" title="Click to change profile picture">
-              <img id="avatar" class="avatar" src="https://i.ibb.co/bm7M7C6/default.jpg" alt="avatar">
-              <div class="avatar-overlay" id="avatarOverlay" aria-hidden="true">
-                <div class="camera-dot">📷</div>
-              </div>
-            </div>
-            <div class="user-meta">
-              <div class="user-name" id="displayName">User</div>
-              <div class="user-email" id="displayEmail">user@example.com</div>
-            </div>
-          </div>
+          <div class="profile-row">
+            <div class="avatar-wrap" id="avatarWrap" title="Click to change profile picture">
+              <img id="avatar" class="avatar" src="https://i.ibb.co/bm7M7C6/default.jpg" alt="avatar">
+              <div class="avatar-overlay" id="avatarOverlay" aria-hidden="true">
+                <div class="camera-dot">📷</div>
+              </div>
+            </div>
+            <div class="user-meta">
+              <div class="user-name" id="displayName">User</div>
+              <div class="user-email" id="displayEmail">user@example.com</div>
+            </div>
+          </div>
 
-          <div class="streak">
-            <div style="font-size:13px;color:var(--muted)">Login Streak</div>
-            <div class="count" id="streakCount">0 🔥</div>
-            <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
-          </div>
+          <div class="streak">
+            <div style="font-size:13px;color:var(--muted)">Login Streak</div>
+            <div class="count" id="streakCount">0 🔥</div>
+            <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
+          </div>
 
-          <div class="progress-card">
-            <div class="level-row">
-              <div>
-                <div class="level-name" id="levelName">Bronze</div>
-                <div style="font-size:12px;color:var(--muted)">Progress towards next level</div>
-              </div>
-              <div class="level-badge" id="badge">Bronze</div>
-            </div>
+          <div class="progress-card">
+            <div class="level-row">
+              <div>
+                <div class="level-name" id="levelName">Bronze</div>
+                <div style="font-size:12px;color:var(--muted)">Progress towards next level</div>
+              </div>
+              <div class="level-badge" id="badge">Bronze</div>
+            </div>
 
-            <div class="progress-wrapper" style="margin-top:12px">
-              <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width:0%"></div>
-              </div>
-            </div>
+            <div class="progress-wrapper" style="margin-top:12px">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
+              </div>
+            </div>
 
-            <div class="progress-meta">
-              <div id="progressPercent">0%</div>
-              <div id="progressToNext">0 / 100</div>
-            </div>
+            <div class="progress-meta">
+              <div id="progressPercent">0%</div>
+              <div id="progressToNext">0 / 100</div>
+            </div>
 
-            <div class="controls-small">
-              <button class="btn" id="simulateDaily">Simulate +2%</button>
-              <button class="btn" id="simulateBreak">Simulate -5%</button>
-            </div>
-          </div>
+                      </div>
 
-          <div class="membership" id="membershipBox" style="margin-top:12px">
-            <div style="font-size:12px;color:var(--muted)">Membership Code</div>
-            <div id="membershipCode" style="margin-top:8px;color:#ffdca3">Not assigned</div>
-          </div>
+          <div class="membership" id="membershipBox" style="margin-top:12px">
+            <div style="font-size:12px;color:var(--muted)">Membership Code</div>
+            <div id="membershipCode" style="margin-top:8px;color:#ffdca3">Not assigned</div>
+          </div>
 
-        </div>
+        </div>
 
-        <div class="right">
-          <div class="greeting" id="greet">Welcome back!</div>
-          <div class="g-sub" id="gSub">Your membership dashboard</div>
+        <div class="right">
+          <div class="greeting" id="greet">Welcome back!</div>
+          <div class="g-sub" id="gSub">Your membership dashboard</div>
 
-          <div class="stat-grid">
-            <div class="stat">
-              <h5>Current Level</h5>
-              <p id="statLevel">Bronze</p>
-            </div>
-            <div class="stat">
-              <h5>Progress</h5>
-              <p id="statProgress">0%</p>
-            </div>
-            <div class="stat">
-              <h5>Next Reward</h5>
-              <p id="statNext">Unlock at 100%</p>
-            </div>
-          </div>
+          <div class="stat-grid">
+            <div class="stat">
+              <h5>Current Level</h5>
+              <p id="statLevel">Bronze</p>
+            </div>
+            <div class="stat">
+              <h5>Progress</h5>
+              <p id="statProgress">0%</p>
+            </div>
+            <div class="stat">
+              <h5>Next Reward</h5>
+              <p id="statNext">Unlock at 100%</p>
+            </div>
+          </div>
 
-          <div class="notice">
-            <strong>Streak Tip:</strong> Login daily to keep your streak. If you miss more than one day your streak resets and you'll lose 5% progress (progress never becomes negative).
-          </div>
+          <div class="notice">
+            <strong>Streak Tip:</strong> Login daily to keep your streak. If you miss more than one day your streak resets and you'll lose 5% progress (progress never becomes negative).
+          </div>
 
-          <button class="logout" id="logoutBtn">Logout</button>
+          <button class="logout" id="logoutBtn">Logout</button>
 
-          <!-- Admin notes (not the admin page itself) -->
-          <div style="margin-top:12px;color:var(--muted);font-size:13px">
-            Admin features are available on a separate page. Click <strong>Admin Page</strong> and enter your admin code.
-          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Hidden file input for avatar upload -->
-  <input id="avatarInput" type="file" accept="image/*" style="display:none" />
+    <input id="avatarInput" type="file" accept="image/*" style="display:none" />
 
 <script type="module">
 /* =========================
-  Full dashboard logic
-  - Firebase Auth + Firestore + Storage
-  - Realtime sync (onSnapshot)
-  - Avatar hover edit / upload
-  - Admin page launcher
-  ========================= */
+  Professional Dashboard Logic
+  - Firebase Auth + Firestore + Storage
+  - Realtime sync (onSnapshot)
+  - Avatar hover edit / upload
+  ========================= */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -303,13 +287,13 @@ import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://ww
 
 /* ---- Firebase config (your config) ---- */
 const firebaseConfig = {
-  apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
-  authDomain: "login-6e215.firebaseapp.com",
-  projectId: "login-6e215",
-  storageBucket: "login-6e215.firebasestorage.app",
-  messagingSenderId: "503897234336",
-  appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
-  measurementId: "G-6D44B4444K"
+  apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
+  authDomain: "login-6e215.firebaseapp.com",
+  projectId: "login-6e215",
+  storageBucket: "login-6e215.firebasestorage.app",
+  messagingSenderId: "503897234336",
+  appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
+  measurementId: "G-6D44B4444K"
 };
 /* --------------------------------------- */
 
@@ -341,16 +325,11 @@ const membershipCodeEl = document.getElementById('membershipCode');
 
 const logoutBtn = document.getElementById('logoutBtn');
 const refreshBtn = document.getElementById('refreshBtn');
-const simulateDailyBtn = document.getElementById('simulateDaily');
-const simulateBreakBtn = document.getElementById('simulateBreak');
-const adminPageBtn = document.getElementById('adminPageBtn');
 
 const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','CROWN','CONQUEROR'];
-const ADMIN_PAGE = 'admin.html'; // separate admin page
-const ADMIN_CODE = 'vision_s_admin_2025';
 
 let currentUser = null;
-let userRef = null;     // doc ref
+let userRef = null;     // doc ref
 let unsubSnapshot = null;
 let localUser = { level:1, progress:0, streak:0, lastLogin:null, name:'User', email:'', membershipCode:null, photoURL:null };
 
@@ -360,27 +339,27 @@ function toDateKey(ts){ const d = ts ? (ts instanceof Date ? ts : new Date(ts)) 
 
 /* render UI */
 function renderUI(){
-  displayNameEl.textContent = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
-  displayEmailEl.textContent = localUser.email || (currentUser && currentUser.email) || '';
-  avatarEl.src = localUser.photoURL || currentUser?.photoURL || 'https://i.ibb.co/bm7M7C6/default.jpg';
+  displayNameEl.textContent = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
+  displayEmailEl.textContent = localUser.email || (currentUser && currentUser.email) || '';
+  avatarEl.src = localUser.photoURL || currentUser?.photoURL || 'https://i.ibb.co/bm7M7C6/default.jpg';
 
-  const levelIndex = clamp(localUser.level,1,LEVELS.length);
-  const levelName = LEVELS[levelIndex - 1] || 'Bronze';
-  levelNameEl.textContent = levelName;
-  badgeEl.textContent = levelName;
-  levelTag.textContent = `Level ${levelIndex} · ${levelName}`;
+  const levelIndex = clamp(localUser.level,1,LEVELS.length);
+  const levelName = LEVELS[levelIndex - 1] || 'Bronze';
+  levelNameEl.textContent = levelName;
+  badgeEl.textContent = levelName;
+  levelTag.textContent = `Level ${levelIndex} · ${levelName}`;
 
-  const progress = clamp(Math.round(localUser.progress||0),0,999);
-  progressFill.style.width = `${clamp(progress,0,100)}%`;
-  progressPercent.textContent = `${clamp(progress,0,100)}%`;
-  progressToNext.textContent = `${clamp(progress,0,100)} / 100`;
-  statLevel.textContent = levelName;
-  statProgress.textContent = `${clamp(progress,0,100)}%`;
-  statNext.textContent = 'Unlock at 100%';
-  streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
-  membershipCodeEl.textContent = localUser.membershipCode ?? 'Not assigned';
-  greet.textContent = `Welcome back, ${ (localUser.name || '').split(' ')[0] || 'Member' }!`;
-  greetSub.textContent = `Login daily to maintain streak and level up faster.`;
+  const progress = clamp(Math.round(localUser.progress||0),0,999);
+  progressFill.style.width = `${clamp(progress,0,100)}%`;
+  progressPercent.textContent = `${clamp(progress,0,100)}%`;
+  progressToNext.textContent = `${clamp(progress,0,100)} / 100`;
+  statLevel.textContent = levelName;
+  statProgress.textContent = `${clamp(progress,0,100)}%`;
+  statNext.textContent = levelIndex < LEVELS.length ? `Level ${levelIndex+1} / ${LEVELS[levelIndex]}` : 'Maximum Level';
+  streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
+  membershipCodeEl.textContent = localUser.membershipCode ?? 'Not assigned';
+  greet.textContent = `Welcome back, ${ (localUser.name || '').split(' ')[0] || 'Member' }!`;
+  greetSub.textContent = `Login daily to maintain streak and level up faster.`;
 }
 
 /* confetti */
@@ -395,183 +374,155 @@ function resizeConfetti(){ confettiCanvas.width = confettiCanvas.clientWidth; co
 window.addEventListener('resize', resizeConfetti); resizeConfetti();
 let confettiPieces = [];
 function spawnConfetti(amount=80){
-  confettiPieces = []; const w = confettiCanvas.width, h = confettiCanvas.height;
-  for(let i=0;i<amount;i++) confettiPieces.push({x:Math.random()*w,y:Math.random()*-h*0.6,vx:(Math.random()-0.5)*6,vy:Math.random()*4+2,r:Math.random()*6+4,color:`hsl(${Math.random()*360},80%,60%)`,rot:Math.random()*360,rotSpeed:(Math.random()-0.5)*8});
-  requestAnimationFrame(stepConfetti);
+  confettiPieces = []; const w = confettiCanvas.width, h = confettiCanvas.height;
+  for(let i=0;i<amount;i++) confettiPieces.push({x:Math.random()*w,y:Math.random()*-h*0.6,vx:(Math.random()-0.5)*6,vy:Math.random()*4+2,r:Math.random()*6+4,color:`hsl(${Math.random()*360},80%,60%)`,rot:Math.random()*360,rotSpeed:(Math.random()-0.5)*8});
+  requestAnimationFrame(stepConfetti);
 }
 function stepConfetti(){
-  confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-  for(let p of confettiPieces){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.rot+=p.rotSpeed; confettiCtx.save(); confettiCtx.translate(p.x,p.y); confettiCtx.rotate(p.rot*Math.PI/180); confettiCtx.fillStyle=p.color; confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); confettiCtx.restore(); }
-  confettiPieces = confettiPieces.filter(p=>p.y < confettiCanvas.height + 50);
-  if(confettiPieces.length>0) requestAnimationFrame(stepConfetti);
+  confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  for(let p of confettiPieces){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.rot+=p.rotSpeed; confettiCtx.save(); confettiCtx.translate(p.x,p.y); confettiCtx.rotate(p.rot*Math.PI/180); confettiCtx.fillStyle=p.color; confettiCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); confettiCtx.restore(); }
+  confettiPieces = confettiPieces.filter(p=>p.y < confettiCanvas.height + 50);
+  if(confettiPieces.length>0) requestAnimationFrame(stepConfetti);
 }
 
 /* normalize and save (handles level-ups) */
 async function normalizeAndSave(){
-  let leveled = false;
-  while(localUser.progress >= 100 && localUser.level < LEVELS.length){
-    localUser.progress -= 100;
-    localUser.level += 1;
-    leveled = true;
-  }
-  if(localUser.level > LEVELS.length) localUser.level = LEVELS.length;
-  if(userRef){
-    await updateDoc(userRef, {
-      level: localUser.level,
-      progress: localUser.progress,
-      streak: localUser.streak,
-      membershipCode: localUser.membershipCode ?? null,
-      lastLogin: serverTimestamp()
-    });
-  }
-  renderUI();
-  if(leveled){
-    spawnConfetti(140);
-    document.getElementById('shell').animate([{transform:'scale(1)'},{transform:'scale(1.02)'},{transform:'scale(1)'}],{duration:700});
-  }
+  let leveled = false;
+  while(localUser.progress >= 100 && localUser.level < LEVELS.length){
+    localUser.progress -= 100;
+    localUser.level += 1;
+    leveled = true;
+  }
+  if(localUser.level > LEVELS.length) localUser.level = LEVELS.length;
+  if(userRef){
+    await updateDoc(userRef, {
+      level: localUser.level,
+      progress: localUser.progress,
+      streak: localUser.streak,
+      membershipCode: localUser.membershipCode ?? null,
+      lastLogin: serverTimestamp()
+    });
+  }
+  renderUI();
+  if(leveled){
+    spawnConfetti(140);
+    document.getElementById('shell').animate([{transform:'scale(1)'},{transform:'scale(1.02)'},{transform:'scale(1)'}],{duration:700});
+  }
 }
 
 /* ensure user doc exists (creates if missing) */
 async function ensureUserDoc(uid, userObj){
-  userRef = doc(db, 'users', uid);
-  const snap = await getDoc(userRef);
-  if(!snap.exists()){
-    const now = new Date();
-    await setDoc(userRef, {
-      name: userObj.displayName || (userObj.email?userObj.email.split('@')[0]:'User'),
-      email: userObj.email || '',
-      level: 1,
-      progress: 0,
-      streak: 1,
-      membershipCode: null,
-      photoURL: userObj.photoURL || null,
-      lastLogin: serverTimestamp()
-    });
-    localUser = { level:1, progress:0, streak:1, lastLogin: now.toISOString(), name: userObj.displayName || userObj.email.split('@')[0], email: userObj.email, membershipCode:null, photoURL: userObj.photoURL||null };
-    renderUI();
-    return;
-  } else {
-    const data = snap.data();
-    localUser.level = data.level ?? 1;
-    localUser.progress = data.progress ?? 0;
-    localUser.streak = data.streak ?? 0;
-    localUser.lastLogin = data.lastLogin ? (data.lastLogin.toDate ? data.lastLogin.toDate().toISOString() : new Date(data.lastLogin).toISOString()) : null;
-    localUser.name = data.name ?? (userObj.displayName || userObj.email.split('@')[0]);
-    localUser.email = data.email ?? userObj.email;
-    localUser.membershipCode = data.membershipCode ?? null;
-    localUser.photoURL = data.photoURL ?? userObj.photoURL ?? null;
-  }
+  userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if(!snap.exists()){
+    const now = new Date();
+    await setDoc(userRef, {
+      name: userObj.displayName || (userObj.email?userObj.email.split('@')[0]:'User'),
+      email: userObj.email || '',
+      level: 1,
+      progress: 0,
+      streak: 1,
+      membershipCode: null,
+      photoURL: userObj.photoURL || null,
+      lastLogin: serverTimestamp()
+    });
+    localUser = { level:1, progress:0, streak:1, lastLogin: now.toISOString(), name: userObj.displayName || userObj.email.split('@')[0], email: userObj.email, membershipCode:null, photoURL: userObj.photoURL||null };
+    renderUI();
+    return;
+  } else {
+    const data = snap.data();
+    localUser.level = data.level ?? 1;
+    localUser.progress = data.progress ?? 0;
+    localUser.streak = data.streak ?? 0;
+    localUser.lastLogin = data.lastLogin ? (data.lastLogin.toDate ? data.lastLogin.toDate().toISOString() : new Date(data.lastLogin).toISOString()) : null;
+    localUser.name = data.name ?? (userObj.displayName || userObj.email.split('@')[0]);
+    localUser.email = data.email ?? userObj.email;
+    localUser.membershipCode = data.membershipCode ?? null;
+    localUser.photoURL = data.photoURL ?? userObj.photoURL ?? null;
+  }
 }
 
 /* handle daily login */
 async function handleDailyLogin(){
-  if(!localUser) return;
-  const nowKey = toDateKey(new Date());
-  const lastKey = localUser.lastLogin ? toDateKey(new Date(localUser.lastLogin)) : null;
-  if(lastKey === nowKey) return;
-  if(!lastKey){
-    localUser.streak = 1;
-    localUser.progress = clamp(localUser.progress + 2, 0, 999);
-  } else {
-    const now = new Date();
-    const last = new Date(localUser.lastLogin);
-    const nowUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-    const lastUTC = Date.UTC(last.getUTCFullYear(), last.getUTCMonth(), last.getUTCDate());
-    const diffDays = Math.floor((nowUTC - lastUTC) / (1000 * 60 * 60 * 24));
-    if(diffDays === 1){
-      localUser.streak = (localUser.streak || 0) + 1;
-      localUser.progress = clamp(localUser.progress + 2, 0, 999);
-    } else if(diffDays > 1){
-      localUser.streak = 1;
-      localUser.progress = Math.max(0, localUser.progress - 5);
-    }
-  }
-  if(userRef){
-    await updateDoc(userRef, {
-      level: localUser.level,
-      progress: localUser.progress,
-      streak: localUser.streak,
-      lastLogin: serverTimestamp()
-    });
-  }
+  if(!localUser) return;
+  const nowKey = toDateKey(new Date());
+  const lastKey = localUser.lastLogin ? toDateKey(new Date(localUser.lastLogin)) : null;
+  if(lastKey === nowKey) return;
+  if(!lastKey){
+    localUser.streak = 1;
+    localUser.progress = clamp(localUser.progress + 2, 0, 999);
+  } else {
+    const now = new Date();
+    const last = new Date(localUser.lastLogin);
+    const nowUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    const lastUTC = Date.UTC(last.getUTCFullYear(), last.getUTCMonth(), last.getUTCDate());
+    const diffDays = Math.floor((nowUTC - lastUTC) / (1000 * 60 * 60 * 24));
+    if(diffDays === 1){
+      localUser.streak = (localUser.streak || 0) + 1;
+      localUser.progress = clamp(localUser.progress + 2, 0, 999);
+    } else if(diffDays > 1){
+      localUser.streak = 1;
+      localUser.progress = Math.max(0, localUser.progress - 5);
+    }
+  }
+  if(userRef){
+    await updateDoc(userRef, {
+      level: localUser.level,
+      progress: localUser.progress,
+      streak: localUser.streak,
+      lastLogin: serverTimestamp()
+    });
+  }
 }
 
 /* realtime subscription to user doc */
 function subscribeToUserDoc(uid){
-  if(unsubSnapshot) unsubSnapshot(); // detach old
-  userRef = doc(db, 'users', uid);
-  unsubSnapshot = onSnapshot(userRef, (snap) => {
-    if(!snap.exists()) return;
-    const d = snap.data();
-    // update localUser from snapshot (admin changes will reflect)
-    localUser.level = d.level ?? localUser.level;
-    localUser.progress = d.progress ?? localUser.progress;
-    localUser.streak = d.streak ?? localUser.streak;
-    localUser.lastLogin = d.lastLogin ? (d.lastLogin.toDate ? d.lastLogin.toDate().toISOString() : new Date(d.lastLogin).toISOString()) : localUser.lastLogin;
-    localUser.name = d.name ?? localUser.name;
-    localUser.email = d.email ?? localUser.email;
-    localUser.membershipCode = d.membershipCode ?? localUser.membershipCode;
-    localUser.photoURL = d.photoURL ?? localUser.photoURL;
-    renderUI();
-  }, (err) => { console.error('Snapshot error', err); });
+  if(unsubSnapshot) unsubSnapshot(); // detach old
+  userRef = doc(db, 'users', uid);
+  unsubSnapshot = onSnapshot(userRef, (snap) => {
+    if(!snap.exists()) return;
+    const d = snap.data();
+    // update localUser from snapshot
+    localUser.level = d.level ?? localUser.level;
+    localUser.progress = d.progress ?? localUser.progress;
+    localUser.streak = d.streak ?? localUser.streak;
+    localUser.lastLogin = d.lastLogin ? (d.lastLogin.toDate ? d.lastLogin.toDate().toISOString() : new Date(d.lastLogin).toISOString()) : localUser.lastLogin;
+    localUser.name = d.name ?? localUser.name;
+    localUser.email = d.email ?? localUser.email;
+    localUser.membershipCode = d.membershipCode ?? localUser.membershipCode;
+    localUser.photoURL = d.photoURL ?? localUser.photoURL;
+    renderUI();
+  }, (err) => { console.error('Snapshot error', err); });
 }
 
 /* Auth listener */
 onAuthStateChanged(auth, async (user) => {
-  if(!user){
-    // not signed in — go to login page
-    window.location.href = "login.html";
-    return;
-  }
-  currentUser = user;
-  // ensure doc exists, then subscribe
-  await ensureUserDoc(user.uid, user);
-  subscribeToUserDoc(user.uid);
-  // apply daily login logic
-  await handleDailyLogin();
-  await normalizeAndSave();
-  renderUI();
+  if(!user){
+    // not signed in — go to login page
+    window.location.href = "login.html";
+    return;
+  }
+  currentUser = user;
+  // ensure doc exists, then subscribe
+  await ensureUserDoc(user.uid, user);
+  subscribeToUserDoc(user.uid);
+  // apply daily login logic
+  await handleDailyLogin();
+  await normalizeAndSave();
+  renderUI();
 });
 
 /* logout */
 logoutBtn.addEventListener('click', async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
+  await signOut(auth);
+  window.location.href = "login.html";
 });
 
 /* refresh */
 refreshBtn.addEventListener('click', async () => {
-  if(currentUser) {
-    const snap = await getDoc(doc(db,'users',currentUser.uid));
-    if(snap.exists()){
-      // snapshot will update UI automatically
-      renderUI();
-    }
-  }
-  document.getElementById('shell').animate([{opacity:0.95},{opacity:1}],{duration:250});
-});
-
-/* test simulate */
-simulateDailyBtn.addEventListener('click', async () => {
-  localUser.progress = clamp(localUser.progress + 2, 0, 999);
-  localUser.streak = (localUser.streak || 0) + 1;
-  await normalizeAndSave();
-});
-simulateBreakBtn.addEventListener('click', async () => {
-  localUser.streak = 1;
-  localUser.progress = Math.max(0, localUser.progress - 5);
-  await normalizeAndSave();
-});
-
-/* Admin page button: open separate admin page, protected by prompt for code */
-adminPageBtn.addEventListener('click', () => {
-  const code = prompt('Enter Admin Code to open Admin Page:');
-  if(code === ADMIN_CODE){
-    // open admin.html in new tab
-    window.open(ADMIN_PAGE, '_blank');
-  } else {
-    alert('Wrong admin code.');
-  }
+  // Force a UI render, the snapshot listener is the main sync
+  renderUI(); 
+  document.getElementById('shell').animate([{opacity:0.95},{opacity:1}],{duration:250});
 });
 
 /* Avatar hover click => trigger file input */
@@ -579,51 +530,35 @@ avatarWrap.addEventListener('click', () => avatarInput.click());
 
 /* Avatar upload handling */
 avatarInput.addEventListener('change', async (e) => {
-  const file = e.target.files?.[0];
-  if(!file) return;
-  if(!currentUser) return alert('Not signed in');
+  const file = e.target.files?.[0];
+  if(!file) return;
+  if(!currentUser) return alert('Not signed in');
 
-  // optional: small client-side validation
-  if(file.size > 3 * 1024 * 1024) return alert('Please select an image under 3MB.');
+  // optional: small client-side validation
+  if(file.size > 3 * 1024 * 1024) return alert('Please select an image under 3MB.');
 
-  // upload to storage and update profile and firestore
-  try {
-    const path = `profilepics/${currentUser.uid}/${Date.now()}_${file.name}`;
-    const r = sRef(storage, path);
-    const snap = await uploadBytes(r, file);
-    const url = await getDownloadURL(snap.ref);
+  // upload to storage and update profile and firestore
+  try {
+    const path = `profilepics/${currentUser.uid}/${Date.now()}_${file.name}`;
+    const r = sRef(storage, path);
+    const snap = await uploadBytes(r, file);
+    const url = await getDownloadURL(snap.ref);
 
-    // update auth profile (photoURL) and users doc
-    try { await updateProfile(currentUser, { photoURL: url }); } catch(e){ console.warn('updateProfile failed', e); }
-    await updateDoc(doc(db,'users',currentUser.uid), { photoURL: url });
+    // update auth profile (photoURL) and users doc
+    try { await updateProfile(currentUser, { photoURL: url }); } catch(e){ console.warn('updateProfile failed', e); }
+    await updateDoc(doc(db,'users',currentUser.uid), { photoURL: url });
 
-    // success — snapshot will update avatar automatically
-    alert('Profile uploaded successfully.');
-  } catch (err) {
-    console.error(err);
-    alert('Upload failed. See console.');
-  }
+    // success — snapshot will update avatar automatically
+    alert('Profile uploaded successfully.');
+  } catch (err) {
+    console.error(err);
+    alert('Upload failed. See console.');
+  }
 });
-
-/* small utility: query users by email (used by admin page) */
-/* we'll export a small function to window so admin page window can call it (same origin) */
-window._visionS = {
-  findUserDocByEmail: async (email) => {
-    const q = query(collection(db,'users'), where('email','==', email));
-    const snaps = await getDocs(q);
-    if(snaps.empty) return null;
-    const docSnap = snaps.docs[0];
-    return { id: docSnap.id, data: docSnap.data() };
-  }
-};
 
 /* initial render */
 renderUI();
 
-/* helper clamp export (optional) */
-window._visionS.clamp = clamp;
-
 </script>
 </body>
 </html>
-
