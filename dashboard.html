@@ -143,7 +143,7 @@
 
     .progress-meta { display:flex; justify-content:space-between; margin-top:10px; color:var(--muted); font-size:13px; }
 
-    /* controls-small removed as per request */
+    .controls-small { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
 
     /* membership */
     .membership { margin-top:14px; padding:12px; border-radius:10px; background: rgba(255,255,255,0.02); color:#ffdca3; font-weight:700; text-align:center; }
@@ -161,7 +161,9 @@
     .notice { margin-top:18px; padding:12px; border-radius:10px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#cfe6ff; font-size:13px; }
     .logout { margin-top:18px; padding:12px 18px; border-radius:10px; background:#ff5252; border:0; color:#fff; cursor:pointer; }
 
-    /* Admin-related styles removed */
+    .admin-box { margin-top:16px; padding:12px; border-radius:12px; background: rgba(255,255,255,0.02); display:none; flex-direction:column; gap:8px; }
+    .admin-row { display:flex; gap:8px; align-items:center; }
+    .small-input { padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:inherit; }
 
     /* responsive */
     @media (max-width:960px){ .main{ flex-direction:column; } .left{ width:100%; } .brand{ gap:8px; } .logo-wrap{ width:56px; height:56px; } }
@@ -185,6 +187,7 @@
 
         <div class="header-actions">
           <div class="tag" id="levelTag">Level 0 · Bronze</div>
+          <button class="btn" id="adminPageBtn">Admin Page</button>
           <button class="btn" id="refreshBtn">Refresh</button>
         </div>
       </div>
@@ -231,7 +234,11 @@
               <div id="progressToNext">0 / 100</div>
             </div>
 
-                      </div>
+            <div class="controls-small">
+              <button class="btn" id="simulateDaily">Simulate +2%</button>
+              <button class="btn" id="simulateBreak">Simulate -5%</button>
+            </div>
+          </div>
 
           <div class="membership" id="membershipBox" style="margin-top:12px">
             <div style="font-size:12px;color:var(--muted)">Membership Code</div>
@@ -265,6 +272,10 @@
 
           <button class="logout" id="logoutBtn">Logout</button>
 
+                    <div style="margin-top:12px;color:var(--muted);font-size:13px">
+            Admin features are available on a separate page. Click <strong>Admin Page</strong> and enter your admin code.
+          </div>
+
         </div>
       </div>
     </div>
@@ -274,10 +285,11 @@
 
 <script type="module">
 /* =========================
-  Professional Dashboard Logic
+  Full dashboard logic
   - Firebase Auth + Firestore + Storage
   - Realtime sync (onSnapshot)
   - Avatar hover edit / upload
+  - Admin page launcher
   ========================= */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -325,8 +337,13 @@ const membershipCodeEl = document.getElementById('membershipCode');
 
 const logoutBtn = document.getElementById('logoutBtn');
 const refreshBtn = document.getElementById('refreshBtn');
+const simulateDailyBtn = document.getElementById('simulateDaily');
+const simulateBreakBtn = document.getElementById('simulateBreak');
+const adminPageBtn = document.getElementById('adminPageBtn');
 
 const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','CROWN','CONQUEROR'];
+const ADMIN_PAGE = 'admin.html'; // separate admin page
+const ADMIN_CODE = 'vision_s_admin_2025';
 
 let currentUser = null;
 let userRef = null;     // doc ref
@@ -355,7 +372,7 @@ function renderUI(){
   progressToNext.textContent = `${clamp(progress,0,100)} / 100`;
   statLevel.textContent = levelName;
   statProgress.textContent = `${clamp(progress,0,100)}%`;
-  statNext.textContent = levelIndex < LEVELS.length ? `Level ${levelIndex+1} / ${LEVELS[levelIndex]}` : 'Maximum Level';
+  statNext.textContent = 'Unlock at 100%';
   streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
   membershipCodeEl.textContent = localUser.membershipCode ?? 'Not assigned';
   greet.textContent = `Welcome back, ${ (localUser.name || '').split(' ')[0] || 'Member' }!`;
@@ -482,7 +499,7 @@ function subscribeToUserDoc(uid){
   unsubSnapshot = onSnapshot(userRef, (snap) => {
     if(!snap.exists()) return;
     const d = snap.data();
-    // update localUser from snapshot
+    // update localUser from snapshot (admin changes will reflect)
     localUser.level = d.level ?? localUser.level;
     localUser.progress = d.progress ?? localUser.progress;
     localUser.streak = d.streak ?? localUser.streak;
@@ -520,9 +537,37 @@ logoutBtn.addEventListener('click', async () => {
 
 /* refresh */
 refreshBtn.addEventListener('click', async () => {
-  // Force a UI render, the snapshot listener is the main sync
-  renderUI(); 
+  if(currentUser) {
+    const snap = await getDoc(doc(db,'users',currentUser.uid));
+    if(snap.exists()){
+      // snapshot will update UI automatically
+      renderUI();
+    }
+  }
   document.getElementById('shell').animate([{opacity:0.95},{opacity:1}],{duration:250});
+});
+
+/* test simulate */
+simulateDailyBtn.addEventListener('click', async () => {
+  localUser.progress = clamp(localUser.progress + 2, 0, 999);
+  localUser.streak = (localUser.streak || 0) + 1;
+  await normalizeAndSave();
+});
+simulateBreakBtn.addEventListener('click', async () => {
+  localUser.streak = 1;
+  localUser.progress = Math.max(0, localUser.progress - 5);
+  await normalizeAndSave();
+});
+
+/* Admin page button: open separate admin page, protected by prompt for code */
+adminPageBtn.addEventListener('click', () => {
+  const code = prompt('Enter Admin Code to open Admin Page:');
+  if(code === ADMIN_CODE){
+    // open admin.html in new tab
+    window.open(ADMIN_PAGE, '_blank');
+  } else {
+    alert('Wrong admin code.');
+  }
 });
 
 /* Avatar hover click => trigger file input */
@@ -556,8 +601,23 @@ avatarInput.addEventListener('change', async (e) => {
   }
 });
 
+/* small utility: query users by email (used by admin page) */
+/* we'll export a small function to window so admin page window can call it (same origin) */
+window._visionS = {
+  findUserDocByEmail: async (email) => {
+    const q = query(collection(db,'users'), where('email','==', email));
+    const snaps = await getDocs(q);
+    if(snaps.empty) return null;
+    const docSnap = snaps.docs[0];
+    return { id: docSnap.id, data: docSnap.data() };
+  }
+};
+
 /* initial render */
 renderUI();
+
+/* helper clamp export (optional) */
+window._visionS.clamp = clamp;
 
 </script>
 </body>
