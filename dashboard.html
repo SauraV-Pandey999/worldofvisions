@@ -176,8 +176,10 @@
       <div class="header">
         <div class="brand">
           <div class="logo-wrap" id="logoWrap">
-                        <img id="companyLogo" src="LOGO_URL_HERE" alt="Logo" onerror="this.style.display='none'">
-                        <div id="logoText" style="display:none;font-weight:800;color:#04102a;padding:8px 12px;border-radius:8px;">VISION_S</div>
+            <!-- Replace LOGO_URL_HERE with your company logo URL (PNG/SVG) -->
+            <img id="companyLogo" src="LOGO_URL_HERE" alt="Logo" onerror="this.style.display='none'">
+            <!-- If image missing, fallback to text -->
+            <div id="logoText" style="display:none;font-weight:800;color:#04102a;padding:8px 12px;border-radius:8px;">VISION_S</div>
           </div>
           <div>
             <div class="title">Vision_S Dashboard</div>
@@ -272,7 +274,8 @@
 
           <button class="logout" id="logoutBtn">Logout</button>
 
-                    <div style="margin-top:12px;color:var(--muted);font-size:13px">
+          <!-- Admin notes (not the admin page itself) -->
+          <div style="margin-top:12px;color:var(--muted);font-size:13px">
             Admin features are available on a separate page. Click <strong>Admin Page</strong> and enter your admin code.
           </div>
 
@@ -281,7 +284,8 @@
     </div>
   </div>
 
-    <input id="avatarInput" type="file" accept="image/*" style="display:none" />
+  <!-- Hidden file input for avatar upload -->
+  <input id="avatarInput" type="file" accept="image/*" style="display:none" />
 
 <script type="module">
 /* =========================
