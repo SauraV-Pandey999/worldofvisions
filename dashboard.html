@@ -1,407 +1,470 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Vision_S — Dashboard</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg-1:#0b1220;
-  --glass: rgba(255,255,255,0.06);
-  --glass-2: rgba(255,255,255,0.03);
-  --neon-1: #6ee7b7;
-  --neon-2: #60a5fa;
-  --neon-3: #a78bfa;
-  --accent: linear-gradient(90deg,var(--neon-1),var(--neon-2),var(--neon-3));
-  --card-w: 960px;
-  --max-level: 7;
-}
-*{box-sizing:border-box;font-family:'Poppins',system-ui,Segoe UI,Roboto,-apple-system; color:#e8f2ff;}
-html,body{height:100%;margin:0;background:linear-gradient(120deg,#030417 0%,#0a0436 35%,#1a044b 100%);background-size:400% 400%;animation:bgMove 12s ease infinite;}
-@keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
-.card{width:100%;max-width:var(--card-w);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.brand{display:flex;gap:14px;align-items:center;}
-.logo{width:64px;height:64px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;box-shadow:0 10px 30px rgba(96,165,250,0.08);}
-.title{font-size:20px;font-weight:700;}
-.subtitle{font-size:13px;color:#bcd3ef;}
-.controls{display:flex;gap:10px;align-items:center;}
-.btn{padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:inherit;cursor:pointer;}
-.btn:hover{transform:translateY(-3px);}
-.main{display:flex;gap:22px;margin-top:20px;}
-/* left */
-.left{width:340px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:18px;border-radius:12px;}
-.profile-row{display:flex;gap:12px;align-items:center;}
-.avatar{width:72px;height:72px;border-radius:14px;background:linear-gradient(90deg,var(--neon-3),var(--neon-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;font-size:24px;overflow:hidden;}
-.avatar img{width:100%;height:100%;border-radius:14px;object-fit:cover;}
-.user-meta{display:flex;flex-direction:column;}
-.user-name{font-size:18px;font-weight:700;}
-.user-email{font-size:13px;color:#b9d0ef;}
-.streak{margin-top:14px;padding:12px;border-radius:10px;background:var(--glass-2);text-align:center;}
-.streak h4{margin:6px 0 0;font-size:14px;}
-.streak .count{font-weight:800;font-size:20px;margin-top:6px;}
-.hint{margin-top:12px;font-size:13px;color:#bcd3ef;}
-.progress-card{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
-.level-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.level-badge{padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,#ffd47a,#d4af37);color:#241600;font-weight:800;}
-.level-name{font-weight:800;font-size:16px;}
-.progress-wrapper{margin-top:14px;}
-.progress-bar{height:18px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;position:relative;}
-.progress-fill{height:100%;width:0%;border-radius:999px;background:var(--accent);background-size:300% 100%;animation:fillGlow 4s linear infinite;}
-@keyframes fillGlow{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
-.progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:#bcd3ef;}
-.controls-small{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.small-input{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;}
-/* right panel */
-.right{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));}
-.greeting{font-size:22px;font-weight:700;}
-.g-sub{color:#b7d4f8;margin-top:6px;}
-.stat-grid{display:flex;gap:12px;margin-top:18px;}
-.stat{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;}
-.stat h5{font-size:12px;color:#bcd3ef;margin:0;}
-.stat p{font-weight:800;font-size:18px;margin-top:8px;}
-.notice{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#cfe6ff;font-size:13px;}
-.logout{margin-top:18px;padding:12px 18px;border-radius:10px;background:#ff5252;border:0;color:#fff;cursor:pointer;}
-.admin-box{margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);display:none;flex-direction:column;gap:8px;}
-.admin-row{display:flex;gap:8px;align-items:center;}
-.admin-btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;background:rgba(255,255,255,0.03);}
-.tag{font-size:12px;color:#bcd3ef;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.02);}
-select.small-input{background:rgba(255,255,255,0.03);color:inherit;}
-/* responsive */
-@media (max-width:920px){.main{flex-direction:column}.left{width:100%}}
-</style>
+  <meta charset="utf-8" />
+  <title>Vision_S — Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =======================
+       Root variables
+    ======================== */
+    :root{
+      --bg-1:#0b1220;
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.03);
+      --neon-1: #6ee7b7;
+      --neon-2: #60a5fa;
+      --neon-3: #a78bfa;
+      --accent: linear-gradient(90deg,var(--neon-1),var(--neon-2),var(--neon-3));
+      --card-w: 940px;
+      --max-level: 7;
+      --font-primary: 'Poppins', sans-serif;
+    }
+    *{box-sizing:border-box;font-family:var(--font-primary); color:#e8f2ff; margin:0; padding:0;}
+    html,body{height:100%; background: linear-gradient(120deg,#030417 0%,#0a0436 35%,#1a044b 100%); background-size:400% 400%; animation:bgMove 12s ease infinite;}
+    @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+    .card{width:100%;max-width:var(--card-w);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
+    
+    /* Header */
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .brand{display:flex;gap:14px;align-items:center;}
+    .logo{width:64px;height:64px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;box-shadow:0 10px 30px rgba(96,165,250,0.08);}
+    .title{font-size:20px;font-weight:700;}
+    .subtitle{font-size:13px;color:#bcd3ef;}
+    .controls{display:flex;gap:10px;align-items:center;}
+    .btn{padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:inherit;cursor:pointer;transition: all 0.2s;}
+    .btn:hover{transform:translateY(-3px); background:rgba(96,165,250,0.2);}
+    .tag{font-size:12px;color:#bcd3ef;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.02);}
+    
+    /* Main layout */
+    .main{display:flex;gap:22px;margin-top:20px;}
+    .left{width:340px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:18px;border-radius:12px;}
+    .right{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));}
+    
+    /* Profile & avatar */
+    .profile-row{display:flex;gap:12px;align-items:center;margin-bottom:18px;}
+    .avatar{width:72px;height:72px;border-radius:14px;background:linear-gradient(90deg,var(--neon-3),var(--neon-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;font-size:24px;overflow:hidden;}
+    .avatar img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
+    .user-meta{display:flex;flex-direction:column;}
+    .user-name{font-size:18px;font-weight:700;}
+    .user-email{font-size:13px;color:#b9d0ef;}
+    
+    /* Streak */
+    .streak{margin-top:14px;padding:12px;border-radius:10px;background:var(--glass-2);text-align:center;}
+    .streak h4{margin:6px 0 0;font-size:14px;}
+    .streak .count{font-weight:800;font-size:20px;margin-top:6px;}
+    .hint{margin-top:12px;font-size:13px;color:#bcd3ef;}
+    
+    /* Progress */
+    .progress-card{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+    .level-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .level-badge{padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,#ffd47a,#d4af37);color:#241600;font-weight:800;}
+    .level-name{font-weight:800;font-size:16px;}
+    .progress-wrapper{margin-top:14px;}
+    .progress-bar{height:18px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;position:relative;}
+    .progress-fill{height:100%;width:0%;border-radius:999px;background:var(--accent);background-size:300% 100%;animation:fillGlow 4s linear infinite;}
+    @keyframes fillGlow{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
+    .progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:#bcd3ef;}
+    
+    /* Right stats */
+    .greeting{font-size:22px;font-weight:700;}
+    .g-sub{color:#b7d4f8;margin-top:6px;}
+    .stat-grid{display:flex;gap:12px;margin-top:18px;}
+    .stat{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;}
+    .stat h5{font-size:12px;color:#bcd3ef;margin:0;}
+    .stat p{font-weight:800;font-size:18px;margin-top:8px;}
+    
+    .notice{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#cfe6ff;font-size:13px;}
+    .logout{margin-top:18px;padding:12px 18px;border-radius:10px;background:#ff5252;border:0;color:#fff;cursor:pointer;}
+    
+    /* Responsive */
+    @media (max-width:920px){.main{flex-direction:column}.left{width:100%}}
+    
+  </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card" id="card">
-  <div class="header">
-    <div class="brand">
-      <div class="logo">VS</div>
-      <div>
-        <div class="title">Vision_S Dashboard</div>
-        <div class="subtitle">Member Area</div>
-      </div>
-    </div>
-    <div class="controls">
-      <div class="tag" id="levelTag">Level 0</div>
-      <button class="btn" id="refreshBtn">Refresh</button>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="left">
-      <div class="profile-row">
-        <div class="avatar" id="avatarTxt"></div>
-        <div class="user-meta">
-          <div class="user-name" id="displayName">User</div>
-          <div class="user-email" id="displayEmail">user@example.com</div>
-        </div>
-      </div>
-
-      <div class="streak">
-        <div style="font-size:13px;color:#bcd3ef">Login Streak</div>
-        <div class="count" id="streakCount">0 🔥</div>
-        <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
-      </div>
-
-      <div class="progress-card">
-        <div class="level-row">
+  <div class="wrap">
+    <div class="card" id="card">
+      
+      <!-- Header -->
+      <div class="header">
+        <div class="brand">
+          <div class="logo">VS</div>
           <div>
-            <div class="level-name" id="levelName">Bronze</div>
-            <div style="font-size:12px;color:#bcd3ef">Progress towards next level</div>
-          </div>
-          <div class="level-badge" id="badge">Bronze</div>
-        </div>
-
-        <div class="progress-wrapper" style="margin-top:12px">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+            <div class="title">Vision_S Dashboard</div>
+            <div class="subtitle">Member Area</div>
           </div>
         </div>
-
-        <div class="progress-meta">
-          <div id="progressPercent">0%</div>
-          <div id="progressToNext">0 / 100</div>
+        <div class="controls">
+          <div class="tag" id="levelTag">Level 0</div>
+          <button class="btn" id="refreshBtn">Refresh</button>
         </div>
       </div>
-
-      <!-- Admin panel -->
-      <div class="admin-box" id="adminBox">
-        <div style="font-size:13px;color:#bcd3ef">Super Admin: Edit Users</div>
-        <div class="admin-row">
-          <select class="small-input" id="userSelect"><option value="">Select user</option></select>
+      
+      <div class="main">
+        <!-- Left panel -->
+        <div class="left">
+          <div class="profile-row">
+            <div class="avatar" id="avatar">
+              <!-- Avatar image or first letter -->
+            </div>
+            <div class="user-meta">
+              <div class="user-name" id="displayName">User</div>
+              <div class="user-email" id="displayEmail">user@example.com</div>
+            </div>
+          </div>
+          
+          <!-- Streak -->
+          <div class="streak">
+            <div style="font-size:13px;color:#bcd3ef">Login Streak</div>
+            <div class="count" id="streakCount">0 🔥</div>
+            <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
+          </div>
+          
+          <!-- Progress -->
+          <div class="progress-card">
+            <div class="level-row">
+              <div>
+                <div class="level-name" id="levelName">Bronze</div>
+                <div style="font-size:12px;color:#bcd3ef">Progress towards next level</div>
+              </div>
+              <div class="level-badge" id="badge">Bronze</div>
+            </div>
+            
+            <div class="progress-wrapper">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
+              </div>
+            </div>
+            
+            <div class="progress-meta">
+              <div id="progressPercent">0%</div>
+              <div id="progressToNext">0 / 100</div>
+            </div>
+          </div>
+          
         </div>
-        <div class="admin-row">
-          <input class="small-input" id="editName" type="text" placeholder="Name">
-          <input class="small-input" id="editEmail" type="email" placeholder="Email">
-        </div>
-        <div class="admin-row">
-          <select class="small-input" id="editLevel">
-            <option value="1">Bronze</option>
-            <option value="2">Silver</option>
-            <option value="3">Gold</option>
-            <option value="4">Platinum</option>
-            <option value="5">Diamond</option>
-            <option value="6">Crown</option>
-            <option value="7">Conqueror</option>
-          </select>
-          <input class="small-input" id="editRole" type="text" placeholder="Role (user/superadmin)">
-          <button class="admin-btn" id="saveUser">Save</button>
+        
+        <!-- Right panel -->
+        <div class="right">
+          <div class="greeting" id="greet">Welcome back!</div>
+          <div class="g-sub" id="gSub">Your membership dashboard</div>
+          
+          <div class="stat-grid">
+            <div class="stat">
+              <h5>Current Level</h5>
+              <p id="statLevel">Bronze</p>
+            </div>
+            <div class="stat">
+              <h5>Progress</h5>
+              <p id="statProgress">0%</p>
+            </div>
+            <div class="stat">
+              <h5>Next Reward</h5>
+              <p id="statNext">Unlock at 100%</p>
+            </div>
+          </div>
+          
+          <div class="notice" id="dailyQuote">
+            Daily motivational quote will appear here.
+          </div>
+          
+          <button class="logout" id="logoutBtn">Logout</button>
         </div>
       </div>
-
-    </div>
-
-    <div class="right">
-      <div class="greeting" id="greet">Welcome back!</div>
-      <div class="g-sub" id="gSub">Your membership dashboard</div>
-
-      <div class="stat-grid">
-        <div class="stat">
-          <h5>Current Level</h5>
-          <p id="statLevel">Bronze</p>
-        </div>
-        <div class="stat">
-          <h5>Progress</h5>
-          <p id="statProgress">0%</p>
-        </div>
-        <div class="stat">
-          <h5>Next Reward</h5>
-          <p id="statNext">Unlock at 100%</p>
-        </div>
-      </div>
-
-      <div class="notice" id="dailyQuote">
-        <strong>Motivation:</strong> Keep logging in to reach the next level!
-      </div>
-
-      <button class="logout" id="logoutBtn">Logout</button>
+      
     </div>
   </div>
-</div>
-</div>
-
+  
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import {
-  getAuth,onAuthStateChanged,signOut
-} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  // ================================
+  // Part 1: Firebase Auth + User Dashboard
+  // ================================
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
-  authDomain: "login-6e215.firebaseapp.com",
-  projectId: "login-6e215",
-  storageBucket: "login-6e215.firebasestorage.app",
-  messagingSenderId: "503897234336",
-  appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
-  measurementId: "G-6D44B4444K"
-};
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
+    authDomain: "login-6e215.firebaseapp.com",
+    projectId: "login-6e215",
+    storageBucket: "login-6e215.firebasestorage.app",
+    messagingSenderId: "503897234336",
+    appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
+    measurementId: "G-6D44B4444K"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','Crown','Conqueror'];
-const QUOTES = [
-  "Consistency is the key to success.",
-  "Small steps every day add up.",
-  "Level up yourself every day.",
-  "Keep going, you’re doing great!",
-  "Motivation gets you started, habit keeps you going."
-];
+  const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','CROWN','CONQUEROR'];
 
-const displayNameEl = document.getElementById('displayName');
-const displayEmailEl = document.getElementById('displayEmail');
-const avatarTxt = document.getElementById('avatarTxt');
-const streakCountEl = document.getElementById('streakCount');
-const levelNameEl = document.getElementById('levelName');
-const badgeEl = document.getElementById('badge');
-const levelTag = document.getElementById('levelTag');
-const progressFill = document.getElementById('progressFill');
-const progressPercent = document.getElementById('progressPercent');
-const progressToNext = document.getElementById('progressToNext');
-const statLevel = document.getElementById('statLevel');
-const statProgress = document.getElementById('statProgress');
-const statNext = document.getElementById('statNext');
-const greet = document.getElementById('greet');
-const greetSub = document.getElementById('gSub');
-const dailyQuote = document.getElementById('dailyQuote');
+  // DOM elements
+  const displayNameEl = document.getElementById('displayName');
+  const displayEmailEl = document.getElementById('displayEmail');
+  const avatarEl = document.getElementById('avatar');
+  const streakCountEl = document.getElementById('streakCount');
+  const levelNameEl = document.getElementById('levelName');
+  const badgeEl = document.getElementById('badge');
+  const levelTag = document.getElementById('levelTag');
+  const progressFill = document.getElementById('progressFill');
+  const progressPercent = document.getElementById('progressPercent');
+  const progressToNext = document.getElementById('progressToNext');
+  const statLevel = document.getElementById('statLevel');
+  const statProgress = document.getElementById('statProgress');
+  const statNext = document.getElementById('statNext');
+  const greet = document.getElementById('greet');
+  const greetSub = document.getElementById('gSub');
+  const dailyQuoteEl = document.getElementById('dailyQuote');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
 
-const logoutBtn = document.getElementById('logoutBtn');
-const refreshBtn = document.getElementById('refreshBtn');
+  let currentUser = null;
+  let userRef = null;
+  let localUser = { level:'Bronze', progress:0, streak:0, lastLogin:null, name:'User', email:'' };
 
-const adminBox = document.getElementById('adminBox');
-const userSelect = document.getElementById('userSelect');
-const editName = document.getElementById('editName');
-const editEmail = document.getElementById('editEmail');
-const editLevel = document.getElementById('editLevel');
-const editRole = document.getElementById('editRole');
-const saveUser = document.getElementById('saveUser');
+  // Quotes
+  const QUOTES = [
+    "Push yourself, because no one else is going to do it for you.",
+    "Consistency is what transforms average into excellence.",
+    "Every day is a new opportunity to grow.",
+    "Small progress is still progress.",
+    "Stay focused and never give up."
+  ];
 
-let currentUser = null;
-let userRef = null;
-let localUser = { level:1, progress:0, streak:0, lastLogin:null, role:'user', photoURL:'' };
+  // Utility functions
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+  function toDateKey(ts){ const d=ts? (ts instanceof Date? ts: new Date(ts)) : new Date(); return `${d.getUTCFullYear()}-${(d.getUTCMonth()+1).toString().padStart(2,'0')}-${d.getUTCDate().toString().padStart(2,'0')}`;}
 
-function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
-function toDateKey(ts){ const d = ts ? (ts instanceof Date ? ts : new Date(ts)) : new Date(); return `${d.getUTCFullYear()}-${(d.getUTCMonth()+1).toString().padStart(2,'0')}-${d.getUTCDate().toString().padStart(2,'0')}`; }
+  // Render dashboard
+  function renderUI(){
+    const name = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
+    const email = localUser.email || (currentUser && currentUser.email) || '';
+    displayNameEl.textContent = name;
+    displayEmailEl.textContent = email;
 
-function renderUI(){
-  const name = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
-  const email = localUser.email || (currentUser && currentUser.email) || '';
-  displayNameEl.textContent = name;
-  displayEmailEl.textContent = email;
-  if(localUser.photoURL){
-    avatarTxt.innerHTML = `<img src="${localUser.photoURL}" alt="avatar">`;
-  } else { avatarTxt.textContent = (name[0]||'U').toUpperCase(); }
+    // Avatar: Gmail photoURL if exists
+    if(localUser.photoURL){
+      avatarEl.innerHTML = `<img src="${localUser.photoURL}" alt="avatar"/>`;
+    } else {
+      avatarEl.textContent = (name[0]||'U').toUpperCase();
+    }
 
-  const levelIndex = clamp(localUser.level,1,LEVELS.length);
-  const levelName = LEVELS[levelIndex-1] || 'Bronze';
-  levelNameEl.textContent = levelName;
-  badgeEl.textContent = levelName;
-  levelTag.textContent = `Level ${levelIndex} · ${levelName}`;
-  const progress = clamp(Math.round(localUser.progress),0,999);
-  progressFill.style.width = `${clamp(progress,0,100)}%`;
-  progressPercent.textContent = `${clamp(progress,0,100)}%`;
-  progressToNext.textContent = `${clamp(progress,0,100)} / 100`;
-  statLevel.textContent = levelName;
-  statProgress.textContent = `${clamp(progress,0,100)}%`;
-  statNext.textContent = 'Unlock at 100%';
-  streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
-  greet.textContent = `Welcome back, ${name.split(' ')[0] || name}!`;
-  greetSub.textContent = `Login daily to maintain streak and level up faster.`;
-  dailyQuote.innerHTML = `<strong>Motivation:</strong> ${QUOTES[Math.floor(Math.random()*QUOTES.length)]}`;
-}
+    const levelName = localUser.level || 'Bronze';
+    levelNameEl.textContent = levelName;
+    badgeEl.textContent = levelName;
+    levelTag.textContent = `Level · ${levelName}`;
+    
+    const progress = clamp(localUser.progress,0,100);
+    progressFill.style.width = `${progress}%`;
+    progressPercent.textContent = `${progress}%`;
+    progressToNext.textContent = `${progress} / 100`;
+    statLevel.textContent = levelName;
+    statProgress.textContent = `${progress}%`;
+    statNext.textContent = 'Unlock at 100%';
+    streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
+    greet.textContent = `Welcome back, ${name.split(' ')[0] || name}!`;
+    greetSub.textContent = `Login daily to maintain streak and level up faster.`;
+    
+    // Random daily quote
+    dailyQuoteEl.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  }
 
-async function saveUserData(){
-  if(!userRef) return;
-  try{
-    await updateDoc(userRef,{
-      name: localUser.name,
-      email: localUser.email,
-      level: localUser.level,
-      progress: localUser.progress,
-      streak: localUser.streak,
-      role: localUser.role || 'user',
-      photoURL: localUser.photoURL,
-      lastLogin: serverTimestamp()
-    });
+  // Auth listener
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+      window.location.href = "login.html";
+      return;
+    }
+    currentUser = user;
+    userRef = doc(db,'users',user.uid);
+    const snap = await getDoc(userRef);
+    if(!snap.exists()){
+      // create user doc
+      await setDoc(userRef,{
+        name: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        level: 'Bronze',
+        progress: 0,
+        streak: 0,
+        lastLogin: serverTimestamp(),
+        photoURL: user.photoURL || null
+      });
+      localUser = { name: user.displayName || user.email.split('@')[0], email:user.email, level:'Bronze', progress:0, streak:0, lastLogin:null, photoURL:user.photoURL||null };
+    } else {
+      const data = snap.data();
+      localUser = {
+        name: data.name || user.displayName || user.email.split('@')[0],
+        email: data.email || user.email,
+        level: data.level || 'Bronze',
+        progress: data.progress || 0,
+        streak: data.streak || 0,
+        lastLogin: data.lastLogin ? data.lastLogin.toDate? data.lastLogin.toDate():new Date(data.lastLogin): null,
+        photoURL: data.photoURL || user.photoURL || null
+      };
+    }
+
+    // TODO: handle daily login logic (+1% progress for 2-day streak, -1% for streak break) - implemented in Part 2
     renderUI();
-  } catch(e){ console.error(e); alert('Failed to save user data'); }
-}
+  });
 
-async function loadLocalUser(uid){
-  try{
-    userRef = doc(db,'users',uid);
+  // Logout
+  logoutBtn.addEventListener('click', async ()=>{
+    await signOut(auth);
+    window.location.href="login.html";
+  });
+
+  refreshBtn.addEventListener('click', async ()=>{
     const snap = await getDoc(userRef);
     if(snap.exists()){
-      localUser = snap.data();
-    } else {
-      // create new doc
-      localUser = {
-        name: currentUser.email.split('@')[0],
-        email: currentUser.email,
-        level:1,
-        progress:0,
-        streak:0,
-        role:'user',
-        photoURL: currentUser.photoURL||'',
-        lastLogin: serverTimestamp()
-      };
-      await setDoc(userRef,localUser);
+      const data = snap.data();
+      localUser.progress = data.progress || 0;
+      localUser.level = data.level || 'Bronze';
+      localUser.streak = data.streak || 0;
+      renderUI();
     }
-
-    // Check streak
-    const todayKey = toDateKey(new Date());
-    const lastKey = toDateKey(localUser.lastLogin ? localUser.lastLogin.toDate() : null);
-    if(todayKey !== lastKey){
-      if(lastKey === toDateKey(new Date(Date.now()-86400000))){
-        localUser.streak = (localUser.streak||0)+1;
-        localUser.progress += 1;
-      } else {
-        localUser.streak = 1;
-        localUser.progress -=1;
-      }
-      localUser.progress = clamp(localUser.progress,0,100);
-      // level up
-      while(localUser.progress>=100 && localUser.level<LEVELS.length){
-        localUser.progress -= 100;
-        localUser.level +=1;
-        // pulse animation
-        document.getElementById('card').animate([{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});
-      }
-      await saveUserData();
-    }
-
-    renderUI();
-
-    // Show admin if superadmin
-    const isSuperAdmin = currentUser.email === 'vsauravpandey99s@gmail.com' || localUser.role==='superadmin';
-    if(isSuperAdmin){
-      adminBox.style.display = 'flex';
-      loadAllUsers();
-    } else {
-      adminBox.style.display = 'none';
-    }
-
-  } catch(e){ console.error(e); alert('Failed to load user'); }
-}
-
-async function loadAllUsers(){
-  userSelect.innerHTML = '<option value="">Select user</option>';
-  const querySnap = await getDocs(collection(db,'users'));
-  querySnap.forEach(docSnap=>{
-    const d = docSnap.data();
-    const opt = document.createElement('option');
-    opt.value = docSnap.id;
-    opt.textContent = d.name || d.email || docSnap.id;
-    userSelect.appendChild(opt);
   });
-}
-
-userSelect.addEventListener('change',async()=>{
-  if(!userSelect.value) return;
-  const snap = await getDoc(doc(db,'users',userSelect.value));
-  if(snap.exists()){
-    editName.value = snap.data().name;
-    editEmail.value = snap.data().email;
-    editLevel.value = snap.data().level;
-    editRole.value = snap.data().role || 'user';
-  }
-});
-
-saveUser.addEventListener('click', async()=>{
-  if(!userSelect.value) return alert('Select user first');
-  const uid = userSelect.value;
-  try{
-    await updateDoc(doc(db,'users',uid),{
-      name: editName.value,
-      email: editEmail.value,
-      level: Number(editLevel.value),
-      role: editRole.value
-    });
-    alert('User updated!');
-    loadAllUsers();
-  } catch(e){ console.error(e); alert('Failed'); }
-});
-
-refreshBtn.addEventListener('click',()=>{ renderUI(); });
-
-logoutBtn.addEventListener('click',()=>{ signOut(auth).then(()=>location.reload()); });
-
-onAuthStateChanged(auth,async(user)=>{
-  if(user){
-    currentUser = user;
-    await loadLocalUser(user.uid);
-  } else {
-    alert('Please login first');
-  }
-});
 
 </script>
+  <script type="module">
+  import { collection, getDocs, query, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+  const ADMIN_EMAIL = "vsauravpandey99s@gmail.com";
+  let isSuperAdmin = false;
+
+  // Check super admin
+  async function checkAdmin() {
+    if (!currentUser) return false;
+    if(currentUser.email === ADMIN_EMAIL){
+      isSuperAdmin = true;
+      addAdminPanel();
+    }
+  }
+
+  // Add Super Admin panel dynamically
+  function addAdminPanel() {
+    const rightPanel = document.querySelector(".right");
+    const adminDiv = document.createElement("div");
+    adminDiv.id = "adminPanel";
+    adminDiv.style.marginTop = "20px";
+    adminDiv.style.padding = "16px";
+    adminDiv.style.borderRadius = "12px";
+    adminDiv.style.background = "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))";
+
+    adminDiv.innerHTML = `
+      <h3>Super Admin Panel</h3>
+      <p style="font-size:13px;color:#bcd3ef;margin-bottom:10px;">Manage all users</p>
+      <div id="userList" style="max-height:300px;overflow-y:auto;"></div>
+    `;
+    rightPanel.appendChild(adminDiv);
+
+    loadAllUsers();
+  }
+
+  // Load all users from Firestore
+  async function loadAllUsers() {
+    const userListDiv = document.getElementById("userList");
+    userListDiv.innerHTML = "Loading users...";
+    try {
+      const q = query(collection(db, "users"), orderBy("name"));
+      const snap = await getDocs(q);
+      userListDiv.innerHTML = "";
+      snap.forEach(docSnap => {
+        const userData = docSnap.data();
+        const userId = docSnap.id;
+        const userItem = document.createElement("div");
+        userItem.style.padding = "10px";
+        userItem.style.borderBottom = "1px solid rgba(255,255,255,0.06)";
+        userItem.innerHTML = `
+          <strong>${userData.name}</strong> (${userData.email})<br>
+          Level: 
+          <select data-uid="${userId}" class="levelSelect">
+            ${LEVELS.map(l=>`<option value="${l}" ${l===userData.level?'selected':''}>${l}</option>`).join('')}
+          </select>
+          Progress: <input type="number" min="0" max="100" value="${userData.progress}" data-uid="${userId}" class="progressInput" style="width:50px;">
+          <button data-uid="${userId}" class="saveBtn" style="margin-left:8px;">Save</button>
+        `;
+        userListDiv.appendChild(userItem);
+      });
+
+      // Attach save listeners
+      const saveButtons = userListDiv.querySelectorAll(".saveBtn");
+      saveButtons.forEach(btn=>{
+        btn.addEventListener("click", async (e)=>{
+          const uid = btn.dataset.uid;
+          const sel = userListDiv.querySelector(`.levelSelect[data-uid="${uid}"]`);
+          const prog = userListDiv.querySelector(`.progressInput[data-uid="${uid}"]`);
+          if(sel && prog){
+            await updateDoc(doc(db,"users",uid),{
+              level: sel.value,
+              progress: clamp(Number(prog.value),0,100)
+            });
+            alert(`User ${uid} updated!`);
+          }
+        });
+      });
+    } catch(err){
+      userListDiv.innerHTML = "Error loading users.";
+      console.error(err);
+    }
+  }
+
+  // Handle daily streak and progress logic
+  async function updateStreakAndProgress() {
+    if(!localUser.lastLogin) return;
+
+    const todayKey = toDateKey(new Date());
+    const lastLoginKey = toDateKey(localUser.lastLogin);
+    const diffDays = (new Date(todayKey) - new Date(lastLoginKey))/(1000*3600*24);
+
+    let newStreak = localUser.streak || 0;
+    let newProgress = localUser.progress || 0;
+
+    if(diffDays === 1){
+      // consecutive login
+      newStreak += 1;
+      newProgress += 1;
+    } else if(diffDays > 1){
+      // streak break
+      newStreak = 1;
+      newProgress = clamp(newProgress - 1,0,100);
+    }
+
+    if(newProgress >= 100){
+      // level up
+      const currentLevelIndex = LEVELS.indexOf(localUser.level) || 0;
+      const nextLevel = LEVELS[Math.min(currentLevelIndex+1,LEVELS.length-1)];
+      localUser.level = nextLevel;
+      newProgress = newProgress - 100;
+      // Optional: trigger animation/pop up
+      alert(`Congrats! You leveled up to ${nextLevel}`);
+    }
+
+    localUser.streak = newStreak;
+    localUser.progress = clamp(newProgress,0,100);
+    localUser.lastLogin = new Date();
+
+    await updateDoc(userRef,{
+      streak: localUser.streak,
+      progress: localUser.progress,
+      level: localUser.level,
+      lastLogin: serverTimestamp()
+    });
+
+    renderUI();
+  }
+
+  // After auth, check if super admin
+  onAuthStateChanged(auth, async ()=>{
+    await checkAdmin();
+    await updateStreakAndProgress();
+  });
+
+</script>
+
 </body>
 </html>
