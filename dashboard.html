@@ -1,175 +1,176 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Vision_S — Dashboard</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-1:#0b1220;
-      --glass: rgba(255,255,255,0.06);
-      --glass-2: rgba(255,255,255,0.03);
-      --neon-1: #6ee7b7;
-      --neon-2: #60a5fa;
-      --neon-3: #a78bfa;
-      --accent: linear-gradient(90deg,var(--neon-1),var(--neon-2),var(--neon-3));
-      --card-w: 920px;
-      --max-level: 7;
-    }
-    *{box-sizing:border-box;font-family:'Poppins',system-ui,Segoe UI,Roboto,-apple-system;color:#e8f2ff}
-    html,body{height:100%;margin:0;background:linear-gradient(120deg,#030417 0%,#0a0436 35%,#1a044b 100%);background-size:400% 400%;animation:bgMove 12s ease infinite}
-    @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
-    .card{width:100%;max-width:var(--card-w);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden}
-    .header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;gap:14px;align-items:center}
-    .logo{width:64px;height:64px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;box-shadow:0 10px 30px rgba(96,165,250,0.08)}
-    .title{font-size:20px;font-weight:700}
-    .subtitle{font-size:13px;color:#bcd3ef}
-    .main{display:flex;gap:22px;margin-top:20px}
-    /* left */
-    .left{width:340px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:18px;border-radius:12px}
-    .profile-row{display:flex;gap:12px;align-items:center}
-    .avatar{width:72px;height:72px;border-radius:14px;background:linear-gradient(90deg,var(--neon-3),var(--neon-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;font-size:28px;box-shadow:0 5px 15px rgba(0,0,0,0.4)}
-    .user-meta{display:flex;flex-direction:column}
-    .user-name{font-size:18px;font-weight:700}
-    .user-email{font-size:13px;color:#b9d0ef}
-    .streak{margin-top:20px;padding:16px;border-radius:12px;background:var(--glass-2);text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
-    .streak h4{margin:6px 0 0;font-size:14px}
-    .streak .count{font-weight:800;font-size:22px;margin-top:6px}
-    .hint{margin-top:12px;font-size:13px;color:#bcd3ef}
-    /* progress area */
-    .progress-card{margin-top:22px;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 4px 15px rgba(0,0,0,0.3);}
-    .level-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .level-badge{padding:10px 16px;border-radius:999px;background:linear-gradient(90deg,#ffd47a,#d4af37);color:#241600;font-weight:800;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
-    .level-name{font-weight:800;font-size:16px}
-    .progress-wrapper{margin-top:14px}
-    .progress-bar{height:20px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;position:relative;box-shadow:inset 0 2px 6px rgba(0,0,0,0.4)}
-    .progress-fill{height:100%;width:0%;border-radius:999px;background:var(--accent);background-size:300% 100%;animation:fillGlow 4s linear infinite}
-    @keyframes fillGlow{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
-    .progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:#bcd3ef}
-    /* right panel */
-    .right{flex:1;padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01)) }
-    .greeting{font-size:24px;font-weight:700;color:#60f1ff}
-    .g-sub{color:#b7d4f8;margin-top:6px;font-size:14px}
-    .stat-grid{display:flex;gap:12px;margin-top:18px}
-    .stat{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.3)}
-    .stat h5{font-size:12px;color:#bcd3ef;margin:0}
-    .stat p{font-weight:800;font-size:18px;margin-top:8px;color:#fff}
-    .notice{margin-top:18px;padding:14px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#cfe6ff;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
-    .logout{margin-top:18px;padding:14px 20px;border-radius:12px;background:#ff5252;border:0;color:#fff;cursor:pointer;font-weight:700;transition:0.3s}
-    .logout:hover{transform:scale(1.05)}
-    /* Daily Quote */
-    .daily-quote{
-        margin-top:22px;
-        padding:18px;
-        border-radius:12px;
-        background:rgba(96,165,250,0.1);
-        font-size:15px;
-        color:#e0f7ff;
-        font-style:italic;
-        text-align:center;
-        box-shadow:0 5px 15px rgba(0,0,0,0.3);
-        animation:fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn{
-        0%{opacity:0; transform:translateY(5px);}
-        100%{opacity:1; transform:translateY(0);}
-    }
-    @media (max-width:920px){.main{flex-direction:column}.left{width:100%}}
-  </style>
+<meta charset="utf-8">
+<title>Vision_S — Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-1:#0b1220;
+  --glass: rgba(255,255,255,0.06);
+  --glass-2: rgba(255,255,255,0.03);
+  --neon-1: #6ee7b7;
+  --neon-2: #60a5fa;
+  --neon-3: #a78bfa;
+  --accent: linear-gradient(90deg,var(--neon-1),var(--neon-2),var(--neon-3));
+  --card-w: 920px;
+}
+*{box-sizing:border-box;font-family:'Poppins',system-ui,Segoe UI,Roboto,-apple-system;color:#e8f2ff;}
+html,body{height:100%;margin:0;background:linear-gradient(120deg,#030417 0%,#0a0436 35%,#1a044b 100%);background-size:400% 400%;animation:bgMove 12s ease infinite;}
+@keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%;}}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+.card{width:100%;max-width:var(--card-w);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand{display:flex;gap:14px;align-items:center;}
+.logo{width:64px;height:64px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;box-shadow:0 10px 30px rgba(96,165,250,0.08);}
+.title{font-size:20px;font-weight:700;}
+.subtitle{font-size:13px;color:#bcd3ef;}
+.controls{display:flex;gap:10px;align-items:center;}
+.btn{padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:inherit;cursor:pointer;transition:0.2s;}
+.btn:hover{transform:translateY(-3px);background:rgba(255,255,255,0.06);}
+.main{display:flex;gap:22px;margin-top:20px;}
+.left{width:340px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:18px;border-radius:12px;}
+.profile-row{display:flex;gap:12px;align-items:center;}
+.avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(90deg,var(--neon-3),var(--neon-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;font-size:24px;overflow:hidden;}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.user-meta{display:flex;flex-direction:column;}
+.user-name{font-size:18px;font-weight:700;}
+.user-email{font-size:13px;color:#b9d0ef;}
+.streak{margin-top:14px;padding:12px;border-radius:10px;background:var(--glass-2);text-align:center;}
+.streak h4{margin:6px 0 0;font-size:14px;}
+.streak .count{font-weight:800;font-size:20px;margin-top:6px;}
+.hint{margin-top:12px;font-size:13px;color:#bcd3ef;}
+.progress-card{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));position:relative;}
+.level-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.level-badge{padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,#ffd47a,#d4af37);color:#241600;font-weight:800;transition:0.3s;}
+.level-name{font-weight:800;font-size:16px;}
+.progress-wrapper{margin-top:14px;}
+.progress-bar{height:18px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;position:relative;}
+.progress-fill{height:100%;width:0%;border-radius:999px;background:var(--accent);background-size:300% 100%;animation:fillGlow 4s linear infinite;transition:width 0.5s;}
+@keyframes fillGlow{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%;}}
+.progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:#bcd3ef;}
+.right{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));}
+.greeting{font-size:22px;font-weight:700;}
+.g-sub{color:#b7d4f8;margin-top:6px;}
+.stat-grid{display:flex;gap:12px;margin-top:18px;}
+.stat{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;}
+.stat h5{font-size:12px;color:#bcd3ef;margin:0;}
+.stat p{font-weight:800;font-size:18px;margin-top:8px;}
+.notice{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#cfe6ff;font-size:13px;}
+.logout{margin-top:18px;padding:12px 18px;border-radius:10px;background:#ff5252;border:0;color:#fff;cursor:pointer;}
+.superadmin-box{margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);display:none;flex-direction:column;gap:8px;}
+.superadmin-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.superadmin-btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;background:rgba(255,255,255,0.03);}
+.superadmin-select{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;}
+.level-up-popup{position:absolute;top:20px;right:20px;padding:12px 20px;background:var(--neon-2);color:#04102a;font-weight:700;border-radius:12px;transform:scale(0);animation:popUp 0.7s forwards;pointer-events:none;}
+@keyframes popUp{0%{transform:scale(0);}50%{transform:scale(1.2);}100%{transform:scale(1);}}
+@media (max-width:920px){.main{flex-direction:column}.left{width:100%;}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="card">
-      <div class="header">
-        <div class="brand">
-          <div class="logo">VS</div>
-          <div>
-            <div class="title">Vision_S Dashboard</div>
-            <div class="subtitle">Member Area</div>
-          </div>
-        </div>
-        <div class="tag" id="levelTag">Level 0</div>
-      </div>
-
-      <div class="main">
-        <div class="left">
-          <div class="profile-row">
-            <div class="avatar" id="avatarTxt">U</div>
-            <div class="user-meta">
-              <div class="user-name" id="displayName">User</div>
-              <div class="user-email" id="displayEmail">user@example.com</div>
-            </div>
-          </div>
-
-          <div class="streak">
-            <div style="font-size:13px;color:#bcd3ef">Login Streak</div>
-            <div class="count" id="streakCount">0 🔥</div>
-            <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
-          </div>
-
-          <div class="progress-card">
-            <div class="level-row">
-              <div>
-                <div class="level-name" id="levelName">Bronze</div>
-                <div style="font-size:12px;color:#bcd3ef">Progress towards next level</div>
-              </div>
-              <div class="level-badge" id="badge">Bronze</div>
-            </div>
-
-            <div class="progress-wrapper" style="margin-top:12px">
-              <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width:0%"></div>
-              </div>
-            </div>
-
-            <div class="progress-meta">
-              <div id="progressPercent">0%</div>
-              <div id="progressToNext">0 / 100</div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="right">
-          <div class="greeting" id="greet">Welcome back!</div>
-          <div class="g-sub" id="gSub">Your membership dashboard</div>
-
-          <div class="stat-grid">
-            <div class="stat">
-              <h5>Current Level</h5>
-              <p id="statLevel">Bronze</p>
-            </div>
-            <div class="stat">
-              <h5>Progress</h5>
-              <p id="statProgress">0%</p>
-            </div>
-            <div class="stat">
-              <h5>Next Reward</h5>
-              <p id="statNext">Unlock at 100%</p>
-            </div>
-          </div>
-
-          <div class="daily-quote" id="dailyQuote">
-            "Stay focused and never give up!"
-          </div>
-
-          <div class="notice">
-            <strong>Streak Tip:</strong> Login daily to keep your streak. If you miss more than one day your streak resets and you'll lose 5% progress.
-          </div>
-
-          <button class="logout" id="logoutBtn">Logout</button>
-        </div>
+<div class="wrap">
+<div class="card" id="card">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">VS</div>
+      <div>
+        <div class="title">Vision_S Dashboard</div>
+        <div class="subtitle">Member Area</div>
       </div>
     </div>
+    <div class="controls">
+      <div class="level-badge" id="levelTag">Level 1 · Bronze</div>
+      <button class="btn" id="refreshBtn">Refresh</button>
+    </div>
   </div>
+
+  <div class="main">
+    <div class="left">
+      <div class="profile-row">
+        <div class="avatar" id="avatarTxt">U</div>
+        <div class="user-meta">
+          <div class="user-name" id="displayName">User</div>
+          <div class="user-email" id="displayEmail">user@example.com</div>
+        </div>
+      </div>
+
+      <div class="streak">
+        <div style="font-size:13px;color:#bcd3ef">Login Streak</div>
+        <div class="count" id="streakCount">0 🔥</div>
+        <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
+      </div>
+
+      <div class="progress-card">
+        <div class="level-row">
+          <div>
+            <div class="level-name" id="levelName">Bronze</div>
+            <div style="font-size:12px;color:#bcd3ef">Progress towards next level</div>
+          </div>
+        </div>
+
+        <div class="progress-wrapper" style="margin-top:12px">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="progress-meta">
+          <div id="progressPercent">0%</div>
+          <div id="progressToNext">0 / 100</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right">
+      <div class="greeting" id="greet">Welcome back!</div>
+      <div class="g-sub" id="gSub">Your membership dashboard</div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <h5>Current Level</h5>
+          <p id="statLevel">Bronze</p>
+        </div>
+        <div class="stat">
+          <h5>Progress</h5>
+          <p id="statProgress">0%</p>
+        </div>
+        <div class="stat">
+          <h5>Next Reward</h5>
+          <p id="statNext">Unlock at 100%</p>
+        </div>
+      </div>
+
+      <div class="notice" id="quoteBox">
+        Stay consistent! Login daily to maintain your streak.
+      </div>
+
+      <button class="logout" id="logoutBtn">Logout</button>
+
+      <div class="superadmin-box" id="superadminBox">
+        <div style="font-size:13px;color:#bcd3ef">Super Admin: Edit User Data</div>
+        <select id="userSelect" class="superadmin-select"></select>
+        <div class="superadmin-row">
+          <input class="superadmin-select" id="editName" placeholder="Name">
+          <input class="superadmin-select" id="editEmail" placeholder="Email">
+          <input class="superadmin-select" id="editLevel" type="number" min="1" max="7" placeholder="Level">
+          <input class="superadmin-select" id="editProgress" type="number" min="0" max="100" placeholder="Progress">
+          <input class="superadmin-select" id="editStreak" type="number" min="0" placeholder="Streak">
+          <button class="superadmin-btn" id="saveUserBtn">Save</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="level-up-popup" id="levelUpPopup">Level Up!</div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
@@ -184,14 +185,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
 const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','CROWN','CONQUEROR'];
+const SUPERADMIN_EMAIL = 'vsauravpandey99s@gmail.com';
+
+let currentUser=null, userRef=null, localUser={level:1,progress:0,streak:0,lastLogin:null,name:'User',email:''};
 
 const displayNameEl = document.getElementById('displayName');
 const displayEmailEl = document.getElementById('displayEmail');
 const avatarTxt = document.getElementById('avatarTxt');
 const streakCountEl = document.getElementById('streakCount');
 const levelNameEl = document.getElementById('levelName');
-const badgeEl = document.getElementById('badge');
 const levelTag = document.getElementById('levelTag');
 const progressFill = document.getElementById('progressFill');
 const progressPercent = document.getElementById('progressPercent');
@@ -201,114 +205,170 @@ const statProgress = document.getElementById('statProgress');
 const statNext = document.getElementById('statNext');
 const greet = document.getElementById('greet');
 const greetSub = document.getElementById('gSub');
-const dailyQuoteEl = document.getElementById('dailyQuote');
 const logoutBtn = document.getElementById('logoutBtn');
+const refreshBtn = document.getElementById('refreshBtn');
 
-let currentUser = null;
-let userRef = null;
-let localUser = { level:1, progress:0, streak:0, lastLogin:null };
+const superadminBox = document.getElementById('superadminBox');
+const userSelect = document.getElementById('userSelect');
+const editName = document.getElementById('editName');
+const editEmail = document.getElementById('editEmail');
+const editLevel = document.getElementById('editLevel');
+const editProgress = document.getElementById('editProgress');
+const editStreak = document.getElementById('editStreak');
+const saveUserBtn = document.getElementById('saveUserBtn');
 
-/* Utility */
-function toDateKey(ts){const d = ts ? (ts instanceof Date ? ts : new Date(ts)) : new Date(); return `${d.getUTCFullYear()}-${(d.getUTCMonth()+1).toString().padStart(2,'0')}-${d.getUTCDate().toString().padStart(2,'0')}`;}
-function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+const levelUpPopup = document.getElementById('levelUpPopup');
+const quoteBox = document.getElementById('quoteBox');
+const quotes = [
+  "Consistency is key!",
+  "Keep pushing forward!",
+  "Small daily progress adds up!",
+  "Stay focused and level up!",
+  "Every login counts!"
+];
+
+function randomQuote(){return quotes[Math.floor(Math.random()*quotes.length)];}
+function toDateKey(ts){const d = ts?new Date(ts):new Date();return `${d.getUTCFullYear()}-${(d.getUTCMonth()+1).toString().padStart(2,'0')}-${d.getUTCDate().toString().padStart(2,'0')}`;}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
 
 function renderUI(){
-  const name = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
-  const email = localUser.email || (currentUser && currentUser.email) || '';
+  const name = localUser.name||((currentUser&&currentUser.email.split('@')[0])||'User');
+  const email = localUser.email||((currentUser&&currentUser.email)||'');
   displayNameEl.textContent = name;
   displayEmailEl.textContent = email;
-  avatarTxt.textContent = (name[0]||'U').toUpperCase();
+
+  // avatar from photoURL
+  if(localUser.photoURL){avatarTxt.innerHTML=`<img src="${localUser.photoURL}" alt="avatar">`;}else{avatarTxt.textContent=name[0].toUpperCase();}
 
   const levelIndex = clamp(localUser.level,1,LEVELS.length);
-  const levelName = LEVELS[levelIndex-1] || 'Bronze';
-  levelNameEl.textContent = levelName;
-  badgeEl.textContent = levelName;
-  levelTag.textContent = `Level ${levelIndex} · ${levelName}`;
-
+  const levelName = LEVELS[levelIndex-1]||'Bronze';
+  levelNameEl.textContent=levelName;
+  levelTag.textContent=`Level ${levelIndex} · ${levelName}`;
   const progress = clamp(Math.round(localUser.progress),0,999);
-  progressFill.style.width = `${clamp(progress,0,100)}%`;
-  progressPercent.textContent = `${clamp(progress,0,100)}%`;
-  progressToNext.textContent = `${clamp(progress,0,100)} / 100`;
-  statLevel.textContent = levelName;
-  statProgress.textContent = `${clamp(progress,0,100)}%`;
-  statNext.textContent = 'Unlock at 100%';
-
-  streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
-  greet.textContent = `Welcome back, ${name.split(' ')[0] || name}!`;
-  greetSub.textContent = `Login daily to maintain streak and level up faster.`;
-  setDailyQuote();
-}
-
-/* Quote rotation */
-const QUOTES = [
-  "Stay focused and never give up!",
-  "Every day is a new opportunity.",
-  "Consistency is the key to success.",
-  "Push yourself, because no one else will.",
-  "Small steps every day lead to big results.",
-  "Believe in yourself and all that you are.",
-  "Strive for progress, not perfection.",
-  "Your only limit is you.",
-  "Keep going, you're getting stronger every day.",
-  "Turn your dreams into plans."
-];
-function setDailyQuote(){
-  const index = localUser.streak ? (localUser.streak % QUOTES.length) : (new Date().getDate() % QUOTES.length);
-  dailyQuoteEl.textContent = QUOTES[index];
+  progressFill.style.width=`${clamp(progress,0,100)}%`;
+  progressPercent.textContent=`${clamp(progress,0,100)}%`;
+  progressToNext.textContent=`${clamp(progress,0,100)} / 100`;
+  statLevel.textContent=levelName;
+  statProgress.textContent=`${clamp(progress,0,100)}%`;
+  statNext.textContent='Unlock at 100%';
+  streakCountEl.innerHTML=`${localUser.streak||0} 🔥`;
+  greet.textContent=`Welcome back, ${name.split(' ')[0]||name}!`;
+  greetSub.textContent=`${randomQuote()}`;
 }
 
 async function normalizeAndSave(){
-  while(localUser.progress >= 100 && localUser.level < LEVELS.length){
-    localUser.progress -= 100;
-    localUser.level += 1;
-    document.getElementById('card').animate([{transform:'scale(1)'},{transform:'scale(1.02)'},{transform:'scale(1)'}],{duration:700,easing:'ease-out'});
+  let leveledUp=false;
+  while(localUser.progress>=100 && localUser.level<LEVELS.length){
+    localUser.progress -=100;
+    localUser.level +=1;
+    leveledUp=true;
   }
-  if(localUser.level > LEVELS.length) localUser.level = LEVELS.length;
-  if(userRef){
-    await updateDoc(userRef, { level: localUser.level, progress: localUser.progress, streak: localUser.streak, lastLogin: serverTimestamp() });
-  }
+  if(localUser.level>LEVELS.length) localUser.level=LEVELS.length;
+
+  if(userRef){await updateDoc(userRef,{
+    level:localUser.level,
+    progress:localUser.progress,
+    streak:localUser.streak,
+    lastLogin:serverTimestamp()
+  });}
+
   renderUI();
+  if(leveledUp){
+    levelUpPopup.style.transform='scale(1)';
+    setTimeout(()=>levelUpPopup.style.transform='scale(0)',1500);
+  }
 }
 
-async function ensureUserDoc(uid, userObj){
-  userRef = doc(db,'users',uid);
-  const snap = await getDoc(userRef);
-  if(!snap.exists()){
-    const now = new Date();
-    await setDoc(userRef,{ name:userObj.displayName||userObj.email.split('@')[0], email:userObj.email||'', level:1, progress:0, streak:1, lastLogin: serverTimestamp()});
-    localUser = { level:1, progress:0, streak:1, lastLogin: now.toISOString(), name:userObj.displayName||userObj.email.split('@')[0], email:userObj.email};
-  } else {
-    const data = snap.data();
-    localUser.level = data.level ?? 1;
-    localUser.progress = data.progress ?? 0;
-    localUser.streak = data.streak ?? 0;
-    localUser.lastLogin = data.lastLogin?.toDate?.() || new Date();
-    localUser.name = data.name || userObj.displayName || userObj.email.split('@')[0];
-    localUser.email = data.email || userObj.email;
-    // Check streak
-    const lastKey = toDateKey(localUser.lastLogin);
-    const todayKey = toDateKey(new Date());
-    if(todayKey !== lastKey){
-      const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-      const yesterdayKey = toDateKey(yesterday);
-      if(lastKey === yesterdayKey) localUser.streak +=1;
-      else localUser.streak = 1;
-      localUser.progress += 10; // daily bonus
+// Super admin controls
+async function loadUsersForAdmin(){
+  const querySnap = await getDocs(collection(db,'users'));
+  userSelect.innerHTML='';
+  querySnap.forEach(docSnap=>{
+    const d = docSnap.data();
+    const opt = document.createElement('option');
+    opt.value=docSnap.id;
+    opt.textContent=d.name||d.email||docSnap.id;
+    userSelect.appendChild(opt);
+  });
+}
+
+userSelect.addEventListener('change',async()=>{
+  const uid = userSelect.value;
+  if(uid){
+    const docRef = doc(db,'users',uid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists()){
+      const d = docSnap.data();
+      editName.value=d.name||'';
+      editEmail.value=d.email||'';
+      editLevel.value=d.level||1;
+      editProgress.value=d.progress||0;
+      editStreak.value=d.streak||0;
     }
   }
-  await normalizeAndSave();
-}
-
-/* Auth state */
-onAuthStateChanged(auth,async user=>{
-  if(user){ currentUser=user; await ensureUserDoc(user.uid,user); }
-  else{ window.location.href = 'login.html'; }
 });
 
-/* Logout */
-logoutBtn.addEventListener('click',()=>{ signOut(auth); });
+saveUserBtn.addEventListener('click',async()=>{
+  const uid=userSelect.value;
+  if(uid){
+    const docRef = doc(db,'users',uid);
+    await updateDoc(docRef,{
+      name:editName.value,
+      email:editEmail.value,
+      level:parseInt(editLevel.value),
+      progress:parseInt(editProgress.value),
+      streak:parseInt(editStreak.value)
+    });
+    alert('User updated!');
+    loadUsersForAdmin();
+  }
+});
+
+refreshBtn.addEventListener('click',()=>renderUI());
+
+logoutBtn.addEventListener('click',()=>signOut(auth));
+
+onAuthStateChanged(auth,async(user)=>{
+  if(user){
+    currentUser=user;
+    userRef=doc(db,'users',user.uid);
+    const docSnap = await getDoc(userRef);
+    if(docSnap.exists()){localUser=docSnap.data();}
+    else{
+      await setDoc(userRef,{
+        name:user.displayName||user.email.split('@')[0],
+        email:user.email,
+        level:1,
+        progress:0,
+        streak:0,
+        role:'user',
+        lastLogin:serverTimestamp(),
+        photoURL:user.photoURL||''
+      });
+      localUser={name:user.displayName||user.email.split('@')[0],email:user.email,level:1,progress:0,streak:0,role:'user',photoURL:user.photoURL||''};
+    }
+
+    // Check login streak
+    const lastKey=toDateKey(localUser.lastLogin);
+    const todayKey=toDateKey(new Date());
+    if(lastKey!==todayKey){
+      const diffDays=(new Date(todayKey)-new Date(lastKey))/(1000*60*60*24);
+      if(diffDays===1)localUser.progress+=1; // +1% for streak
+      else localUser.progress=Math.max(0,localUser.progress-1);
+      localUser.streak=diffDays===1?localUser.streak+1:1;
+      await normalizeAndSave();
+    } else normalizeAndSave();
+
+    renderUI();
+
+    if(user.email===SUPERADMIN_EMAIL){
+      superadminBox.style.display='flex';
+      loadUsersForAdmin();
+    }
+  } else {
+    window.location.href='login.html'; // redirect to login
+  }
+});
 </script>
 </body>
 </html>
-
-
