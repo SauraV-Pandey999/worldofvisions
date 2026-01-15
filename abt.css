@@ -843,4 +843,51 @@ body, html {
 @keyframes slideInRight {
     from { transform: translateX(100px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
+
+}
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 600px) {
+    /* Prevent accidental zooming/scrolling */
+    html, body {
+        position: fixed;
+        overflow: hidden;
+        touch-action: none;
+    }
+
+    /* Shrink the HUD so it doesn't block the view */
+    #quest-hud {
+        width: 140px;
+        top: 15px;
+        right: 15px;
+        padding: 10px;
+    }
+    .hud-stats { font-size: 1.5rem; }
+    .hud-title { font-size: 0.5rem; }
+
+    /* Shrink the Glass Card for small screens */
+    .glass-card {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .glow-text { font-size: 2rem; }
+
+    /* Shrink the Cake */
+    .cake-container { font-size: 80px; }
+    .sliced .cake-left { transform: translateX(-25px) rotate(-15deg); }
+    .sliced .cake-right { transform: translateX(25px) rotate(15deg); }
+    
+    /* Knife size for finger */
+    #knife { font-size: 40px; }
+
+    /* Adjust floating photos for mobile */
+    .floating-photo img {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .floating-photo.popped {
+        width: 90vw !important;
+        padding: 10px 10px 40px 10px !important;
+    }
 }
