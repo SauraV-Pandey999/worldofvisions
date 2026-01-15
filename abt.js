@@ -191,7 +191,14 @@ window.addEventListener('mousemove', function(e) {
         }
     }
 });
+window.addEventListener('mousedown', handleInputStart);
+window.addEventListener('touchstart', (e) => { handleInputStart(); e.preventDefault(); }, {passive: false});
 
+window.addEventListener('mouseup', handleInputEnd);
+window.addEventListener('touchend', handleInputEnd);
+
+window.addEventListener('mousemove', handleInputMove);
+window.addEventListener('touchmove', (e) => { handleInputMove(e); e.preventDefault(); }, {passive: false});
 function createWishTrail(x, y) {
     const star = document.createElement('div');
     star.innerHTML = "✨";
@@ -407,4 +414,5 @@ function triggerMegaConfetti(count) {
             { transform: `translateY(110vh) rotate(${Math.random()*1000}deg) translateX(${(Math.random()-0.5)*200}px)`, opacity: 0 }
         ], { duration: 3000 + Math.random()*3000 }).onfinish = () => confetti.remove();
     }
+
 }
