@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Birthday | Avniya</title>
+    <link rel="stylesheet" href="abt.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="parallax-bg" id="sky"></div>
+    <div class="parallax-bg" id="stars"></div>
+    <div class="parallax-bg" id="clouds"></div>
+
+    <main class="content-wrapper">
+        <section id="welcome-section" class="active">
+            <div class="glass-card fade-in">
+                <h1 class="glow-text">Happy Birthday, Avniya</h1>
+                <p>A magical journey awaits you today...</p>
+                <button class="main-btn" onclick="nextSection('game-section')">Start the Magic</button>
+            </div>
+        </section>
+
+        <section id="game-section" class="hidden">
+            <div class="glass-card" id="quiz-card">
+                <h2 id="question-text">Question</h2>
+                <div id="quiz-options-container">
+                    <div id="quiz-options"></div>
+                </div>
+                <p id="game-hint" class="hint-text"></p>
+            </div>
+        </section>
+
+        <section id="final-section" class="hidden">
+            <div id="cake-area">
+                <div class="cake-container" id="cake-main">
+                    <div class="candle" id="candle-div">
+                        <div class="flame" id="flame" onclick="blowCandle()"></div>
+                    </div>
+                    <div class="cake-parts">
+                        <div class="cake-left">🎂</div>
+                        <div class="cake-right">🎂</div>
+                    </div>
+                </div>
+                <div id="knife" class="hidden">🔪</div>
+            </div>
+
+            <h2 id="instruction">Make a wish and click the flame to blow it out!</h2>
+            <div id="wish-container"><div id="looping-wish"></div></div>
+        </div>
+       <div id="quest-hud" style="display: none;">
+    <div class="hud-content">
+        <span class="hud-title">Balloon Quest 🎈</span>
+        <div class="hud-stats">
+            <span id="counter-num">0</span> <span class="hud-total">/ 20</span>
+        </div>
+        <p class="hud-hint">Burst 20 for a surprise!</p>
+    </div>
+</div>
+        </section>
+       
+    </main>
+
+    <audio id="birthday-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="abt.js"></script>
+</body>
+</html>

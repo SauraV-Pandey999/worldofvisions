@@ -1,0 +1,846 @@
+/* 1. Root Variables - Avniya's Color Palette */
+:root {
+    --primary-glow: #ff4d6d;
+    --rose-gold: #ffb7c5;
+    --deep-midnight: #2b2d42;
+    --gold-leaf: #ffca3a;
+    --white-glass: rgba(255, 255, 255, 0.1);
+    --text-color: #9bd34c;
+}
+
+/* 2. Global Reset & Screen Lock */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* CRITICAL: Prevents scrollbars when buttons move */
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg, #ffb7c5, #e0f2fe, #f5f3ff);
+    color: var(--text-color);
+    position: fixed; /* Locks the background in place */
+}
+
+/* 3. Parallax Background Layers */
+.parallax-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+#sky { background: radial-gradient(circle at top, var(--pink), transparent); opacity: 0.4; }
+#stars { 
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(176, 43, 43, 0)), 
+        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)); 
+    background-size: 100px 100px; 
+}
+
+/* 4. Main Layout Wrapper */
+.content-wrapper {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+/* 5. Glassmorphism Cards */
+.glass-card {
+    background: var(--white-glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 30px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(35, 120, 181, 0.653);
+    max-width: 500px;
+    width: 90%;
+    transition: all 0.5s ease;
+}
+
+.glow-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2.5rem, 8vw, 3.5rem); /* Responsive font size */
+    color: #32e1bb;
+    text-shadow: 0 0 15px rgba(255, 77, 109, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+/* 6. Button Styling */
+#quiz-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 100px; /* Space for buttons */
+    margin-top: 20px;
+}
+
+.main-btn, .quiz-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 50px;
+    background: var(--pink);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(214, 79, 129, 0.4);
+    transition: background 0.3s, transform 0.2s;
+    user-select: none; /* Prevents text highlighting during the game */
+}
+
+.main-btn:hover {
+    background: #990033;
+    transform: scale(1.05);
+}
+
+/* 7. The Cake & Candle Scene */
+.cake-container {
+    position: relative;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.cake {
+    font-size: 100px;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+}
+
+.candle {
+    width: 12px;
+    height: 45px;
+    background: #ffea00;
+    margin: 0 auto;
+    position: relative;
+    top: 25px;
+    border-radius: 4px;
+}
+
+.flame {
+    width: 18px;
+    height: 28px;
+    background: radial-gradient(#fff, orange, red);
+    border-radius: 50% 50% 20% 20%;
+    position: absolute;
+    top: -22px;
+    left: -3px;
+    cursor: pointer;
+    animation: flicker 0.15s infinite alternate;
+    box-shadow: 0 0 20px orange;
+}
+
+@keyframes flicker {
+    from { transform: scale(1) rotate(-1deg); opacity: 0.9; }
+    to { transform: scale(1.2) rotate(1deg); opacity: 1; }
+}
+
+/* 8. Finale Animations */
+.wish-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: #7209b7;
+    margin-top: 20px;
+    animation: popIn 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 9. Utility Classes */
+.hidden { display: none !important; }
+.fade-in { animation: fadeIn 1.5s ease-out; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#instruction {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    font-style: italic;
+    color: #6b705c;
+}
+
+/* Responsive Tweak for Mobile */
+@media (max-width: 600px) {
+    .glass-card { padding: 2rem; }
+    .quiz-btn { width: 100%; }
+}
+#quiz-options-container {
+    position: relative;
+    width: 100%;
+    height: 200px; /* High enough to allow movement inside */
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quiz-btn {
+    transition: left 0.15s ease-out, top 0.15s ease-out;
+    white-space: nowrap;
+    /* This prevents the page from jumping if the button moves */
+    will-change: left, top;
+}
+.bloom-text {
+    position: fixed;
+    pointer-events: none;
+    color: #40cfe9;
+    font-weight: bold;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    animation: bloomUp 2s ease-out forwards;
+    z-index: 9999;
+}
+
+@keyframes bloomUp {
+    0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
+    20% { opacity: 1; transform: translate(-50%, -30px) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -100px) scale(1); }
+}
+
+/* Smooth transition for buttons so they glide instead of teleport */
+.quiz-btn {
+    transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+:root {
+    --pink: #d63f76;
+    --gold: #ffc300;
+    --white: rgba(255, 255, 255, 0.3);
+}
+
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden; font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(to bottom, #1a1a2e, #16213e);
+}
+
+/* Glass Card & Buttons (Same as your good version) */
+.glass-card {
+    background: var(--white);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.hidden { display: none !important; }
+
+/* Cake Slicing Styles */
+.cake-container { font-size: 120px; position: relative; cursor: crosshair; }
+.cake-parts { display: flex; justify-content: center; position: relative; }
+
+/* Slicing Animation */
+.cake-left, .cake-right {
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+    width: 60px; overflow: hidden; /* Show half of the emoji */
+}
+.cake-right { direction: rtl; }
+
+.sliced .cake-left { transform: translateX(-40px) rotate(-15deg); }
+.sliced .cake-right { transform: translateX(40px) rotate(15deg); }
+
+/* Knife Style */
+#knife {
+    position: absolute;
+    font-size: 50px;
+    pointer-events: none;
+    z-index: 100;
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Balloon Styles */
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    width: 100px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2);
+    animation: floatUp 8s linear infinite;
+    z-index: 50;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
+}
+
+.candle { transition: opacity 0.5s; }
+.wish-text { font-family: 'Dancing Script'; font-size: 3rem; color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+/* Real 3D Balloon Styles */
+.balloon-container {
+    position: absolute;
+    bottom: -200px;
+    z-index: 100;
+    animation: floatUp 10s linear forwards, sway 3s ease-in-out infinite alternate;
+}
+
+.balloon-real {
+    width: 100px;
+    height: 125px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    padding: 10px;
+    position: relative;
+    backdrop-filter: blur(2px);
+}
+
+/* The little knot at the bottom of balloon */
+.balloon-real::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 42px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid inherit;
+    filter: brightness(0.8);
+}
+
+.balloon-string {
+    width: 2px;
+    height: 100px;
+    background: rgba(255,255,255,0.4);
+    margin: 0 auto;
+}
+
+@keyframes floatUp {
+    to { transform: translateY(-130vh); }
+}
+
+@keyframes sway {
+    from { margin-left: -20px; }
+    to { margin-left: 20px; }
+}
+
+/* Mouse Trail Sparkle */
+.sparkle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 10px white, 0 0 20px var(--gold);
+    animation: sparkleFade 1s linear forwards;
+    z-index: 999;
+}
+
+@keyframes sparkleFade {
+    to { transform: scale(3) rotate(180deg); opacity: 0; }
+}
+
+/* Screen Shake Effect */
+.shake {
+    animation: thud 0.4s ease-in-out;
+}
+
+@keyframes thud {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(5px, 5px); }
+    50% { transform: translate(-5px, -5px); }
+    75% { transform: translate(5px, -5px); }
+}
+
+/* Keep your existing Cake and Knife CSS here */
+/* Floating Photos */
+.floating-photo {
+    position: fixed;
+    bottom: -200px;
+    padding: 10px 10px 30px 10px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: rotate(calc(-10deg + 20deg * var(--r, 0.5)));
+    animation: floatUp 15s linear forwards;
+    z-index: 80;
+}
+
+.floating-photo img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Popping Particles */
+.pop-particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Update balloon cursor to show it's clickable */
+.balloon-real {
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.balloon-real:hover {
+    transform: scale(1.05);
+}
+#looping-wish {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    text-shadow: 0 0 5px rgba(255, 175, 204, 0.5);
+}
+
+/* Ensure typewriter cursor effect */
+#looping-wish::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+/* 1. POLAROID PHOTO STYLING */
+.floating-photo {
+    position: fixed;
+    bottom: -250px;
+    padding: 12px 12px 35px 12px;
+    background: white;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    border: 1px solid #ddd;
+    z-index: 80;
+    transition: transform 0.3s ease, z-index 0.3s;
+    cursor: zoom-in;
+    animation: floatUp 15s linear forwards;
+}
+
+.floating-photo img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+/* 2. BALLOON POP PARTICLES */
+.pop-particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2000;
+}
+
+/* 3. TYPEWRITER CURSOR EFFECT */
+#looping-wish {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    color: #ffc300;
+    text-shadow: 0 0 10px rgba(255, 195, 0, 0.5);
+    margin: 20px 0;
+}
+
+#looping-wish::after {
+    content: '|';
+    margin-left: 5px;
+    animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* 4. MOUSE TRAIL STARS */
+.star-trail {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: white;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    pointer-events: none;
+    z-index: 9999;
+    animation: starFade 1s linear forwards;
+}
+
+@keyframes starFade {
+    0% { transform: scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: scale(0) rotate(180deg); opacity: 0; }
+}
+
+/* 5. SCREEN SHAKE FOR IMPACT */
+.shake {
+    animation: screenShake 0.5s ease-in-out;
+}
+
+@keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate(-5px, -5px); }
+    20%, 40%, 60%, 80% { transform: translate(5px, 5px); }
+}
+/* Timer styling for the corner */
+#timer-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    font-family: 'Courier New', monospace;
+    color: #ffc300;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    border-left: 4px solid #ffc300;
+}
+
+/* Polaroid Photo Frame */
+.polaroid-frame {
+    background: white;
+    padding: 10px 10px 30px 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: zoom-in;
+}
+
+.polaroid-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.polaroid-caption {
+    font-family: 'Dancing Script', cursive;
+    color: #333;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Photo Zoom Logic */
+.focused-photo {
+    transform: translate(-50%, -50%) scale(2.5) rotate(0deg) !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    z-index: 10001 !important;
+    cursor: zoom-out;
+}
+
+/* Particle Effects */
+.star-trail-particle {
+    box-shadow: 0 0 15px white;
+}
+
+/* Heavy screen shake for reveal */
+.heavy-screen-shake {
+    animation: shakeEffect 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shakeEffect {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+    40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+/* Container to keep all text centered and stacked */
+.instruction-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#wish-container {
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+#looping-wish {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: #ffc300;
+    text-shadow: 0 0 10px rgba(255, 195, 0, 0.5);
+    display: inline-block;
+}
+
+/* Photo Zoom Fixes */
+.floating-photo.popped {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important; 
+    width: 80vw !important; /* Makes it fill most of the width */
+    max-width: 450px !important; /* Prevents it from being too huge on PC */
+    height: auto !important;
+    z-index: 10001 !important;
+    padding: 15px 15px 60px 15px; /* Extra bottom padding for the text */
+    animation: none !important;
+}
+
+.floating-photo.popped img {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Beautiful text added below the zoomed photo */
+.floating-photo.popped::after {
+    content: "A beautiful memory ✨";
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #333;
+}
+/* Hide caption by default */
+.photo-caption {
+    display: none;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Show caption only when popped */
+.floating-photo.popped .photo-caption {
+    display: block;
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Ensure the popped photo has enough space for the text */
+.floating-photo.popped {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 85vw !important;
+    max-width: 400px !important;
+    padding: 15px 15px 30px 15px !important; /* Adjusted padding */
+    z-index: 10001 !important;
+    background: white;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* Remove the old ::after content if you added it in the previous step */
+.floating-photo.popped::after {
+    content: none !important;
+}
+/* Styling for the floating button hint */
+#floating-notice {
+    margin-top: 10px;
+    font-size: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+/* Ensure the hint text has space */
+.hint-text {
+    min-height: 1.5em;
+    margin-bottom: 10px;
+}
+/* Updated Glossy Balloon Style */
+.balloon-real {
+    width: 100px;
+    height: 125px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    padding: 10px;
+    position: relative;
+    backdrop-filter: blur(2px);
+    /* Add a subtle inner shadow for depth */
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), inset 5px 5px 15px rgba(255,255,255,0.4);
+}
+
+/* The Glossy "Shine" Highlight */
+.balloon-real::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    width: 25px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    filter: blur(2px);
+}
+/* Quest Counter Styling */
+#quest-container {
+    margin-top: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: fadeIn 1s ease;
+}
+
+#burst-counter {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff4d6d;
+    text-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
+}
+
+#quest-hint {
+    font-size: 0.9rem;
+    color: #4a4e69;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/* Make the counter "bounce" when a balloon is burst */
+.counter-bounce {
+    animation: bounce 0.3s ease;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+/* Add or Update this in your CSS */
+#quest-container {
+    display: block; /* Ensures it uses flex/block logic */
+    position: relative;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+#quest-container.hidden {
+    display: none !important;
+}
+
+#counter-num {
+    font-weight: bold;
+    color: #ff4d6d;
+    display: inline-block;
+    min-width: 30px;
+}
+/* Glossy Balloon Effect */
+.balloon-real {
+    position: relative;
+    box-shadow: inset -8px -8px 15px rgba(0,0,0,0.2), inset 4px 4px 10px rgba(255,255,255,0.4);
+}
+.balloon-real::before {
+    content: '';
+    position: absolute;
+    top: 15%; left: 20%;
+    width: 20px; height: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+/* Popped/Zoomed Image Fix */
+.floating-photo.popped {
+    position: fixed !important;
+    top: 50% !important; left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    width: 80vw !important;
+    max-width: 400px !important;
+    z-index: 10001 !important;
+    padding: 15px 15px 50px 15px !important;
+    background: white;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+/* Top Right Quest HUD */
+#quest-hud {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999; /* Higher than everything else */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 175, 204, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 150px;
+    animation: slideInRight 0.5s ease-out;
+}
+
+.hud-title {
+    display: block;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.4rem;
+    color: #ff4d6d;
+    margin-bottom: 5px;
+}
+
+.hud-stats {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4a4e69;
+}
+
+#counter-num {
+    color: #ff4d6d;
+    transition: transform 0.2s ease;
+}
+
+.hud-total {
+    font-size: 1rem;
+    color: #999;
+}
+
+.hud-hint {
+    font-size: 0.75rem;
+    margin-top: 5px;
+    color: #06d2d6;
+    font-weight: 500;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
