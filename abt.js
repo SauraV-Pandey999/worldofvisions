@@ -1,33 +1,20 @@
 /**
  * THE ULTIMATE BIRTHDAY EXPERIENCE FOR AVNIYA
- * FULL SOURCE CODE - NO SHORTCUTS
+ * FIXED FOR MOBILE & GITHUB DEPLOYMENT
  */
 
 // --- 1. DATA AND STATE CONFIGURATION ---
 let balloonsBurst = 0;
 const targetBalloons = 20;
-const secretURL = "https://your-special-link-here.com"; // CHANGE THIS
+const secretURL = "your-final-page.html"; // Ensure this matches your final filename exactly
 
 const questions = [
-    { 
-        q: "First, are you ready for a surprise?", 
-        a: ["Not yet", "YES!", "Maybe"] 
-    },
-    { 
-        q: "Who deserves the most happiness today?", 
-        a: ["Me!", "Avniya", "The Internet"] 
-    },
-    { 
-        q: "Last one: Will you have the best birthday ever?", 
-        a: ["Absolutely!", "100% YES", "Of Course!"] 
-    }
+    { q: "First, are you ready for a surprise?", a: ["Not yet", "YES!", "Maybe"] },
+    { q: "Who deserves the most happiness today?", a: ["Me!", "Avniya", "The Internet"] },
+    { q: "Last one: Will you have the best birthday ever?", a: ["Absolutely!", "100% YES", "Of Course!"] }
 ];
 
-const qualities = [
-    "Kind Hearted", "Creative", "Hilarious", "Best Friend", 
-    "Pure Soul", "Hardworking", "Magical", "Radiant",
-    "Smart", "Beautiful", "Compassionate", "Unique"
-];
+const qualities = ["Kind Hearted", "Creative", "Hilarious", "Best Friend", "Pure Soul", "Hardworking", "Magical", "Radiant", "Smart", "Beautiful", "Compassionate", "Unique"];
 
 const photoData = [
     { src: "pritam.jpg", caption: "You look so happy here! ✨" },
@@ -45,29 +32,23 @@ const wishMessages = [
     "Happy Birthday to my favorite person! ✨"
 ];
 
-// Global State
 let currentQ = 0;
-let canCut = false; // Set to false until candle is blown
+let canCut = false;
 let isDrawing = false;
 let wishIndex = 0;
 
 // --- 2. CORE NAVIGATION ---
 function nextSection(id) {
-    const allSections = document.querySelectorAll('section');
-    allSections.forEach(sec => {
+    document.querySelectorAll('section').forEach(sec => {
         sec.classList.add('hidden');
         sec.classList.remove('active');
     });
-    
     const targetSection = document.getElementById(id);
     if (targetSection) {
         targetSection.classList.remove('hidden');
         targetSection.classList.add('active');
     }
-
-    if (id === 'game-section') {
-        loadQuiz();
-    }
+    if (id === 'game-section') loadQuiz();
 }
 
 // --- 3. THE INTERACTIVE QUIZ ENGINE ---
@@ -78,12 +59,9 @@ function loadQuiz() {
     
     textElement.innerText = questions[currentQ].q;
     optionsContainer.innerHTML = "";
-
     if (hintElement) hintElement.innerText = "";
 
-    const currentAnswers = questions[currentQ].a;
-
-    currentAnswers.forEach(answer => {
+    questions[currentQ].a.forEach(answer => {
         const btn = document.createElement('button');
         btn.innerText = answer;
         btn.className = "quiz-btn";
@@ -91,328 +69,232 @@ function loadQuiz() {
         if (currentQ === 2) {
             if (hintElement) {
                 hintElement.innerText = "Wait, why are the buttons floating? Try to catch them! 😂";
-                hintElement.style.color = "#ff4d8b";
             }
-
-            btn.addEventListener('mouseover', function() {
-                const glassCard = document.querySelector('.glass-card');
-                const cardRect = glassCard.getBoundingClientRect();
-                
-                const btnWidth = 120;
-                const btnHeight = 45;
-                const pad = 40;
-
-                const finalX = Math.random() * (cardRect.width - btnWidth - pad*2) + cardRect.left + pad;
-                const finalY = Math.random() * (cardRect.height - btnHeight - pad*2) + cardRect.top + (cardRect.height / 2);
-
-                btn.style.position = "fixed";
-                btn.style.left = finalX + "px";
-                btn.style.top = finalY + "px";
-                btn.style.zIndex = "1000";
-                btn.style.transition = "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-            });
+            btn.addEventListener('mouseover', moveButton);
+            btn.addEventListener('touchstart', moveButton);
         }
 
-        btn.onclick = function(event) {
-            createBloomEffect(event.clientX, event.clientY);
+        btn.onclick = function(e) {
+            createBloomEffect(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
             currentQ++;
-            
-            if (currentQ < questions.length) {
-                loadQuiz();
-            } else {
-                nextSection('final-section');
-            }
+            if (currentQ < questions.length) loadQuiz();
+            else nextSection('final-section');
         };
         optionsContainer.appendChild(btn);
     });
 }
 
-// --- 4. VISUAL BLOOM EFFECTS ---
+function moveButton(e) {
+    const btn = e.target;
+    const glassCard = document.querySelector('.glass-card');
+    const rect = glassCard.getBoundingClientRect();
+    const x = Math.random() * (rect.width - 100) + rect.left;
+    const y = Math.random() * (rect.height - 100) + rect.top;
+    btn.style.position = "fixed";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+    btn.style.zIndex = "1000";
+}
+
+// --- 4. VISUAL EFFECTS ---
 function createBloomEffect(x, y) {
     const messages = ["You're Amazing!", "Best Friend!", "Keep Going!", "Magic!", "Avniya ✨"];
     const bloom = document.createElement('div');
     bloom.className = 'bloom-text';
     bloom.innerText = messages[Math.floor(Math.random() * messages.length)];
-    bloom.style.position = 'fixed';
-    bloom.style.left = x + 'px';
-    bloom.style.top = y + 'px';
-    bloom.style.pointerEvents = 'none';
+    bloom.style.cssText = `position:fixed; left:${x}px; top:${y}px; pointer-events:none; z-index:99999;`;
     document.body.appendChild(bloom);
     setTimeout(() => bloom.remove(), 2000);
 }
 
-// --- 5. THE FINALE: CANDLE AND MUSIC ---
+// --- 5. THE FINALE ---
 function blowCandle() {
     const flame = document.getElementById('flame');
     if (flame) flame.style.display = 'none';
     
-    const candle = document.getElementById('candle-div');
-    if (candle) candle.style.opacity = '0';
-    
     const instructionText = document.getElementById('instruction');
-    if (instructionText) {
-        instructionText.innerText = "WISH GRANTED! Now SWIPE across the cake to cut it!";
-        instructionText.style.color = "#ffafcc";
-    }
+    if (instructionText) instructionText.innerText = "WISH GRANTED! Now SWIPE across the cake to cut it!";
     
-    const knife = document.getElementById('knife');
-    if (knife) knife.classList.remove('hidden');
-    
+    document.getElementById('knife')?.classList.remove('hidden');
     canCut = true;
     
-    const musicPlayer = document.getElementById('birthday-music');
-    if (musicPlayer) {
-        musicPlayer.play().catch(() => console.log("Audio interaction needed"));
-    }
+    const music = document.getElementById('birthday-music');
+    if (music) music.play().catch(() => console.log("Interaction needed for audio"));
     
-    triggerInitialConfetti();
+    triggerMegaConfetti(80);
 }
 
-// --- 6. SWIPE TO CUT CAKE SYSTEM & WISH TRAIL ---
-window.addEventListener('mousedown', () => { isDrawing = true; });
-window.addEventListener('mouseup', () => { isDrawing = false; });
+// --- 6. UNIVERSAL INPUT SYSTEM (FIXED) ---
+function handleInputStart() { isDrawing = true; }
+function handleInputEnd() { isDrawing = false; }
 
-window.addEventListener('mousemove', function(e) {
-    createWishTrail(e.pageX, e.pageY);
+function handleInputMove(e) {
+    let x = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+    let y = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+    let cX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+    let cY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
 
-    const knifeIcon = document.getElementById('knife');
-    if (knifeIcon && !knifeIcon.classList.contains('hidden')) {
-        knifeIcon.style.left = e.pageX + 'px';
-        knifeIcon.style.top = e.pageY + 'px';
+    createWishTrail(x, y);
+
+    const knife = document.getElementById('knife');
+    if (knife && !knife.classList.contains('hidden')) {
+        knife.style.left = x + 'px';
+        knife.style.top = y + 'px';
     }
 
     if (isDrawing && canCut) {
-        const cakeObj = document.getElementById('cake-main');
-        if (cakeObj) {
-            const rect = cakeObj.getBoundingClientRect();
-            if (e.pageX > rect.left && e.pageX < rect.right && e.pageY > rect.top && e.pageY < rect.bottom) {
+        const cake = document.getElementById('cake-main');
+        if (cake) {
+            const rect = cake.getBoundingClientRect();
+            if (cX > rect.left && cX < rect.right && cY > rect.top && cY < rect.bottom) {
                 performCakeSlice();
             }
         }
     }
-});
-window.addEventListener('mousedown', handleInputStart);
-window.addEventListener('touchstart', (e) => { handleInputStart(); e.preventDefault(); }, {passive: false});
+}
 
+// Event Listeners
+window.addEventListener('mousedown', handleInputStart);
+window.addEventListener('touchstart', (e) => { handleInputStart(); }, {passive: true});
 window.addEventListener('mouseup', handleInputEnd);
 window.addEventListener('touchend', handleInputEnd);
-
 window.addEventListener('mousemove', handleInputMove);
-window.addEventListener('touchmove', (e) => { handleInputMove(e); e.preventDefault(); }, {passive: false});
+window.addEventListener('touchmove', (e) => { handleInputMove(e); }, {passive: true});
+
 function createWishTrail(x, y) {
     const star = document.createElement('div');
     star.innerHTML = "✨";
-    star.style.position = 'absolute';
-    star.style.left = x + 'px';
-    star.style.top = y + 'px';
-    star.style.pointerEvents = 'none';
-    star.style.zIndex = "9999";
+    star.style.cssText = `position:absolute; left:${x}px; top:${y}px; pointer-events:none; z-index:9999;`;
     document.body.appendChild(star);
-
     star.animate([
-        { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: `translate(${(Math.random() - 0.5) * 50}px, ${(Math.random() - 0.5) * 50}px) scale(0)`, opacity: 0 }
+        { transform: 'scale(1)', opacity: 1 },
+        { transform: `translate(${(Math.random()-0.5)*50}px, 50px) scale(0)`, opacity: 0 }
     ], { duration: 1000 }).onfinish = () => star.remove();
 }
 
 function performCakeSlice() {
     if (!canCut) return;
     canCut = false; 
-    
     document.getElementById('cake-main')?.classList.add('sliced');
     document.getElementById('knife')?.classList.add('hidden');
     
-    // Show Quest HUD
     const hud = document.getElementById('quest-hud') || document.getElementById('quest-container');
-    if (hud) hud.style.display = 'block';
+    if (hud) {
+        hud.style.display = 'block';
+        hud.classList.remove('hidden');
+    }
 
     document.body.classList.add('heavy-screen-shake');
     setTimeout(() => document.body.classList.remove('heavy-screen-shake'), 800);
     
-    triggerMegaConfetti(250); 
-    triggerFireworkShow(12);   
+    triggerMegaConfetti(150); 
     startCelebrationCycles();
     startTypewriterWishLoop();
 }
 
-// --- 7. CONTINUOUS CELEBRATION ---
+// --- 7. CELEBRATION ---
 function startCelebrationCycles() {
     setInterval(createFloatingBalloon, 1200);
-    setInterval(createFloatingPhoto, 6000);
+    setInterval(createFloatingPhoto, 5000);
 }
 
 function createFloatingBalloon() {
     const container = document.createElement('div');
     container.className = 'balloon-container';
-    
     const body = document.createElement('div');
     body.className = 'balloon-real';
     body.innerText = qualities[Math.floor(Math.random() * qualities.length)];
     
-    body.onclick = function(e) {
+    const popAction = (e) => {
         e.stopPropagation();
-        createPopEffect(e.pageX, e.pageY);
+        const rect = body.getBoundingClientRect();
+        createPopEffect(rect.left + 50, rect.top + 50);
         container.remove();
     };
 
-    const string = document.createElement('div');
-    string.className = 'balloon-string';
+    body.addEventListener('mousedown', popAction);
+    body.addEventListener('touchstart', popAction);
 
     container.appendChild(body);
-    container.appendChild(string);
-    container.style.left = Math.random() * 85 + 'vw';
-    body.style.backgroundColor = `hsla(${Math.random() * 360}, 80%, 65%, 0.8)`;
-    
+    container.style.left = Math.random() * 80 + 'vw';
+    body.style.backgroundColor = `hsla(${Math.random() * 360}, 70%, 60%, 0.8)`;
     document.body.appendChild(container);
     setTimeout(() => { if (container.parentNode) container.remove(); }, 12000);
+}
+
+function createPopEffect(x, y) {
+    balloonsBurst++;
+    const counter = document.getElementById('counter-num');
+    const bar = document.getElementById('hud-bar');
+    if (counter) counter.innerText = balloonsBurst;
+    if (bar) bar.style.width = (balloonsBurst / targetBalloons * 100) + "%";
+
+    if (balloonsBurst >= targetBalloons) {
+        setTimeout(() => { window.location.href = secretURL; }, 800);
+    }
+
+    for (let i = 0; i < 10; i++) {
+        const p = document.createElement('div');
+        p.className = 'pop-particle';
+        p.style.cssText = `left:${x}px; top:${y}px; position:fixed; background:#ffca3a; width:6px; height:6px; border-radius:50%;`;
+        document.body.appendChild(p);
+        const angle = Math.random() * Math.PI * 2;
+        p.animate([
+            { transform: 'translate(0,0) scale(1)', opacity: 1 },
+            { transform: `translate(${Math.cos(angle)*60}px, ${Math.sin(angle)*60}px) scale(0)`, opacity: 0 }
+        ], { duration: 600 }).onfinish = () => p.remove();
+    }
 }
 
 function createFloatingPhoto() {
     const frame = document.createElement('div');
     frame.className = 'floating-photo';
     const selected = photoData[Math.floor(Math.random() * photoData.length)];
-    
-    const img = document.createElement('img');
-    img.src = selected.src;
-    
-    const cap = document.createElement('div');
-    cap.className = 'photo-caption';
-    cap.innerText = selected.caption;
-    
-    frame.appendChild(img);
-    frame.appendChild(cap);
-    frame.style.left = Math.random() * 70 + 'vw';
-    frame.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+    frame.innerHTML = `<img src="${selected.src}"><div class="photo-caption">${selected.caption}</div>`;
+    frame.style.left = Math.random() * 60 + 'vw';
 
     frame.onclick = function() {
         if (!this.classList.contains('popped')) {
-            document.querySelectorAll('.popped').forEach(p => p.remove());
+            document.querySelectorAll('.popped').forEach(p => p.classList.remove('popped'));
             this.classList.add('popped');
-            this.style.transform = "translate(-50%, -50%) rotate(0deg)";
-        } else {
-            this.remove(); 
-        }
+        } else { this.remove(); }
     };
-    
     document.body.appendChild(frame);
     setTimeout(() => { if (frame.parentNode && !frame.classList.contains('popped')) frame.remove(); }, 15000);
 }
 
-function createPopEffect(x, y) {
-    balloonsBurst++;
-    const counter = document.getElementById('counter-num');
-    if (counter) {
-        counter.innerText = balloonsBurst;
-        counter.style.transform = "scale(1.4)";
-        setTimeout(() => counter.style.transform = "scale(1)", 150);
-    }
-
-    if (balloonsBurst === targetBalloons) {
-        setTimeout(() => {
-            alert("💖 AMAZING! You've burst 20 balloons! Redirecting...");
-            window.location.href = secretURL;
-        }, 500);
-    }
-
-    for (let i = 0; i < 15; i++) {
-        const p = document.createElement('div');
-        p.className = 'pop-particle';
-        p.style.left = x + 'px';
-        p.style.top = y + 'px';
-        p.style.backgroundColor = '#ffffff';
-        p.style.position = 'fixed';
-        p.style.pointerEvents = 'none';
-        p.style.zIndex = "10002";
-        document.body.appendChild(p);
-        
-        const angle = Math.random() * Math.PI * 2;
-        const vel = Math.random() * 100 + 40;
-        p.animate([
-            { transform: 'translate(0,0) scale(1)', opacity: 1 },
-            { transform: `translate(${Math.cos(angle)*vel}px, ${Math.sin(angle)*vel}px) scale(0)`, opacity: 0 }
-        ], { duration: 800 }).onfinish = () => p.remove();
-    }
-}
-
-// --- 8. THE TYPEWRITER WISH LOOP ---
+// --- 8. WISH LOOP & CONFETTI ---
 function startTypewriterWishLoop() {
     const output = document.getElementById('looping-wish');
     if (!output) return;
     let charIdx = 0;
-
     function type() {
         let msg = wishMessages[wishIndex];
         if (charIdx < msg.length) {
-            output.innerText += msg.charAt(charIdx);
-            charIdx++;
+            output.innerText += msg.charAt(charIdx++);
             setTimeout(type, 100);
-        } else {
-            setTimeout(erase, 2500);
-        }
+        } else setTimeout(erase, 2000);
     }
-
     function erase() {
-        let msg = wishMessages[wishIndex];
         if (charIdx > 0) {
-            output.innerText = msg.substring(0, charIdx - 1);
-            charIdx--;
+            output.innerText = wishMessages[wishIndex].substring(0, --charIdx);
             setTimeout(erase, 50);
         } else {
             wishIndex = (wishIndex + 1) % wishMessages.length;
-            setTimeout(type, 600);
+            setTimeout(type, 500);
         }
     }
     type();
 }
 
-// --- 9. MEGA CELEBRATION EFFECTS ---
-function triggerInitialConfetti() {
-    triggerMegaConfetti(80);
-}
-
-function triggerFireworkShow(count) {
-    for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * (window.innerHeight * 0.7);
-            createFireworkBurst(x, y);
-        }, i * 300);
-    }
-}
-
-function createFireworkBurst(x, y) {
-    const colors = ['#ffafcc', '#ffc300', '#a2d2ff', '#ffffff', '#cdb4db'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.className = 'pop-particle';
-        p.style.left = x + 'px'; p.style.top = y + 'px';
-        p.style.backgroundColor = color;
-        p.style.boxShadow = `0 0 15px ${color}`;
-        document.body.appendChild(p);
-        const angle = Math.random() * Math.PI * 2;
-        const vel = 60 + Math.random() * 120;
-        p.animate([
-            { transform: 'translate(0,0) scale(1.5)', opacity: 1 },
-            { transform: `translate(${Math.cos(angle)*vel}px, ${Math.sin(angle)*vel}px) scale(0)`, opacity: 0 }
-        ], { duration: 1500 }).onfinish = () => p.remove();
-    }
-}
-
 function triggerMegaConfetti(count) {
-    const colors = ['#ffafcc', '#ffc300', '#a2d2ff', '#cdb4db'];
     for (let i = 0; i < count; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'pop-particle';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.top = '-20px';
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = '10px'; confetti.style.height = '10px';
-        document.body.appendChild(confetti);
-        confetti.animate([
-            { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
-            { transform: `translateY(110vh) rotate(${Math.random()*1000}deg) translateX(${(Math.random()-0.5)*200}px)`, opacity: 0 }
-        ], { duration: 3000 + Math.random()*3000 }).onfinish = () => confetti.remove();
+        const c = document.createElement('div');
+        c.style.cssText = `position:fixed; left:${Math.random()*100}vw; top:-10px; width:10px; height:10px; background:hsl(${Math.random()*360}, 70%, 60%); z-index:999;`;
+        document.body.appendChild(c);
+        c.animate([
+            { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+            { transform: `translateY(105vh) rotate(${Math.random()*720}deg)`, opacity: 0 }
+        ], { duration: 3000 + Math.random()*2000 }).onfinish = () => c.remove();
     }
-
 }
