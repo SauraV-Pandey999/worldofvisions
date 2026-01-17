@@ -20,9 +20,9 @@ const photoData = [
     { src: "p1.jpg", caption: "You look so happy here! ✨" },
     { src: "P2.jpg", caption: "A truly magical moment. 💖" },
     { src: "P3.jpg", caption: "To more adventures together! 🚀" },
-    { src: "p4.jpg", caption: "Simply beautiful. 🌸" }
-    { src: "p5.jpg", caption: "A beautiful soul, inside and out💖" }
-    { src: "p6.jpg", caption: "Energy that matches the smile. Truly one of a kind.😍" }
+    { src: "p4.jpg", caption: "Simply beautiful. 🌸" },
+    { src: "p5.jpg", caption: "A beautiful soul, inside and out💖" },
+    { src: "p6.jpg", caption: "Energy that matches the smile. Truly one of a kind.😍" },
     { src: "p7.jpg", caption: "Radiant as always.💙" }
 ];
 
@@ -301,6 +301,7 @@ function triggerMegaConfetti(count) {
         ], { duration: 3000 + Math.random()*2000 }).onfinish = () => c.remove();
     }
 }
+
 
 
 
