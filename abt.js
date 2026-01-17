@@ -17,10 +17,13 @@ const questions = [
 const qualities = ["Kind Hearted", "Creative", "Hilarious", "Best Friend", "Pure Soul", "Hardworking", "Magical", "Radiant", "Smart", "Beautiful", "Compassionate", "Unique"];
 
 const photoData = [
-    { src: "pritam.jpg", caption: "You look so happy here! ✨" },
-    { src: "rajat.jpg", caption: "A truly magical moment. 💖" },
-    { src: "saurav.jpg", caption: "To more adventures together! 🚀" },
-    { src: "photo4.jpg", caption: "Simply beautiful. 🌸" }
+    { src: "p1.jpg", caption: "You look so happy here! ✨" },
+    { src: "P2.jpg", caption: "A truly magical moment. 💖" },
+    { src: "P3.jpg", caption: "To more adventures together! 🚀" },
+    { src: "p4.jpg", caption: "Simply beautiful. 🌸" }
+    { src: "p5.jpg", caption: "A beautiful soul, inside and out💖" }
+{ src: "p6.jpg", caption: "Energy that matches the smile. Truly one of a kind.😍" }
+{ src: "p7.jpg", caption: "Radiant as always.💙" }
 ];
 
 const wishMessages = [
@@ -298,5 +301,6 @@ function triggerMegaConfetti(count) {
         ], { duration: 3000 + Math.random()*2000 }).onfinish = () => c.remove();
     }
 }
+
 
 
