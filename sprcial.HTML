@@ -240,6 +240,56 @@ footer {
 .gold-footer .saurav-glow {
     color: #ffcc00 !important;
 }
+/* --- MOBILE OPTIMIZATION --- */
+@media screen and (max-width: 768px) {
+    /* 1. Stack the timer vertically */
+    #timer-ui {
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 20px;
+    }
+
+    .time-num {
+        font-size: 3.5rem !important; /* Slightly smaller for mobile */
+    }
+
+    /* 2. Adjust the Poem for small screens */
+    .poetry-container {
+        padding: 0 20px !important;
+    }
+
+    .poetry-line {
+        font-size: 1.1rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* 3. Fix the Secret Reveal (Hack Stage) */
+    #scramble-display {
+        font-size: 1.2rem !important;
+        width: 90%;
+    }
+
+    #final-queen h1 {
+        font-size: 2.5rem !important;
+    }
+
+    /* 4. Fix the Gold Footer on Mobile */
+    .gold-footer {
+        padding: 20px 10px !important;
+        font-size: 0.5rem !important;
+    }
+
+    .footer-content {
+        letter-spacing: 2px !important;
+    }
+
+    /* 5. Hide the cursor sparkles on touch devices */
+    /* (Sparkles follow fingers on mobile, which can be messy) */
+    .sparkle {
+        width: 3px;
+        height: 3px;
+    }
+}
     </style>
 </head>
 <body>
@@ -559,9 +609,13 @@ gsap.from("footer", {
         start: "top 95%",
     }
 });
+if (window.innerWidth <= 768) {
+    document.body.style.cursor = 'auto'; // Show default touch indicator on mobile
+}
  window.bypass = () => { document.getElementById('timer-ui').style.display = 'none'; document.getElementById('unlock').style.display = 'block'; };
     </script>
 </body>
 
 </html>
+
 
