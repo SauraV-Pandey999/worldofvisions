@@ -6,7 +6,7 @@
 // --- 1. DATA AND STATE CONFIGURATION ---
 let balloonsBurst = 0;
 const targetBalloons = 20;
-const secretURL = "your-final-page.html"; // Ensure this matches your final filename exactly
+const secretURL = "https://saurav-pandey999.github.io/worldofvisions/sprcial.HTML"; // Ensure this matches your final filename exactly
 
 const questions = [
     { q: "First, are you ready for a surprise?", a: ["Not yet", "YES!", "Maybe"] },
@@ -298,3 +298,4 @@ function triggerMegaConfetti(count) {
         ], { duration: 3000 + Math.random()*2000 }).onfinish = () => c.remove();
     }
 }
+
