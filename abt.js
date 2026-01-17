@@ -22,8 +22,8 @@ const photoData = [
     { src: "P3.jpg", caption: "To more adventures together! 🚀" },
     { src: "p4.jpg", caption: "Simply beautiful. 🌸" }
     { src: "p5.jpg", caption: "A beautiful soul, inside and out💖" }
-{ src: "p6.jpg", caption: "Energy that matches the smile. Truly one of a kind.😍" }
-{ src: "p7.jpg", caption: "Radiant as always.💙" }
+    { src: "p6.jpg", caption: "Energy that matches the smile. Truly one of a kind.😍" }
+    { src: "p7.jpg", caption: "Radiant as always.💙" }
 ];
 
 const wishMessages = [
@@ -301,6 +301,7 @@ function triggerMegaConfetti(count) {
         ], { duration: 3000 + Math.random()*2000 }).onfinish = () => c.remove();
     }
 }
+
 
 
 
