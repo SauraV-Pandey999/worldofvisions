@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVNIYA // 01.20.26</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@200;300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Six+Caps&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --black: #050505;
+            --burgundy: #2e0202; /* Deepened for power */
+            --red: #a30000;
+            --glow: rgba(163, 0, 0, 0.8);
+            --text: #e0e0e0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--black); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            cursor: none; /* Hide standard cursor for custom power cursor */
+        }
+
+        /* --- POWER CURSOR --- */
+        #cursor-dot {
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 100001;
+        }
+        #cursor-glow {
+            width: 40px; height: 40px; border: 1px solid var(--red); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 100000;
+            transition: transform 0.1s ease-out;
+            box-shadow: 0 0 15px var(--red);
+        }
+
+        /* --- BACKGROUND --- */
+        #heart-field { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .heart {
+            position: absolute; color: var(--red);
+            text-shadow: 0 0 20px var(--red);
+            opacity: 0.4;
+        }
+
+        /* --- LOADER --- */
+        #loader {
+            position: fixed; inset: 0; background: black; z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .loader-title { font-family: 'Syncopate'; font-size: 0.7rem; letter-spacing: 12px; color: var(--red); margin-bottom: 40px; }
+        
+        /* --- HERO --- */
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; text-align: center; }
+        .hero h1 { 
+            font-family: 'Syncopate'; font-size: clamp(3rem, 10vw, 8rem); 
+            letter-spacing: -5px; transition: 0.5s; cursor: pointer;
+        }
+        .hero h1:hover { color: var(--red); text-shadow: 0 0 50px var(--red); }
+/* --- POETRY SECTION --- */
+        .poetry-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, #0a0000, transparent);
+        }
+
+        .poetry-container {
+            max-width: 700px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            line-height: 1.8;
+            color: #ccc;
+        }
+
+        .poetry-line { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .poetry-accent {
+            color: var(--red);
+            font-family: 'Syncopate';
+            font-size: 0.6rem;
+            letter-spacing: 5px;
+            font-style: normal;
+            margin-bottom: 30px;
+            display: block;
+        }
+        /* --- GALLERY --- */
+        .showcase { max-width: 1200px; margin: 0 auto; padding: 100px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        
+        .v-card { 
+            aspect-ratio: 9/16; background: #000; border: 1px solid #1a1a1a; 
+            border-radius: 0px; /* Sharp corners for INTJ professional look */
+            overflow: hidden; opacity: 0; transform: translateY(50px);
+            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
+        }
+        .v-card:hover { border-color: var(--red); transform: scale(1.02); }
+        
+        video { width: 100%; height: 80%; object-fit: cover; }
+        .v-label { height: 20%; width: 100%; padding: 15px; background: #050505; font-size: 0.7rem; color: #888; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid #1a1a1a; }
+        .v-tag { color: var(--red); font-family: 'Syncopate'; font-size: 0.5rem; letter-spacing: 2px; margin-bottom: 4px; }
+
+        /* --- BUTTON --- */
+        .enter-btn {
+            padding: 15px 40px; background: transparent; border: 1px solid var(--red);
+            color: white; font-family: 'Syncopate'; letter-spacing: 5px; cursor: pointer;
+            display: none; box-shadow: 0 0 20px rgba(163,0,0,0.2);
+        }
+        .enter-btn:hover { background: var(--red); box-shadow: 0 0 40px var(--red); }
+
+       .time-num { 
+    font-family: 'Stardos Stencil', sans-serif;
+    font-size: 2.5rem;
+    text-shadow: 0 0 20px var(--glow);
+    transition: all 0.3s ease;
+}
+
+.time-num:hover {
+    color: var(--red);
+    text-shadow: 0 0 40px var(--red);
+    transform: scale(1.1);
+}
+        #scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(to right, var(--burgundy), var(--red));
+    box-shadow: 0 0 10px var(--red);
+    z-index: 10002;
+}
+/* --- HACK & FIREWORKS STYLES --- */
+#hack-stage {
+    position: fixed; inset: 0; background: black; z-index: 99999;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+}
+#fireworks-canvas {
+    position: absolute; inset: 0; pointer-events: none; z-index: 100;
+}
+.scramble-text {
+    font-family: 'Space Mono', monospace; font-size: 2rem;
+    color: var(--red); letter-spacing: 2px; z-index: 101;
+}
+.queen-theme {
+    display: none; flex-direction: column; align-items: center; 
+    text-align: center; z-index: 102; animation: queenFade 2s forwards;
+}
+.queen-title {
+    font-family: 'Syncopate'; font-size: clamp(1.5rem, 6vw, 4rem);
+    color: #ffcc00; text-shadow: 0 0 30px #ffcc00; margin-bottom: 20px;
+}
+@keyframes queenFade { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+/* --- ANIMATED FOOTER STYLES --- */
+footer {
+    padding: 60px 20px;
+    text-align: center;
+    background: linear-gradient(to top, #0a0000, transparent);
+    border-top: 1px solid #1a1a1a;
+    margin-top: 100px;
+}
+
+.footer-content {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 5px;
+    color: #444;
+    transition: 0.5s;
+}
+
+.footer-content span {
+    color: var(--red);
+    text-shadow: 0 0 10px var(--red);
+    font-weight: bold;
+    display: inline-block;
+    animation: heartBeat 2s infinite;
+}
+
+.made-by {
+    margin-top: 15px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.saurav-glow {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    transition: 0.3s;
+}
+
+.saurav-glow:hover {
+    color: var(--red);
+    text-shadow: 0 0 15px var(--red);
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); text-shadow: 0 0 20px var(--red); }
+    100% { transform: scale(1); }
+}
+/* Custom class to be triggered by JS */
+.gold-footer {
+    position: fixed !important; /* Fix it to the bottom of the screen */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100003 !important; /* Higher than hack-stage (99999) */
+    background: transparent !important;
+    border-top: none !important;
+}
+
+.gold-footer .footer-content {
+    color: #ffcc00 !important;
+    text-shadow: 0 0 10px #ffcc00 !important;
+}
+
+.gold-footer #footer-heart {
+    color: #fff !important;
+    text-shadow: 0 0 20px #fff !important;
+}
+
+.gold-footer .saurav-glow {
+    color: #ffcc00 !important;
+}
+    </style>
+</head>
+<body>
+    <div id="hack-stage">
+    <canvas id="fireworks-canvas"></canvas>
+    <div id="scramble-display" class="scramble-text"></div>
+    <div id="final-queen" class="queen-theme">
+        <p style="color:white; font-size:0.7rem; letter-spacing:10px; margin-bottom:10px;">ROYAL PROTOCOL ACTIVATED</p>
+        <h2 class="queen-title">HAPPIEST BIRTHDAY TO THE QUEEN AVNIYA</h2>
+        <p style="color:#666; font-family:'Space Mono'; font-size:0.8rem;">You rule the digital and the real.</p>
+        <button onclick="location.reload()" style="margin-top:40px; background:none; border:1px solid #ffcc00; color:#ffcc00; padding:10px 30px; font-family:'Syncopate'; cursor:pointer; pointer-events: auto;">RE-ENTER KINGDOM</button>
+    </div>
+</div>
+<div id="scroll-progress"></div>
+    <div id="cursor-dot"></div>
+    <div id="cursor-glow"></div>
+    <div id="heart-field"></div>
+
+    <div id="loader">
+        <div class="loader-title">QUANTUM INITIALIZATION FOR BIRTHDAY</div>
+        <div class="countdown" id="timer-ui" style="display:flex; gap:30px; margin-bottom:50px;">
+            <div class="time-blk" style="text-align:center;"><span class="time-num" id="d">00</span><br><small>DAYS</small></div>
+            <div class="time-blk" style="text-align:center;"><span class="time-num" id="h">00</span><br><small>HOURS</small></div>
+            <div class="time-blk" style="text-align:center;"><span class="time-num" id="m">00</span><br><small>MINS</small></div>
+            <div class="time-blk" style="text-align:center;"><span class="time-num" id="s">00</span><br><small>SECS</small></div>
+        </div>
+        <button class="enter-btn" id="unlock">DECRYPT SURPRISE</button>
+    </div>
+
+    <section class="hero" id="hero">
+        <p style="letter-spacing:15px; font-size:0.6rem; color:var(--red);">PROTOCOL: BIRTHDAY</p>
+        <h1 id="main-name">AVNIYA</h1>
+        <p style="margin-top:20px; color:#444;">[ SCROLL DOWN ]</p>
+    </section>
+
+    <section id="quote-section" style="padding: 100px 20px; text-align: center; max-width: 800px; margin: 0 auto; opacity:0;">
+        <p style="font-family: 'Inter'; font-weight: 200; font-style: italic; color: #888; line-height: 2; font-size: 1.1rem;">
+            "To the mind that sees the world in patterns, and the heart that remains 
+            a beautiful mystery—this archive is a small tribute to the 
+            extraordinary logic of being you."
+        </p>
+    </section>
+<section class="poetry-section">
+        <span class="poetry-accent">A MENTAL ARCHITECTURE</span>
+        <div class="poetry-container">
+            <span class="poetry-line">We met as batchmates, just by chance,</span>
+        <span class="poetry-line">But friendship grew with every glance.</span>
+        <span class="poetry-line">Red and black your fearless style,</span>
+        <span class="poetry-line">Strong INTJ, sharp mind, soft smile.</span>
+        <span class="poetry-line">I’m grateful for the talks we share,</span>
+        <span class="poetry-line">For every laugh, for showing care.</span>
+        <span class="poetry-line">In my life you’re rare to find,</span>
+        <span class="poetry-line">A special place you hold in my mind.</span>
+        <span class="poetry-line">So here’s to you today’s your day,</span>
+        <span class="poetry-line">May joy and dreams come all your way.</span>
+        <span class="poetry-line">Happy birthday, my friend so true,</span>
+        <span class="poetry-line">Life’s better just because of you.</span>
+        </div>
+    </section>
+    <div class="showcase" id="gallery">
+        <div class="v-card"><video controls><source src="v1.mp4"></video><div class="v-label"><span class="v-tag">LOG_01</span>Perspective is a gift. Never stop seeing.</div></div>
+        <div class="v-card"><video controls><source src="v2.mp4"></video><div class="v-label"><span class="v-tag">LOG_02</span>A mind that never rests is a beautiful chaos.</div></div>
+        <div class="v-card"><video controls><source src="v3.mp4"></video><div class="v-label"><span class="v-tag">LOG_03</span>Relentless growth, defined by you.</div></div>
+        <div class="v-card"><video controls><source src="v4.mp4"></video><div class="v-label"><span class="v-tag">LOG_04</span>Happy Birthday, Avniya. Keep leading.</div></div>
+    </div>
+<footer id="main-footer">
+    <div class="footer-content" id="footer-text">
+        MADE WITH <span id="footer-heart">❤</span> FOR THE QUEEN
+    </div>
+    <div class="made-by">
+        DESIGNED BY <span class="saurav-glow" id="saurav-name">SAURAV</span> // 2026
+    </div>
+</footer>
+    <audio id="bg-music" loop><source src="ad2.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        // 1. Cursor Logic
+        const dot = document.getElementById('cursor-dot');
+        const glow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(dot, {x: e.clientX, y: e.clientY, duration: 0});
+            gsap.to(glow, {x: e.clientX - 20, y: e.clientY - 20, duration: 0.15});
+        });
+
+        // 2. Secret Message Logic
+        const nameBtn = document.getElementById('main-name');
+        nameBtn.addEventListener('click', () => {
+            nameBtn.innerText = "MY INSPIRATION";
+            gsap.fromTo(nameBtn, {scale: 0.9}, {scale: 1, duration: 0.5, ease: "elastic.out"});
+            setTimeout(() => { nameBtn.innerText = "AVNIYA"; }, 3000);
+        });
+
+        // 3. Countdown & Hearts (Same as before but optimized)
+        const target = new Date("Jan 20, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const diff = target - new Date().getTime();
+            if (diff <= 0) {
+                document.getElementById('timer-ui').style.display = 'none';
+                document.getElementById('unlock').style.display = 'block';
+            } else {
+                document.getElementById('d').innerText = Math.floor(diff / 86400000);
+                document.getElementById('h').innerText = Math.floor((diff % 86400000) / 3600000);
+                document.getElementById('m').innerText = Math.floor((diff % 3600000) / 60000);
+                document.getElementById('s').innerText = Math.floor((diff % 60000) / 1000);
+            }
+        }, 1000);
+
+        // Hearts
+        for (let i = 0; i < 25; i++) {
+            const h = document.createElement('div');
+            h.className = 'heart'; h.innerHTML = '❤';
+            h.style.left = Math.random() * 100 + 'vw'; h.style.top = Math.random() * 100 + 'vh';
+            h.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.getElementById('heart-field').appendChild(h);
+            gsap.to(h, {y: "-=100", opacity: 0.1, duration: 3 + Math.random() * 3, repeat: -1, yoyo: true});
+        }
+
+        // 4. Reveal Animations
+        gsap.registerPlugin(ScrollTrigger);
+        document.getElementById('unlock').addEventListener('click', () => {
+            document.getElementById('bg-music').play();
+            gsap.to("#loader", {opacity: 0, duration: 2, onComplete: () => {
+                document.getElementById('loader').style.display = 'none';
+                gsap.to("#hero", {opacity: 1, duration: 2});
+                gsap.to("#quote-section", {opacity: 1, y: -20, duration: 1.5, scrollTrigger: "#quote-section"});
+                gsap.to(".v-card", {opacity: 1, y: 0, stagger: 0.3, scrollTrigger: "#gallery"});
+            }});
+        });
+// ... (Keep your cursor and timer code the same) ...
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.getElementById('unlock').addEventListener('click', () => {
+        const audio = document.getElementById('bg-music');
+        if(audio) audio.play();
+
+        gsap.to("#loader", {opacity: 0, duration: 2, onComplete: () => {
+            document.getElementById('loader').style.display = 'none';
+            
+            // 1. Reveal Hero
+            gsap.to("#hero", {opacity: 1, duration: 2});
+
+            // 2. Reveal Poetry (The Fix: trigger starts earlier)
+            gsap.to(".poetry-line", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.8,
+                duration: 1.5,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".poetry-section",
+                    start: "top 70%", // Triggers when the section is 70% visible
+                    toggleActions: "play none none none"
+                }
+            });
+
+            // 3. Reveal Gallery
+            gsap.to(".v-card", {
+                opacity: 1, 
+                y: 0, 
+                stagger: 0.3, 
+                duration: 1,
+                scrollTrigger: {
+                    trigger: "#gallery",
+                    start: "top 80%"
+                }
+            });
+        }});
+    });
+
+    // bypass function for your testing
+    window.bypass = () => { 
+        document.getElementById('timer-ui').style.display = 'none'; 
+        document.getElementById('unlock').style.display = 'block'; 
+    };
+    // Get the background audio element
+const bgMusic = document.getElementById('bg-music');
+// Get all video elements
+const allVideos = document.querySelectorAll('video');
+
+allVideos.forEach(video => {
+    // When a video starts playing
+    video.addEventListener('play', () => {
+        gsap.to(bgMusic, { volume: 0, duration: 1, onComplete: () => bgMusic.pause() });
+    });
+
+    // When a video is paused or ends
+    video.addEventListener('pause', () => {
+        bgMusic.play();
+        gsap.to(bgMusic, { volume: 1, duration: 1 });
+    });
+
+    video.addEventListener('ended', () => {
+        bgMusic.play();
+        gsap.to(bgMusic, { volume: 1, duration: 1 });
+    });
+}); 
+window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById("scroll-progress").style.width = scrolled + "%";
+}); 
+// --- NEW HACK & FIREWORKS ENGINE ---
+let typedSecret = "";
+const scrambleChars = "ABCDEFGHIJKLMOPQRSTUVXYZ0123456789!@#$%^&*";
+
+document.addEventListener('keydown', (e) => {
+    typedSecret += e.key.toUpperCase();
+    if (typedSecret.includes("AVNIYA")) {
+        typedSecret = "";
+        executeQueenHack();
+    }
+});
+
+async function executeQueenHack() {
+    const stage = document.getElementById('hack-stage');
+    const display = document.getElementById('scramble-display');
+    const final = document.getElementById('final-queen');
+    
+    stage.style.display = 'flex';
+    // Ensure cursor stays visible by overriding any "none" styles
+    document.body.style.cursor = 'none'; 
+    
+    const phrases = ["INITIALIZING HACK...", "BYPASSING SECURITY...", "AVNIYA FOUND."];
+    for (let p of phrases) { await performScramble(display, p, 800); }
+    
+    display.style.display = 'none';
+    final.style.display = 'flex'
+    
+    // Change Cursor Glow to Gold
+    const glowEl = document.getElementById('cursor-glow');
+    if(glowEl) {
+        glowEl.style.borderColor = "#ffcc00";
+        glowEl.style.boxShadow = "0 0 30px #ffcc00";
+    }
+// Add this inside the executeQueenHack function
+const footer = document.getElementById('main-footer');
+if(footer) {
+    // Wait for the scramble and queen text to appear first
+    setTimeout(() => {
+        footer.classList.add('gold-footer');
+        footer.style.display = 'block'; 
+        gsap.from(footer, { opacity: 0, y: 20, duration: 1 });
+    }, 3000); // Appears 3 seconds after the hack starts
+}   
+// Optional: Change the footer heart to a Crown symbol
+const heart = document.getElementById('footer-heart');
+if(heart) {
+    heart.innerHTML = "👑"; 
+}
+
+    startFireworks();
+}
+
+function performScramble(el, text, duration) {
+    return new Promise(resolve => {
+        let start = null;
+        const step = (ts) => {
+            if (!start) start = ts;
+            if (ts - start < duration) {
+                el.innerText = text.split('').map(() => scrambleChars[Math.floor(Math.random()*scrambleChars.length)]).join('');
+                requestAnimationFrame(step);
+            } else { el.innerText = text; setTimeout(resolve, 400); }
+        };
+        requestAnimationFrame(step);
+    });
+}
+
+function startFireworks() {
+    const canvas = document.getElementById('fireworks-canvas');
+    const fctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    let particles = [];
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x; this.y = y; this.color = color;
+            this.vel = { x: Math.random() * 6 - 3, y: Math.random() * 6 - 3 };
+            this.alpha = 1; this.friction = 0.95;
+        }
+        draw() {
+            fctx.globalAlpha = this.alpha; fctx.beginPath();
+            fctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            fctx.fillStyle = this.color; fctx.fill();
+        }
+        update() {
+            this.vel.x *= this.friction; this.vel.y *= this.friction;
+            this.x += this.vel.x; this.y += this.vel.y; this.alpha -= 0.01;
+        }
+    }
+
+    function spawn() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * (canvas.height / 2);
+        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        for (let i = 0; i < 40; i++) particles.push(new Particle(x, y, color));
+    }
+
+    setInterval(spawn, 500);
+    function animate() {
+        fctx.fillStyle = 'rgba(0,0,0,0.1)'; fctx.fillRect(0,0,canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+            if (p.alpha <= 0) particles.splice(i, 1);
+            else { p.update(); p.draw(); }
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+} 
+gsap.from("footer", {
+    opacity: 0,
+    y: 30,
+    duration: 1.5,
+    scrollTrigger: {
+        trigger: "footer",
+        start: "top 95%",
+    }
+});
+ window.bypass = () => { document.getElementById('timer-ui').style.display = 'none'; document.getElementById('unlock').style.display = 'block'; };
+    </script>
+</body>
+</html>
