@@ -1324,12 +1324,17 @@ body.sp-exit { animation:sp-exit-fade .75s ease forwards; }
     }
 
     /* ── Voice popup (show 1.5s after load — original timing) ── */
-    window.addEventListener("load", function(){
-      setTimeout(function(){
-        const popup = document.getElementById("voicePopup");
-        if (popup) popup.style.display = "flex";
-      }, 1500);
-    });
+   window.addEventListener("load", function(){
+  if(sessionStorage.getItem("vs_splash_done")){
+    const popup = document.getElementById("voicePopup");
+    if(popup) popup.remove();
+    return;
+  }
+  setTimeout(function(){
+    const popup = document.getElementById("voicePopup");
+    if (popup) popup.style.display = "flex";
+  }, 1500);
+});
 
     const greetBtnEl = document.getElementById("greetBtn");
     if (greetBtnEl) {
