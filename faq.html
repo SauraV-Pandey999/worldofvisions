@@ -1,244 +1,660 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VISION_S FAQ</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ — Vision-S</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#03030a; --bg-alt:#071022; --text:#dff7ff;
-  --muted:rgba(255,255,255,0.05);
-  --color1:#00ffd5; --color2:#ff2a9e; --color3:#8a00ff; --color4:#00ff3c; --color5:#ff8000;
+  --bg:#000;--bg2:#080808;--bg3:#0f0f0f;--bg4:#141414;
+  --white:#fff;--off:#e0e0e0;--muted:#666;--dimmed:#2a2a2a;
+  --border:rgba(255,255,255,.06);
+  --gold:#c9a84c;--gold-lt:#e8c97a;--gold-glow:rgba(201,168,76,.13);--gold-line:rgba(201,168,76,.35);
+  --cyan:#00d4c8;--cyan-glow:rgba(0,212,200,.10);--cyan-line:rgba(0,212,200,.28);
 }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Montserrat',sans-serif;overflow-x:hidden;cursor:none;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
-body{
-  margin:0; font-family:Inter,system-ui,sans-serif;
-  background:#03030a; color:var(--text);
-  padding:20px; display:flex; justify-content:center; overflow-x:hidden;
-  position:relative;
-}
+/* CURSOR */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(201,168,76,.45);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+@media(hover:none){.cursor,.cursor-ring{display:none;}}
 
-/* Canvas starry background */
-#starfield{
-  position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;
-  background: radial-gradient(ellipse at bottom, #0d0d1a 0%, #03030a 100%);
-}
+/* PARTICLES */
+#pc{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.38;}
 
-.container{
-  max-width:900px; width:100%; padding:28px; border-radius:16px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-  border:1px solid var(--muted); box-shadow:0 30px 80px rgba(2,4,15,0.18);
-  position:relative; z-index:1;
-}
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.8rem;transition:opacity .8s,visibility .8s;}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.4rem,4vw,2rem);letter-spacing:.7em;color:var(--white);clip-path:inset(0 100% 0 0);animation:revTxt .9s cubic-bezier(.16,1,.3,1) .2s forwards;}
+@keyframes revTxt{to{clip-path:inset(0 0% 0 0)}}
+.ld-bar-wrap{width:200px;height:1px;background:rgba(255,255,255,.07);}
+.ld-bar{height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));width:0;animation:ldbar 1.9s cubic-bezier(.4,0,.2,1) .4s forwards;}
+@keyframes ldbar{to{width:100%}}
+.ld-pct{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.3em;color:var(--muted);}
 
-h1{
-  text-align:center; font-size:32px; margin-bottom:24px;
-  background:linear-gradient(90deg,var(--color1),var(--color3)); 
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  animation: hueShift 5s linear infinite;
-}
-@keyframes hueShift{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(0,0,0,.96),transparent);transition:backdrop-filter .4s,background .4s;}
+nav.scrolled{backdrop-filter:blur(14px);background:rgba(0,0,0,.88);}
+.nav-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.4em;color:var(--white);text-decoration:none;text-transform:uppercase;position:relative;cursor:none;}
+.nav-logo::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .5s;}
+.nav-logo:hover::after{transform:scaleX(1);}
+.nav-back{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.25em;color:var(--muted);text-decoration:none;text-transform:uppercase;border:1px solid var(--dimmed);padding:.45rem 1rem;position:relative;overflow:hidden;transition:color .3s,border-color .3s;cursor:none;}
+.nav-back::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .38s cubic-bezier(.16,1,.3,1);}
+.nav-back:hover{color:var(--bg);border-color:var(--gold);}
+.nav-back:hover::before{transform:translateX(0);}
+.nav-back span{position:relative;z-index:1;}
 
-#faqSearch{
-  width:100%; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);
-  background:rgba(0,0,0,0.15); color:var(--text); margin-bottom:24px; font-size:14px;
-}
-#faqSearch:focus{
-  outline:none; border:2px solid var(--color1); box-shadow:0 0 8px var(--color1);
-}
+/* HERO */
+.hero{min-height:85vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:9rem 3rem 4rem;position:relative;overflow:hidden;}
+.h-vline{position:absolute;top:0;right:10%;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);opacity:0;animation:fIn 1s ease 2.2s forwards;}
+.h-vline2{position:absolute;top:0;right:20%;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--border) 40%,var(--border) 60%,transparent);opacity:0;animation:fIn 1s ease 2.4s forwards;}
+.h-glow-g{position:absolute;top:15%;right:3%;width:500px;height:500px;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.5s forwards;}
+.h-glow-c{position:absolute;bottom:10%;right:15%;width:350px;height:350px;background:radial-gradient(circle,var(--cyan-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.8s forwards;}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;opacity:0;animation:slideR .7s ease 2s forwards;}
+.hero-tag::before{content:'';width:28px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.hero-h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(3.5rem,11vw,11rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;opacity:0;animation:slideU .9s cubic-bezier(.16,1,.3,1) 2.1s forwards;}
+.hero-h1 .stroke{color:transparent;-webkit-text-stroke:1px var(--white);}
+.hero-h1 .gold{color:var(--gold);}
+.hero-h1 .cyan{color:var(--cyan);}
+.hero-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(.95rem,2vw,1.3rem);color:var(--muted);margin-top:1.8rem;max-width:500px;line-height:1.8;opacity:0;animation:slideU .8s ease 2.3s forwards;}
 
+/* TICKER */
+.ticker-wrap{width:100%;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.7rem 0;background:var(--bg2);}
+.ticker{display:flex;width:max-content;animation:tick 26s linear infinite;}
+.ticker:hover{animation-play-state:paused;}
+.ticker-item{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;white-space:nowrap;padding:0 2.5rem;color:var(--muted);}
+.g{color:var(--gold);}.t{color:var(--cyan);}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);}
+.stat-cell{padding:2.5rem 2rem;text-align:center;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
+.stat-cell:last-child{border-right:none;}
+.stat-cell:hover{background:var(--bg3);}
+.stat-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transition:transform .4s ease;}
+.stat-cell:hover::after{transform:scaleX(1);}
+.stat-n{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,3rem);background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-l{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-top:.4rem;}
+
+/* SEARCH */
+.search-wrap{padding:4rem 3rem 0;max-width:900px;margin:0 auto;}
+.search-box{position:relative;border:1px solid var(--dimmed);background:var(--bg2);transition:border-color .3s,box-shadow .3s;}
+.search-box:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow),0 0 30px var(--gold-glow);}
+.search-icon{position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--muted);pointer-events:none;transition:color .3s;}
+.search-box:focus-within .search-icon{color:var(--gold);}
+.search-input{width:100%;background:transparent;border:none;outline:none;padding:1.2rem 1.5rem 1.2rem 3.5rem;font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:400;color:var(--white);letter-spacing:.02em;}
+.search-input::placeholder{color:var(--muted);font-weight:300;}
+.search-clear{position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:none;font-size:1.1rem;opacity:0;transition:opacity .3s,color .3s;padding:.2rem;}
+.search-clear.show{opacity:1;}
+.search-clear:hover{color:var(--gold);}
+.search-hint{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--dimmed);text-transform:uppercase;margin-top:.6rem;padding-left:.2rem;}
+.search-hint kbd{border:1px solid var(--dimmed);padding:.1rem .3rem;font-size:.48rem;color:var(--muted);border-radius:2px;}
+.search-count{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-top:.5rem;padding-left:.2rem;min-height:1.2em;transition:color .3s;}
+.search-count .hl{color:var(--gold);}
+
+/* CATEGORY TABS */
+.cat-wrap{padding:2rem 3rem;max-width:900px;margin:0 auto;display:flex;gap:.6rem;flex-wrap:wrap;}
+.cat-btn{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;border:1px solid var(--dimmed);padding:.45rem 1rem;background:transparent;cursor:none;position:relative;overflow:hidden;transition:color .3s,border-color .3s;}
+.cat-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateY(101%);transition:transform .35s cubic-bezier(.16,1,.3,1);}
+.cat-btn.active,.cat-btn:hover{color:var(--bg);border-color:var(--gold);}
+.cat-btn.active::before,.cat-btn:hover::before{transform:translateY(0);}
+.cat-btn span{position:relative;z-index:1;}
+
+/* NEW BADGE on category */
+.new-badge{display:inline-block;background:var(--gold);color:var(--bg);font-size:.4rem;letter-spacing:.15em;padding:.1rem .35rem;vertical-align:middle;margin-left:.4rem;font-weight:800;position:relative;z-index:1;}
+
+/* FAQ MAIN */
+.faq-main{padding:3rem;max-width:900px;margin:0 auto;}
+
+/* SECTION DIVIDER inside FAQ list */
+.faq-section-label{
+  font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.45em;
+  text-transform:uppercase;color:var(--muted);
+  padding:.6rem 0 1.2rem;display:flex;align-items:center;gap:1rem;
+  margin-top:2.5rem;
+}
+.faq-section-label:first-child{margin-top:0;}
+.faq-section-label::before{content:'';width:16px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.faq-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FAQ ITEM */
 .faq-item{
-  border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:16px;
-  overflow:hidden; transition:0.3s; position:relative;
+  border:1px solid var(--border);margin-bottom:1px;
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(28px);
+  transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1),border-color .3s;
 }
-.faq-question{
-  padding:16px 20px; cursor:pointer; font-weight:600; font-size:16px; position:relative;
-  background:linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
-  transition:0.3s; border-left:4px solid transparent;
-  text-shadow:0 0 5px rgba(0,0,0,0.5);
-}
-.faq-question::after{
-  content:'▼'; position:absolute; right:20px; top:50%; transform:translateY(-50%); transition:0.3s;
-}
-.faq-item.active .faq-question::after{
-  transform:translateY(-50%) rotate(180deg);
-}
-.faq-answer{
-  max-height:0; overflow:hidden; padding:0 20px; transition:max-height 0.5s ease, padding 0.3s ease, opacity 0.3s ease, transform 0.5s ease;
-  font-size:14px; opacity:0; color:rgba(223,247,255,0.9); line-height:1.6;
-  transform:translateX(-20px);
-}
+.faq-item.vis{opacity:1;transform:translateY(0);}
+.faq-item:hover{border-color:rgba(201,168,76,.18);}
+.faq-item.open{border-color:var(--gold-line);}
+.faq-item.is-new{border-color:rgba(0,212,200,.18);}
+.faq-item.is-new.open{border-color:var(--cyan-line);}
 
-/* Hover neon borders with unique color per question */
-.faq-item:nth-child(1) .faq-question:hover{ border-left:4px solid var(--color1); box-shadow:0 0 12px var(--color1);}
-.faq-item:nth-child(2) .faq-question:hover{ border-left:4px solid var(--color2); box-shadow:0 0 12px var(--color2);}
-.faq-item:nth-child(3) .faq-question:hover{ border-left:4px solid var(--color3); box-shadow:0 0 12px var(--color3);}
-.faq-item:nth-child(4) .faq-question:hover{ border-left:4px solid var(--color4); box-shadow:0 0 12px var(--color4);}
-.faq-item:nth-child(5) .faq-question:hover{ border-left:4px solid var(--color5); box-shadow:0 0 12px var(--color5);}
-.faq-item:nth-child(6) .faq-question:hover{ border-left:4px solid var(--color1); box-shadow:0 0 12px var(--color1);}
-.faq-item:nth-child(7) .faq-question:hover{ border-left:4px solid var(--color2); box-shadow:0 0 12px var(--color2);}
-.faq-item:nth-child(8) .faq-question:hover{ border-left:4px solid var(--color3); box-shadow:0 0 12px var(--color3);}
-.faq-item:nth-child(9) .faq-question:hover{ border-left:4px solid var(--color4); box-shadow:0 0 12px var(--color4);}
+/* left accent */
+.faq-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--cyan));transform:scaleY(0);transform-origin:top;transition:transform .45s cubic-bezier(.16,1,.3,1);}
+.faq-item.open::before{transform:scaleY(1);}
 
-.faq-item.active .faq-answer{
-  max-height:500px; padding:12px 20px; opacity:1; transform:translateX(0);
+/* new item left accent cyan */
+.faq-item.is-new::before{background:linear-gradient(to bottom,var(--cyan),var(--gold));}
+
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.8rem 2rem 1.8rem 2.5rem;cursor:none;background:var(--bg2);transition:background .3s;user-select:none;gap:1.5rem;}
+.faq-item.open .faq-q{background:var(--bg3);}
+.faq-item:not(.open):hover .faq-q{background:var(--bg3);}
+.faq-q-left{display:flex;align-items:center;gap:1.2rem;flex:1;}
+
+.faq-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.65rem;letter-spacing:.3em;color:transparent;-webkit-text-stroke:1px var(--dimmed);white-space:nowrap;flex-shrink:0;transition:color .3s,-webkit-text-stroke .3s;}
+.faq-item.open .faq-num{color:var(--gold);-webkit-text-stroke:1px var(--gold);}
+.faq-item.is-new.open .faq-num{color:var(--cyan);-webkit-text-stroke:1px var(--cyan);}
+
+.faq-text{font-family:'Montserrat',sans-serif;font-weight:600;font-size:clamp(.88rem,2vw,1rem);line-height:1.4;color:var(--off);transition:color .3s;}
+.faq-item.open .faq-text{color:var(--white);}
+
+/* NEW pill on question */
+.new-pill{display:inline-flex;align-items:center;font-family:'Space Mono',monospace;font-size:.42rem;letter-spacing:.2em;text-transform:uppercase;background:var(--cyan);color:var(--bg);padding:.15rem .5rem;margin-left:.7rem;flex-shrink:0;font-weight:700;vertical-align:middle;animation:pulsePill 2s ease infinite;}
+@keyframes pulsePill{0%,100%{opacity:1}50%{opacity:.6}}
+
+.faq-right{display:flex;align-items:center;gap:.8rem;flex-shrink:0;}
+.faq-cat-tag{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;border:1px solid var(--dimmed);color:var(--muted);white-space:nowrap;transition:border-color .3s,color .3s;}
+.faq-item.open .faq-cat-tag{border-color:var(--gold-line);color:var(--gold);}
+.faq-item.is-new.open .faq-cat-tag{border-color:var(--cyan-line);color:var(--cyan);}
+
+.faq-icon{flex-shrink:0;width:32px;height:32px;border:1px solid var(--dimmed);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s,transform .4s;font-size:.75rem;color:var(--muted);}
+.faq-item.open .faq-icon{border-color:var(--gold);background:var(--gold);color:var(--bg);transform:rotate(45deg);}
+.faq-item.is-new.open .faq-icon{border-color:var(--cyan);background:var(--cyan);}
+
+/* ANSWER */
+.faq-a{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.16,1,.3,1);background:var(--bg3);}
+.faq-item.open .faq-a{max-height:600px;}
+.faq-a-inner{padding:0 2.5rem 1.8rem 5rem;font-size:clamp(.85rem,1.5vw,.96rem);line-height:1.9;color:var(--muted);font-weight:300;}
+.faq-item.open .faq-a-inner{padding-top:1rem;}
+.faq-a-inner a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-line);transition:color .3s,border-color .3s;}
+.faq-a-inner a:hover{color:var(--cyan);border-color:var(--cyan-line);}
+.faq-a-inner strong{color:var(--white);font-weight:600;}
+
+/* highlight text in search */
+.faq-a-inner mark,.faq-text mark{background:rgba(201,168,76,.22);color:var(--gold);border-radius:2px;padding:0 2px;}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:5rem 2rem;display:none;}
+.no-results.show{display:block;}
+.no-results-icon{font-size:3rem;margin-bottom:1rem;opacity:.4;}
+.no-results-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+.no-results-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--dimmed);}
+
+/* STILL NEED HELP */
+.help-band{margin:5rem auto;max-width:900px;padding:0 3rem;}
+.help-inner{background:var(--bg2);border:1px solid var(--border);padding:3.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;overflow:hidden;}
+.help-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.help-inner::after{content:'';position:absolute;bottom:-150px;right:-100px;width:350px;height:350px;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;}
+.help-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:.6rem;}
+.help-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,2rem);text-transform:uppercase;letter-spacing:-.01em;margin-bottom:.6rem;}
+.help-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--muted);}
+.help-btn{display:inline-flex;align-items:center;gap:.8rem;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;padding:1rem 1.8rem;position:relative;overflow:hidden;transition:color .38s,border-color .38s;cursor:none;white-space:nowrap;flex-shrink:0;}
+.help-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.help-btn:hover{color:var(--bg);border-color:var(--cyan);}
+.help-btn:hover::before{transform:translateX(0);}
+.help-btn span{position:relative;z-index:1;}
+
+/* MARQUEE */
+.mq-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.mq-inner{display:flex;width:max-content;animation:mqA 22s linear infinite;padding:1.8rem 0;}
+.mq-word{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2.5rem,5vw,4.5rem);text-transform:uppercase;padding:0 1.5rem;white-space:nowrap;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px var(--dimmed);}
+.mq-word.mg{-webkit-text-stroke:1px var(--gold);}
+.mq-word.mc{-webkit-text-stroke:1px var(--cyan);}
+@keyframes mqA{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* DIVIDERS */
+.div-g{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);}
+.div-p{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--border) 20%,var(--border) 80%,transparent);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.f-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;letter-spacing:.5em;text-transform:uppercase;background:linear-gradient(to right,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.f-copy{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right a{color:var(--gold);text-decoration:none;transition:color .3s;}
+.f-right a:hover{color:var(--cyan);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
+
+/* KEYFRAMES */
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+@keyframes slideU{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideR{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem;}
+  .hero{padding:7rem 1.5rem 3.5rem;}
+  .search-wrap,.cat-wrap,.faq-main{padding-left:1.5rem;padding-right:1.5rem;}
+  .help-band{padding:0 1.5rem;}
+  .help-inner{grid-template-columns:1fr;gap:1.5rem;padding:2.5rem 1.8rem;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .stat-cell:nth-child(2){border-right:none;}
+  .stat-cell:nth-child(1),.stat-cell:nth-child(2){border-bottom:1px solid var(--border);}
+  footer{flex-direction:column;text-align:center;padding:2rem 1.5rem;}
+  .faq-a-inner{padding-left:2.5rem;}
+  .h-vline,.h-vline2,.h-glow-g,.h-glow-c{display:none;}
 }
-
-@media(max-width:600px){
-  h1{ font-size:28px; }
-  .faq-question{ font-size:15px; }
-  .faq-answer{ font-size:13px; }
+@media(max-width:540px){
+  .faq-q{padding:1.4rem 1.2rem 1.4rem 1.5rem;gap:.8rem;}
+  .faq-num{display:none;}
+  .faq-cat-tag{display:none;}
+  .faq-a-inner{padding:0 1.2rem 1.5rem 1.5rem;}
+  .help-btn{width:100%;justify-content:center;}
+  .new-pill{display:none;}
 }
 </style>
 </head>
 <body>
-<canvas id="starfield" style="position:fixed; inset:0; z-index:-1;"></canvas>
 
+<canvas id="pc"></canvas>
+<div class="cursor" id="c"></div>
+<div class="cursor-ring" id="cr"></div>
 
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">VISION-S</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-pct" id="lp">0%</div>
+</div>
 
-<div class="container">
-<h1>VISION_S FAQ</h1>
-<input type="text" id="faqSearch" placeholder="Search FAQs...">
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">VISION-S</a>
+  <a class="nav-back" href="https://saurav-pandey999.github.io/worldofvisions/"><span>← Back to Home</span></a>
+</nav>
 
-<!-- FAQ Items -->
-<div class="faq-item">
-  <div class="faq-question">1. What is VISION_S?</div>
-  <div class="faq-answer">
-    VISION_S is a company founded by <strong>Saurav Pandey</strong> in 2023. It started with limited resources but a grand vision: to become an undisputed leader brand providing services across every sector. Currently, it helps students in Nepal with study resources and is building a dynamic team of young visionary minds.
+<!-- HERO -->
+<section class="hero">
+  <div class="h-vline"></div><div class="h-vline2"></div>
+  <div class="h-glow-g"></div><div class="h-glow-c"></div>
+  <div class="hero-tag">Frequently Asked Questions</div>
+  <h1 class="hero-h1">
+    <span>GOT</span><br/>
+    <span class="stroke">QUES-</span><br/>
+    <span class="gold">TIONS</span><span class="cyan">?</span>
+  </h1>
+  <p class="hero-sub">Everything you want to know about Vision-S — answered clearly, honestly, and without the fluff.</p>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="g">✦</span>Vision-S FAQ</div>
+    <div class="ticker-item"><span class="t">✦</span>We Answer Everything</div>
+    <div class="ticker-item"><span class="g">✦</span>Saurav Pandey</div>
+    <div class="ticker-item"><span class="t">✦</span>Students First</div>
+    <div class="ticker-item"><span class="g">✦</span>Nepal & Switzerland</div>
+    <div class="ticker-item"><span class="t">✦</span>Join the Team</div>
+    <div class="ticker-item"><span class="g">✦</span>Non-Profit</div>
+    <div class="ticker-item"><span class="t">✦</span>Vision-S FAQ</div>
+    <div class="ticker-item"><span class="g">✦</span>We Answer Everything</div>
+    <div class="ticker-item"><span class="t">✦</span>Saurav Pandey</div>
+    <div class="ticker-item"><span class="g">✦</span>Students First</div>
+    <div class="ticker-item"><span class="t">✦</span>Nepal & Switzerland</div>
+    <div class="ticker-item"><span class="g">✦</span>Join the Team</div>
+    <div class="ticker-item"><span class="t">✦</span>Non-Profit</div>
   </div>
 </div>
 
-<div class="faq-item">
-  <div class="faq-question">2. How can I join the VISION_S team?</div>
-  <div class="faq-answer">
-    To join the VISION_S team, you must understand the company's vision, demonstrate a hardworking and dedicated spirit, abide by rules, and submit all required documents and information during the application. Here is the link for the <a href="membership.html" style="color:#00ffd5;text-decoration:underline"> membership form</a>
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-cell reveal"><div class="stat-n">14</div><div class="stat-l">Questions Answered</div></div>
+  <div class="stat-cell reveal d1"><div class="stat-n">4</div><div class="stat-l">Categories</div></div>
+  <div class="stat-cell reveal d2"><div class="stat-n">24h</div><div class="stat-l">Membership Review</div></div>
+  <div class="stat-cell reveal d3"><div class="stat-n">2</div><div class="stat-l">Countries Operating</div></div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap reveal">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text" placeholder="Search — e.g. 'join', 'Switzerland', 'membership card'…"/>
+    <button class="search-clear" id="searchClear" type="button" aria-label="Clear">✕</button>
+  </div>
+  <div class="search-count" id="searchCount"></div>
+  <div class="search-hint">Press <kbd>/</kbd> to search &nbsp;·&nbsp; <kbd>Esc</kbd> to clear</div>
+</div>
+
+<!-- CATEGORY FILTERS -->
+<div class="cat-wrap reveal d1">
+  <button class="cat-btn active" data-cat="all"><span>✦ All (14)</span></button>
+  <button class="cat-btn" data-cat="about"><span>About Vision-S</span></button>
+  <button class="cat-btn" data-cat="team"><span>Team & Joining <span class="new-badge">+3 NEW</span></span></button>
+  <button class="cat-btn" data-cat="students"><span>For Students</span></button>
+  <button class="cat-btn" data-cat="other"><span>Other</span></button>
+</div>
+
+<!-- ════════════════════════════════════
+     FAQ LIST
+════════════════════════════════════ -->
+<div class="faq-main" id="faqMain">
+
+  <!-- ── ABOUT VISION-S ── -->
+  <div class="faq-section-label">About Vision-S</div>
+
+  <div class="faq-item" data-cat="about" data-q="what is vision-s company founded saurav pandey 2023">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">01</span><span class="faq-text">What is VISION-S?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">About</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      VISION-S is a company founded by <strong>Saurav Pandey</strong> in 2023. It started with limited resources but a grand vision: to become an undisputed leader brand providing services across every sector. Currently, it helps students in Nepal with study resources and is building a dynamic team of young visionary minds.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="about" data-q="vision-s registered physical digital company future">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">02</span><span class="faq-text">Is VISION-S a physically registered company?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">About</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      VISION-S is currently a <strong>digitally-based company</strong> — operating fully online, serving students and building teams across borders without a physical office. However, this is only the beginning. Vision-S is actively working towards <strong>physical operations in the near future</strong>, expanding its reach beyond the digital world into real spaces where impact can be felt directly.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="about" data-q="long term goal ambition global number one all sectors saurav vision">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">03</span><span class="faq-text">What is Saurav's long-term goal for VISION-S?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">About</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      The long-term goal is nothing short of extraordinary — to evolve Vision-S into a <strong>global, all-sector powerhouse and the undisputed #1 brand</strong> in every field it enters. Not for vanity, but because scale means reach, and reach means more students, more communities, and more lives transformed forever. Saurav wants the entire world to see with great vision, influenced and inspired by him.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="about" data-q="countries operate nepal switzerland where vision-s active regions">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">04</span><span class="faq-text">Where does VISION-S currently operate?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">About</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      VISION-S currently operates in <strong>Nepal</strong> and <strong>Switzerland</strong> — with Nepal being the founding ground where it all began, and Switzerland marking the company's first step toward international expansion. As a digitally-based company, Vision-S is accessible globally, and more countries will follow as the team and mission grow.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="about" data-q="different unique innovation teamwork young leaders what makes special">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">05</span><span class="faq-text">What makes VISION-S different?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">About</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      VISION-S stands out because of its <strong>young leaders with a great vision.</strong> The company values innovation, teamwork, and creating opportunities for growth — making it unique in both approach and execution. It was built by a student, for students, with global ambition. There is no age barrier, no corporate gatekeeping — just passion, creativity, and relentless drive.
+    </div></div>
+  </div>
+
+  <!-- ── TEAM & JOINING ── -->
+  <div class="faq-section-label">Team & Joining</div>
+
+  <div class="faq-item" data-cat="team" data-q="how join vision-s team membership application form">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">06</span><span class="faq-text">How can I join the VISION-S team?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      To join the VISION-S team, you must understand the company's vision, demonstrate a hardworking and dedicated spirit, abide by the rules, and submit all required documents during the application. Apply here: <a href="https://saurav-pandey999.github.io/worldofvisions/membership.html" target="_blank">Membership Form →</a>
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="team" data-q="age requirement restriction young creativity potential">
+    <div class="faq-q">
+      <div class="faq-q-left">
+        <span class="faq-num">07</span>
+        <span class="faq-text">Is there an age requirement to join?<span class="new-pill">NEW</span></span>
+      </div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      <strong>There is no age restriction at Vision-S.</strong> We wholeheartedly encourage young minds with creativity and the potential to add real value. Age is never a barrier here — what matters is your mindset, your dedication, and your willingness to contribute to the vision. Whether you're 14 or 40, if you have the fire, you belong here.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="team" data-q="after submit membership form review process what happens next membership card 24 hours">
+    <div class="faq-q">
+      <div class="faq-q-left">
+        <span class="faq-num">08</span>
+        <span class="faq-text">What happens after I submit the membership form?<span class="new-pill">NEW</span></span>
+      </div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      After you submit your form, our team <strong>reviews your application within 24 hours.</strong> If everything checks out and you meet our standards, you will receive your official <strong>Vision-S Membership Card within 24 hours</strong> of approval. It's fast, it's real, and it's your first step into the Vision-S family.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="team" data-q="roles available developer designer marketing intern freelancer content creator community manager research">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">09</span><span class="faq-text">What roles are available at VISION-S?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      Available roles include: <strong>Developer, Designer, Marketing Specialist, Intern, Freelancer, Content Creator, Community Manager,</strong> and <strong>Research & Development.</strong> Each role is designed for passionate individuals who want to grow while contributing to a mission that actually matters.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="team" data-q="internship freelance unpaid opportunity grow learn skills">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">10</span><span class="faq-text">Do you offer internships or freelance opportunities?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      Yes! VISION-S provides <strong>internships and freelance opportunities.</strong> These are currently unpaid, but are designed to help you grow, learn, and develop real skills while contributing to a genuine company mission. The experience you gain here is real, meaningful, and résumé-worthy.
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="team" data-q="collaborate collaboration partner work together join team">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">11</span><span class="faq-text">Can I collaborate with VISION-S?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Team</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      Yes! To collaborate, you must <strong>first join the VISION-S team.</strong> Once you're part of the team, you can reach out for further collaboration details. We're always open to building with passionate people who share the vision and want to create something that lasts.
+    </div></div>
+  </div>
+
+  <!-- ── FOR STUDENTS ── -->
+  <div class="faq-section-label">For Students</div>
+
+  <div class="faq-item" data-cat="students" data-q="study notes students resources subject chapter access services free">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">12</span><span class="faq-text">Where can students get study notes?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Students</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      Students can get notes by visiting our <strong>Services</strong> page, selecting <strong>Resources</strong>, browsing by subject, choosing the desired chapter, and clicking to access the notes. It's completely free, easy to navigate, and made entirely for you.
+    </div></div>
+  </div>
+
+  <!-- ── OTHER ── -->
+  <div class="faq-section-label">Other</div>
+
+  <div class="faq-item" data-cat="other" data-q="privacy data user security stored third parties policy">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">13</span><span class="faq-text">How does VISION-S handle user privacy and data?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Other</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      VISION-S is committed to protecting your privacy. Any data you share is <strong>securely stored</strong>, used only for official purposes, and <strong>never shared with third parties</strong> without your consent. Read more: <a href="https://saurav-pandey999.github.io/worldofvisions/privacy.html" target="_blank">Privacy Policy →</a>
+    </div></div>
+  </div>
+
+  <div class="faq-item" data-cat="other" data-q="contact email reach vision-s worldofvisions gmail">
+    <div class="faq-q">
+      <div class="faq-q-left"><span class="faq-num">14</span><span class="faq-text">How can I contact VISION-S?</span></div>
+      <div class="faq-right"><span class="faq-cat-tag">Other</span><div class="faq-icon">+</div></div>
+    </div>
+    <div class="faq-a"><div class="faq-a-inner">
+      You can reach us directly via email at <a href="mailto:worldofvisions.official@gmail.com"><strong>worldofvisions.official@gmail.com</strong></a>. We typically respond within 24 hours. You can also use our <a href="contact.html">Contact Page →</a> to send a message directly through the website.
+    </div></div>
+  </div>
+
+  <!-- NO RESULTS -->
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">🔍</div>
+    <div class="no-results-title">No Results Found</div>
+    <div class="no-results-sub">Try a different keyword or browse all categories.</div>
+  </div>
+
+</div><!-- /faq-main -->
+
+<div class="div-g"></div>
+
+<!-- STILL NEED HELP -->
+<div class="help-band reveal">
+  <div class="help-inner">
+    <div>
+      <div class="help-label">Still curious?</div>
+      <div class="help-title">Didn't Find<br/>Your Answer?</div>
+      <div class="help-sub">Reach out directly — Saurav reads every message personally.</div>
+    </div>
+    <a class="help-btn" href="contact.html"><span>Contact Us &nbsp;→</span></a>
   </div>
 </div>
 
-<div class="faq-item">
-  <div class="faq-question">3. What roles are available at VISION_S?</div>
-  <div class="faq-answer">
-    Available roles include Developer, Designer, Marketing Specialist, Intern, Freelancer, Content Creator, Community Manager, Research & Development.
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-inner">
+    <span class="mq-word">Questions</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Answers</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Vision-S</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Clarity</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Nepal</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Switzerland</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Questions</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Answers</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Vision-S</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Clarity</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Nepal</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Switzerland</span><span class="mq-word mc">✦</span>
   </div>
 </div>
 
-<div class="faq-item">
-  <div class="faq-question">4. Do you offer internships or freelance opportunities?</div>
-  <div class="faq-answer">
-    Yes! VISION_S provides internships and freelance opportunities. These are unpaid but are designed to help you grow, learn, and develop skills while contributing to the company's vision.
-  </div>
-</div>
-
-<div class="faq-item">
-  <div class="faq-question">5. How does VISION_S handle user privacy and data?</div>
-  <div class="faq-answer">
-    VISION_S is committed to protecting your privacy. Any data you share is securely stored, used only for official purposes, and never shared with third parties without consent. See our <a href="privacy.html" style="color:#00ffd5;text-decoration:underline">Privacy Policy</a> for details.
-  </div>
-</div>
-
-<div class="faq-item">
-  <div class="faq-question">6. How can I contact VISION_S?</div>
-  <div class="faq-answer">
-    You can reach us via email at: <strong>worldofvisions.official@gmail.com</strong>.
-  </div>
-</div>
-
-<div class="faq-item">
-  <div class="faq-question">7. What makes VISION_S different?</div>
-  <div class="faq-answer">
-    VISION_S stands out because of its young leaders with a great vision. The company values innovation, teamwork, and creating opportunities for growth, making it unique in approach and execution.
-  </div>
-</div>
-
-<div class="faq-item">
-  <div class="faq-question">8. Can I collaborate with VISION_S?</div>
-  <div class="faq-answer">
-    Yes! To collaborate, you must first join the VISION_S team. Once part of the team, you can contact us for further collaboration details.
-  </div>
-</div>
-
-<div class="faq-item">
-  <div class="faq-question">9. Where can students get study notes?</div>
-  <div class="faq-answer">
-    Students can get notes by visiting our <strong>Services</strong> page, selecting <strong>Resources</strong>, browsing by subject, choosing the desired chapter, and clicking to access the notes.
-  </div>
-</div>
-
-</div>
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">VISION-S</div>
+  <div class="f-copy">© 2026 Vision-S · All Rights Reserved</div>
+  <div class="f-right">A Vision Inspired by <a href="#">Saurav</a> &nbsp;·&nbsp; Nepal · Switzerland · Global</div>
+</footer>
 
 <script>
-// Starfield animation
-const canvas = document.getElementById('starfield');
-const ctx = canvas.getContext('2d');
-let w, h;
-function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
-window.addEventListener('resize', resize);
-resize();
+/* LOADER */
+const loader=document.getElementById('loader'),lp=document.getElementById('lp');
+let p=0;const ti=setInterval(()=>{p+=Math.floor(Math.random()*10)+4;if(p>=100){p=100;clearInterval(ti);}lp.textContent=p+'%';if(p>=100)setTimeout(()=>loader.classList.add('gone'),350);},65);
 
-const stars = [];
-const numStars = 150;
-for(let i=0;i<numStars;i++){
-  stars.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    r:Math.random()*1.2+0.2,
-    dx:(Math.random()-0.5)*0.2,
-    dy:(Math.random()-0.5)*0.2
-  });
-}
-function animateStars(){
-  ctx.clearRect(0,0,w,h);
-  stars.forEach(s=>{
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,255,255,0.8)";
-    ctx.fill();
-    s.x+=s.dx; s.y+=s.dy;
-    if(s.x<0)s.x=w; if(s.x>w)s.x=0;
-    if(s.y<0)s.y=h; if(s.y>h)s.y=0;
-  });
-  requestAnimationFrame(animateStars);
-}
-animateStars();
+/* CURSOR */
+const cur=document.getElementById('c'),ring=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+function curBig(){cur.style.width='20px';cur.style.height='20px';ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='rgba(201,168,76,.9)';}
+function curNorm(){cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(201,168,76,.45)';}
+document.querySelectorAll('a,button,.faq-q,.help-btn,.stat-cell').forEach(el=>{el.addEventListener('mouseenter',curBig);el.addEventListener('mouseleave',curNorm);});
 
-// Toggle FAQ
-const items = document.querySelectorAll('.faq-item');
-items.forEach(item => {
-  const q = item.querySelector('.faq-question');
-  q.addEventListener('click', () => {
-    item.classList.toggle('active');
-    items.forEach(other => { if(other !== item) other.classList.remove('active'); });
-  });
-});
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
 
-// Search/filter
-const searchInput = document.getElementById('faqSearch');
-searchInput.addEventListener('input', e => {
-  const query = e.target.value.toLowerCase();
-  items.forEach(item => {
-    const q = item.querySelector('.faq-question').textContent.toLowerCase();
-    const a = item.querySelector('.faq-answer').textContent.toLowerCase();
-    if(q.includes(query) || a.includes(query)){
-      item.style.display='block';
-    }else item.style.display='none';
-  });
-});
+/* REVEAL */
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// Scroll animation
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      entry.target.classList.add('visible');
+/* HERO PARALLAX */
+window.addEventListener('scroll',()=>{const t=document.querySelector('.hero-h1');if(t)t.style.transform=`translateY(${scrollY*.2}px)`;});
+
+/* PARTICLES */
+const canvas=document.getElementById('pc'),ctx=canvas.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const GOLD=[201,168,76],CYAN=[0,212,200];
+function rnd(a,b){return Math.random()*(b-a)+a;}
+for(let i=0;i<50;i++){const col=Math.random()<.5?GOLD:CYAN;pts.push({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(.4,2),vx:rnd(-.2,.2),vy:rnd(-.3,-.06),col,alpha:rnd(.2,.6),life:rnd(0,1),speed:rnd(.003,.009)});}
+(function dp(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.life+=p.speed;if(p.life>1)p.life=0;const a=p.alpha*Math.sin(p.life*Math.PI);ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.col},${a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.y<-10)p.y=H+10;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;});requestAnimationFrame(dp);})();
+
+/* FAQ ACCORDION */
+const items=document.querySelectorAll('.faq-item');
+const faqObs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('vis'),i*55);});
+},{threshold:.05});
+items.forEach(el=>faqObs.observe(el));
+
+items.forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click',()=>{
+    const isOpen=item.classList.contains('open');
+    items.forEach(i=>{i.classList.remove('open');i.querySelector('.faq-icon').textContent='+';});
+    item.classList.toggle('open',!isOpen);
+    item.querySelector('.faq-icon').textContent=isOpen?'+':'×';
+    if(!isOpen&&window.innerWidth<768){
+      setTimeout(()=>item.scrollIntoView({behavior:'smooth',block:'nearest'}),300);
     }
   });
-},{threshold:0.1});
-document.querySelectorAll('.faq-answer').forEach(ans => observer.observe(ans));
-</script>
+});
 
+/* SEARCH */
+const searchInput=document.getElementById('searchInput');
+const searchClear=document.getElementById('searchClear');
+const searchCount=document.getElementById('searchCount');
+const noResults=document.getElementById('noResults');
+const sectionLabels=document.querySelectorAll('.faq-section-label');
+let activeCat='all';
+
+function filterFAQs(){
+  const q=searchInput.value.toLowerCase().trim();
+  let visible=0;
+  // track visible per section
+  const secMap={};
+  items.forEach(item=>{
+    const catMatch=activeCat==='all'||item.dataset.cat===activeCat;
+    const searchStr=(item.dataset.q||'')+' '+item.querySelector('.faq-text').textContent.toLowerCase();
+    const qMatch=!q||searchStr.includes(q);
+    const show=catMatch&&qMatch;
+    item.style.display=show?'':'none';
+    if(show){visible++;secMap[item.dataset.cat]=(secMap[item.dataset.cat]||0)+1;}
+  });
+  // show/hide section labels
+  sectionLabels.forEach(lbl=>{
+    const cat=lbl.nextElementSibling?.dataset?.cat;
+    if(!cat){lbl.style.display='';return;}
+    // check if any visible items follow this label with matching cat
+    let sibling=lbl.nextElementSibling;
+    let hasVisible=false;
+    while(sibling&&!sibling.classList.contains('faq-section-label')&&!sibling.classList.contains('no-results')){
+      if(sibling.style.display!=='none')hasVisible=true;
+      sibling=sibling.nextElementSibling;
+    }
+    lbl.style.display=hasVisible?'':'none';
+  });
+  noResults.classList.toggle('show',visible===0);
+  searchCount.innerHTML=(q||activeCat!=='all')?`Showing <span class="hl">${visible}</span> of 14 questions`:'';
+  searchClear.classList.toggle('show',q.length>0);
+}
+
+searchInput.addEventListener('input',filterFAQs);
+searchClear.addEventListener('click',()=>{searchInput.value='';filterFAQs();searchInput.focus();});
+
+document.querySelectorAll('.cat-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat=btn.dataset.cat;
+    filterFAQs();
+  });
+});
+
+/* KEYBOARD */
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==searchInput){e.preventDefault();searchInput.focus();searchInput.scrollIntoView({behavior:'smooth',block:'center'});}
+  if(e.key==='Escape'){searchInput.value='';filterFAQs();searchInput.blur();}
+});
+</script>
 </body>
 </html>
 
