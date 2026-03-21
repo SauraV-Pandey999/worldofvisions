@@ -885,12 +885,13 @@ window.addEventListener("keydown",e=>{if(e.key==="Enter"&&enterEl.classList.cont
 function doEnter(){
   const sp = document.getElementById("vs-splash");
   if(!sp||sp._out) return; sp._out=true;
+  sessionStorage.setItem("vs_splash_done","1");
   sp.style.opacity="0";
   sp.style.pointerEvents="none";
   setTimeout(()=>{ sp.remove(); document.getElementById("vs-splash-css").remove(); },1500);
 }
 </script>
-</div>
+</div><script>if(sessionStorage.getItem("vs_splash_done")){var _s=document.getElementById("vs-splash");if(_s){_s.remove();var _sc=document.getElementById("vs-splash-css");if(_sc)_sc.remove();}}</script>
 <style id="vs-splash-css">
 /* ══ VISION-S SPLASH — isolated styles ══ */
 
