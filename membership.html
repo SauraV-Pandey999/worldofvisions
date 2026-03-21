@@ -1,37 +1,954 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Join VISION_S Team</title> <style> :root{ --bg:#03030a; --bg-alt:#071022; --text:#dff7ff; --accent1:#00ffd5; --accent2:#8a00ff; } body{ margin:0; font-family:Inter,system-ui,sans-serif; background:linear-gradient(180deg,var(--bg),var(--bg-alt)); color:var(--text); display:flex; justify-content:center; padding:20px; } .card{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; max-width:700px; width:100%; box-shadow:0 30px 80px rgba(2,4,15,0.18); } h1{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:24px; } form{ display:flex; flex-direction:column; gap:16px; } label{ display:flex; flex-direction:column; font-weight:600; font-size:14px; } input, select, textarea{ padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.15); color:var(--text); font-size:14px; transition:0.2s; resize:none; } textarea{ min-height:60px; } input:focus, select:focus, textarea:focus{ outline:none; border:1px solid var(--accent1); box-shadow:0 0 8px var(--accent1); } /* Styled dropdown */ select{ appearance:none; -webkit-appearance:none; -moz-appearance:none; background:linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)) no-repeat right 12px center; background-size:12px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; } .checkbox-container{ display:flex; align-items:center; gap:8px; } .checkbox-container a{ color:var(--accent1); text-decoration:underline; } button{ padding:12px; font-weight:700; border:none; border-radius:10px; cursor:pointer; background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#031018; transition:0.3s; } button:hover{ filter:brightness(1.1); } @media (max-width:520px){ .card{ padding:18px; } } /* Stylish futuristic dropdown */ select{ appearance:none; -webkit-appearance:none; -moz-appearance:none; padding:10px 14px; border-radius:10px; border:2px solid rgba(255,255,255,0.08); background:linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05)) no-repeat right 16px center; background-size:12px; color:var(--text); font-weight:600; font-size:14px; cursor:pointer; position:relative; transition:0.3s; } select:hover{ border:2px solid var(--accent1); box-shadow:0 0 8px var(--accent1); } select:focus{ outline:none; border:2px solid var(--accent2); box-shadow:0 0 12px var(--accent2); } /* Custom arrow using a pseudo-element */ select::-ms-expand { display: none; } select::after{ content:'▼'; position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:var(--accent1); font-size:12px; } /* Optional: animated RGB glow around dropdown */ @keyframes rgbGlow{ 0%{border-color: #00ffd5;} 25%{border-color: #8a00ff;} 50%{border-color: #ff2a9e;} 75%{border-color: #00ffd5;} 100%{border-color: #8a00ff;} } select.animate-glow{ animation: rgbGlow 2.5s linear infinite; }
-/* Styled dropdown options */
-select option {
-  background: #0a1225; /* dark background for options */
-  color: #dff7ff;      /* readable text color */
-  font-weight:600;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Join the Team — Vision-S</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#000;--bg2:#080808;--bg3:#0f0f0f;--bg4:#141414;
+  --white:#fff;--off:#e0e0e0;--muted:#666;--dimmed:#2a2a2a;
+  --border:rgba(255,255,255,.06);
+  --gold:#c9a84c;--gold-lt:#e8c97a;--gold-glow:rgba(201,168,76,.13);--gold-line:rgba(201,168,76,.35);
+  --cyan:#00d4c8;--cyan-glow:rgba(0,212,200,.10);--cyan-line:rgba(0,212,200,.28);
+  --error:#ff4d4d;--error-glow:rgba(255,77,77,.12);
 }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Montserrat',sans-serif;overflow-x:hidden;cursor:none;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
-select option:hover {
-  background: #00ffd5;  /* highlight on hover */
-  color: #03030a;       /* text color when hovered */
+/* CURSOR */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(201,168,76,.45);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+@media(hover:none){.cursor,.cursor-ring{display:none;}}
+
+/* PARTICLES */
+#pc{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.35;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.8rem;transition:opacity .8s,visibility .8s;}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.4rem,4vw,2rem);letter-spacing:.7em;color:var(--white);clip-path:inset(0 100% 0 0);animation:revTxt .9s cubic-bezier(.16,1,.3,1) .2s forwards;}
+@keyframes revTxt{to{clip-path:inset(0 0% 0 0)}}
+.ld-bar-wrap{width:200px;height:1px;background:rgba(255,255,255,.07);}
+.ld-bar{height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));width:0;animation:ldbar 1.9s cubic-bezier(.4,0,.2,1) .4s forwards;}
+@keyframes ldbar{to{width:100%}}
+.ld-pct{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.3em;color:var(--muted);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(0,0,0,.96),transparent);transition:backdrop-filter .4s,background .4s;}
+nav.scrolled{backdrop-filter:blur(14px);background:rgba(0,0,0,.88);}
+.nav-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.4em;color:var(--white);text-decoration:none;text-transform:uppercase;position:relative;cursor:none;}
+.nav-logo::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .5s;}
+.nav-logo:hover::after{transform:scaleX(1);}
+.nav-back{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.25em;color:var(--muted);text-decoration:none;text-transform:uppercase;border:1px solid var(--dimmed);padding:.45rem 1rem;position:relative;overflow:hidden;transition:color .3s,border-color .3s;cursor:none;}
+.nav-back::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .38s cubic-bezier(.16,1,.3,1);}
+.nav-back:hover{color:var(--bg);border-color:var(--gold);}
+.nav-back:hover::before{transform:translateX(0);}
+.nav-back span{position:relative;z-index:1;}
+
+/* HERO */
+.hero{min-height:75vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:9rem 3rem 4rem;position:relative;overflow:hidden;}
+.h-vline{position:absolute;top:0;right:10%;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);opacity:0;animation:fIn 1s ease 2.2s forwards;}
+.h-vline2{position:absolute;top:0;right:20%;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--border) 40%,var(--border) 60%,transparent);opacity:0;animation:fIn 1s ease 2.4s forwards;}
+.h-glow-g{position:absolute;top:10%;right:2%;width:520px;height:520px;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.5s forwards;}
+.h-glow-c{position:absolute;bottom:5%;right:12%;width:380px;height:380px;background:radial-gradient(circle,var(--cyan-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.8s forwards;}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;opacity:0;animation:slideR .7s ease 2s forwards;}
+.hero-tag::before{content:'';width:28px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.hero-h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(3rem,10vw,10rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;opacity:0;animation:slideU .9s cubic-bezier(.16,1,.3,1) 2.1s forwards;}
+.hero-h1 .stroke{color:transparent;-webkit-text-stroke:1px var(--white);}
+.hero-h1 .gold{color:var(--gold);}
+.hero-h1 .cyan{color:var(--cyan);}
+.hero-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(.95rem,2vw,1.3rem);color:var(--muted);margin-top:1.8rem;max-width:520px;line-height:1.8;opacity:0;animation:slideU .8s ease 2.3s forwards;}
+
+/* TICKER */
+.ticker-wrap{width:100%;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.7rem 0;background:var(--bg2);}
+.ticker{display:flex;width:max-content;animation:tick 26s linear infinite;}
+.ticker:hover{animation-play-state:paused;}
+.ticker-item{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;white-space:nowrap;padding:0 2.5rem;color:var(--muted);}
+.g{color:var(--gold);}.t{color:var(--cyan);}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* PERKS */
+.perks-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);}
+.perk{padding:2rem 1.5rem;text-align:center;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s;}
+.perk:last-child{border-right:none;}
+.perk:hover{background:var(--bg3);}
+.perk::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transition:transform .4s;}
+.perk:hover::after{transform:scaleX(1);}
+.perk-icon{font-size:1.6rem;margin-bottom:.6rem;}
+.perk-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--white);margin-bottom:.3rem;}
+.perk-sub{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;}
+
+/* FORM OUTER */
+.form-outer{padding:6rem 3rem;max-width:880px;margin:0 auto;}
+
+/* STEP BAR */
+.step-bar{display:flex;align-items:center;margin-bottom:4rem;position:relative;}
+.step-bar-line{position:absolute;top:18px;left:0;right:0;height:1px;background:var(--dimmed);z-index:0;}
+.step-bar-fill{position:absolute;top:18px;left:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));z-index:1;transition:width .6s cubic-bezier(.16,1,.3,1);}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:.6rem;flex:1;position:relative;z-index:2;}
+.step-dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--dimmed);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.65rem;color:var(--muted);transition:border-color .4s,background .4s,color .4s,box-shadow .4s;}
+.step-item.active .step-dot{border-color:var(--gold);background:var(--gold);color:var(--bg);box-shadow:0 0 0 4px var(--gold-glow),0 0 20px var(--gold-glow);}
+.step-item.done .step-dot{border-color:var(--cyan);background:var(--cyan);color:var(--bg);box-shadow:0 0 0 3px var(--cyan-glow);}
+.step-item.done .step-dot::after{content:'✓';}
+.step-item.done .step-dot span{display:none;}
+.step-lbl{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);text-align:center;transition:color .4s;}
+.step-item.active .step-lbl{color:var(--gold);}
+.step-item.done .step-lbl{color:var(--cyan);}
+
+/* FORM CARD */
+.form-card{background:var(--bg2);border:1px solid var(--border);position:relative;overflow:hidden;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.form-card::after{content:'';position:absolute;bottom:-180px;right:-120px;width:400px;height:400px;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;}
+
+/* STEP PANELS */
+.step-panel{display:none;padding:3rem;animation:panelIn .5s cubic-bezier(.16,1,.3,1);}
+.step-panel.active{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
+.panel-head{margin-bottom:2.5rem;}
+.panel-num{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:.4rem;display:flex;align-items:center;gap:.6rem;}
+.panel-num::before{content:'';width:16px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.panel-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.01em;text-transform:uppercase;}
+.panel-title em{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;color:var(--muted);display:block;font-size:.55em;text-transform:none;letter-spacing:.05em;margin-top:.2rem;}
+
+/* FIELD */
+.field{margin-bottom:1.6rem;position:relative;}
+.field-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.35em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;transition:color .3s;}
+.field:focus-within .field-label{color:var(--gold);}
+.req{color:var(--gold);font-size:.6rem;}
+.opt{color:var(--muted);font-size:.48rem;letter-spacing:.2em;}
+.field-wrap{position:relative;}
+
+.field input,.field textarea,.field select{
+  width:100%;background:var(--bg3);border:1px solid var(--dimmed);
+  color:var(--white);font-family:'Montserrat',sans-serif;
+  font-size:.92rem;font-weight:400;padding:.95rem 1.1rem;
+  outline:none;transition:border-color .3s,box-shadow .3s,background .3s;
+  -webkit-appearance:none;border-radius:0;
 }
- </style> </head> <body> <div class="card"> <h1>Join the VISION_S Team</h1> 
- <form id="joinForm"> <label>First Name<input type="text" name="firstName" required></label> <label>Middle Name<input type="text" name="middleName"></label> <label>Last Name<input type="text" name="lastName" required></label> <label>Father's Name<input type="text" name="fatherName" required></label> <label>Mother's Name<input type="text" name="motherName" required></label> <label>Date of Birth<input type="date" name="dob" required></label> <label>Phone Number<input type="tel" name="phone" pattern="[0-9]{10,15}" placeholder="e.g., 9801234567" required></label> <label>Email Address<input type="email" name="email" required></label> <label>Temporary Address<input type="text" name="tempAddress" required></label> <label>Permanent Address<input type="text" name="permAddress" required></label> <label>SEE GPA<input type="number" step="0.01" min="0" max="4" name="seeGpa" required></label> <label>SEE Symbol Number<input type="text" name="symbolNo" required></label> <label>Current School / College<input type="text" name="school" required></label> <label>Preferred Role in VISION_S <select name="role" class="animate-glow" required> <option value="">Select Role</option> <option value="developer">Developer</option> <option value="designer">Designer</option> <option value="marketing">Marketing</option> <option value="intern">Intern</option> <option value="freelancer">Freelancer</option> </select> </label> <label>Skills / Expertise<textarea name="skills" placeholder="List your skills separated by commas" required></textarea></label> <label>Why do you want to join?<textarea name="whyJoin" placeholder="Explain your motivation" required></textarea></label> <label>Why should we select you?<textarea name="whySelect" placeholder="Highlight your strengths" required></textarea></label> <div class="checkbox-container"> <input type="checkbox" id="acceptPolicy" required> <label for="acceptPolicy">I accept the <a href="privacy.html" target="_blank">Privacy Policy</a></label> </div> <button type="submit">Submit Application</button> </form> </div>
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);font-weight:300;font-size:.88rem;}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow),0 0 18px var(--gold-glow);background:var(--bg4);
+}
+.field input.has-error,.field textarea.has-error,.field select.has-error{
+  border-color:var(--error);box-shadow:0 0 0 3px var(--error-glow);
+}
+.field textarea{resize:vertical;min-height:110px;line-height:1.7;}
+.field select{cursor:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;}
+.field select option{background:var(--bg3);}
+
+.field-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);pointer-events:none;}
+.field:focus-within .field-line{transform:scaleX(1);}
+
+.field-err{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--error);text-transform:uppercase;margin-top:.4rem;display:none;}
+.field-err.show{display:block;animation:slideU .3s ease;}
+
+.field-row{display:grid;gap:1.2rem;}
+.col-2{grid-template-columns:1fr 1fr;}
+.col-3{grid-template-columns:1fr 1fr 1fr;}
+
+.char-count{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.2em;color:var(--muted);text-align:right;margin-top:.3rem;transition:color .3s;}
+.char-count.warn{color:var(--gold);}
+.char-count.danger{color:var(--error);}
+
+/* GENDER SELECTOR */
+.gender-grid{display:flex;gap:1px;background:var(--border);}
+.gender-card{flex:1;background:var(--bg3);padding:1rem;text-align:center;cursor:none;position:relative;overflow:hidden;transition:background .3s;user-select:none;}
+.gender-card input[type=radio]{position:absolute;opacity:0;width:0;height:0;}
+.gender-card-inner{display:flex;flex-direction:column;align-items:center;gap:.4rem;pointer-events:none;}
+.gender-icon{font-size:1.3rem;}
+.gender-name{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);transition:color .3s;}
+.gender-card.selected{background:var(--bg4);}
+.gender-card.selected::after{content:'';position:absolute;inset:0;border:1px solid var(--gold);pointer-events:none;}
+.gender-card.selected .gender-name{color:var(--gold);}
+.gender-card:hover{background:var(--bg4);}
+
+/* SOCIAL MEDIA FIELDS */
+.social-section{margin-bottom:1.6rem;}
+.social-hint{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:1rem;}
+.social-row{display:flex;gap:1px;margin-bottom:1px;background:var(--border);}
+.social-platform{
+  display:flex;align-items:center;gap:.8rem;
+  background:var(--bg3);padding:.85rem 1.1rem;min-width:130px;
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  flex-shrink:0;border-right:1px solid var(--border);
+}
+.social-platform .s-icon{font-size:1rem;}
+.social-input{
+  flex:1;background:var(--bg3);border:none;outline:none;
+  color:var(--white);font-family:'Montserrat',sans-serif;
+  font-size:.88rem;font-weight:300;padding:.85rem 1.1rem;
+  transition:background .3s;
+}
+.social-input::placeholder{color:var(--muted);}
+.social-input:focus{background:var(--bg4);}
+.social-row:focus-within{box-shadow:0 0 0 1px var(--gold),0 0 12px var(--gold-glow);}
+.social-row:focus-within .social-platform{color:var(--gold);}
+
+/* ROLE CARDS */
+.role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1.6rem;}
+.role-card{background:var(--bg3);padding:1.2rem .8rem;text-align:center;cursor:none;position:relative;overflow:hidden;transition:background .3s;user-select:none;}
+.role-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(0,212,200,.06));opacity:0;transition:opacity .3s;}
+.role-card:hover::before{opacity:1;}
+.role-card.selected{background:var(--bg4);}
+.role-card.selected::after{content:'';position:absolute;inset:0;border:1px solid var(--gold);}
+.role-card input[type=radio]{position:absolute;opacity:0;width:0;height:0;}
+.role-icon{font-size:1.4rem;margin-bottom:.4rem;display:block;transition:transform .3s;}
+.role-card:hover .role-icon{transform:scale(1.15);}
+.role-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--off);transition:color .3s;}
+.role-card.selected .role-name{color:var(--gold);}
+.role-desc{font-family:'Space Mono',monospace;font-size:.42rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:.2rem;}
+.role-check{position:absolute;top:.4rem;right:.4rem;width:16px;height:16px;border:1px solid var(--dimmed);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;transition:all .3s;color:transparent;}
+.role-card.selected .role-check{border-color:var(--gold);background:var(--gold);color:var(--bg);}
+
+/* SKILLS TAGS */
+.skills-wrap{background:var(--bg3);border:1px solid var(--dimmed);padding:.8rem 1rem;min-height:56px;display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-start;transition:border-color .3s,box-shadow .3s;cursor:text;}
+.skills-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);}
+.skill-tag{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(0,212,200,.10));border:1px solid var(--gold-line);padding:.25rem .65rem;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;}
+.skill-tag-remove{background:none;border:none;color:var(--muted);cursor:none;font-size:.8rem;padding:0;line-height:1;transition:color .2s;}
+.skill-tag-remove:hover{color:var(--error);}
+.skills-input{background:transparent;border:none;outline:none;color:var(--white);font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:300;min-width:120px;flex:1;padding:.1rem 0;}
+.skills-input::placeholder{color:var(--muted);font-size:.82rem;}
+.skills-hint{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:.4rem;}
+
+/* 3 WORDS TAG INPUT */
+.words-wrap{background:var(--bg3);border:1px solid var(--dimmed);padding:.8rem 1rem;min-height:56px;display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-start;transition:border-color .3s,box-shadow .3s;cursor:text;}
+.words-wrap:focus-within{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-glow);}
+.word-tag{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,rgba(0,212,200,.15),rgba(201,168,76,.08));border:1px solid var(--cyan-line);padding:.25rem .65rem;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.15em;color:var(--cyan);text-transform:uppercase;}
+.word-tag-remove{background:none;border:none;color:var(--muted);cursor:none;font-size:.8rem;padding:0;line-height:1;transition:color .2s;}
+.word-tag-remove:hover{color:var(--error);}
+.words-input{background:transparent;border:none;outline:none;color:var(--white);font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:300;min-width:100px;flex:1;padding:.1rem 0;}
+.words-input::placeholder{color:var(--muted);font-size:.82rem;}
+.words-hint{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:.4rem;}
+.words-count{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--muted);margin-top:.35rem;transition:color .3s;}
+.words-count.full{color:var(--cyan);}
+
+/* PRIVACY */
+.privacy-row{display:flex;align-items:flex-start;gap:1rem;margin-top:1.5rem;padding:1.2rem;background:var(--bg3);border:1px solid var(--border);transition:border-color .3s;}
+.privacy-row:has(.custom-cb:checked){border-color:var(--gold-line);}
+.custom-cb{position:absolute;opacity:0;width:0;height:0;}
+.cb-box{width:22px;height:22px;border:1px solid var(--dimmed);background:var(--bg4);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:none;transition:border-color .3s,background .3s;margin-top:.1rem;}
+.custom-cb:checked+.cb-box{border-color:var(--gold);background:var(--gold);}
+.cb-check{color:var(--bg);font-size:.75rem;opacity:0;transition:opacity .2s;}
+.custom-cb:checked+.cb-box .cb-check{opacity:1;}
+.privacy-text{font-size:.82rem;line-height:1.7;color:var(--muted);font-weight:300;}
+.privacy-text a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-line);transition:color .3s;}
+.privacy-text a:hover{color:var(--cyan);}
+
+/* BUTTONS */
+.btn-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);}
+.btn-back{font-family:'Montserrat',sans-serif;font-weight:600;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--dimmed);padding:.9rem 1.8rem;cursor:none;transition:color .3s,border-color .3s;}
+.btn-back:hover{color:var(--white);border-color:var(--white);}
+.btn-next,.btn-submit{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold);padding:.9rem 2.2rem;cursor:none;position:relative;overflow:hidden;transition:color .38s,border-color .38s;display:flex;align-items:center;gap:.7rem;}
+.btn-next::before,.btn-submit::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.btn-next:hover,.btn-submit:hover{color:var(--bg);border-color:var(--cyan);}
+.btn-next:hover::before,.btn-submit:hover::before{transform:translateX(0);}
+.btn-inner{position:relative;z-index:1;display:flex;align-items:center;gap:.7rem;}
+.btn-arr{transition:transform .3s;}
+.btn-next:hover .btn-arr,.btn-submit:hover .btn-arr{transform:translateX(4px);}
+.btn-submit.loading{pointer-events:none;}
+.btn-submit .spinner{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:currentColor;border-radius:50%;animation:spin .6s linear infinite;position:absolute;}
+.btn-submit.loading .spinner{display:block;}
+.btn-submit.loading .btn-text-wrap{opacity:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+#successScreen{display:none;padding:5rem 3rem;text-align:center;}
+#successScreen.show{display:block;animation:panelIn .6s cubic-bezier(.16,1,.3,1);}
+.success-icon{font-size:4rem;margin-bottom:1.5rem;animation:popIn .6s cubic-bezier(.16,1,.3,1) .2s both;}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.8rem,4vw,3rem);text-transform:uppercase;letter-spacing:-.01em;margin-bottom:.8rem;}
+.success-title .sg{color:var(--gold);}
+.success-title .sc{color:var(--cyan);}
+.success-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1rem,2vw,1.2rem);color:var(--muted);max-width:480px;margin:0 auto 2rem;line-height:1.7;}
+.success-detail{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-bottom:2.5rem;}
+.success-detail span{color:var(--cyan);}
+.confetti-line{width:120px;height:2px;background:linear-gradient(to right,var(--gold),var(--cyan));margin:0 auto 2.5rem;}
+.success-btn{display:inline-flex;align-items:center;gap:.8rem;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;padding:1rem 2rem;position:relative;overflow:hidden;transition:color .38s,border-color .38s;cursor:none;}
+.success-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.success-btn:hover{color:var(--bg);border-color:var(--cyan);}
+.success-btn:hover::before{transform:translateX(0);}
+.success-btn span{position:relative;z-index:1;}
+
+/* MARQUEE */
+.mq-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.mq-inner{display:flex;width:max-content;animation:mqA 22s linear infinite;padding:1.6rem 0;}
+.mq-word{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2rem,4vw,3.8rem);text-transform:uppercase;padding:0 1.5rem;white-space:nowrap;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px var(--dimmed);}
+.mq-word.mg{-webkit-text-stroke:1px var(--gold);}
+.mq-word.mc{-webkit-text-stroke:1px var(--cyan);}
+@keyframes mqA{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.div-g{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.f-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;letter-spacing:.5em;text-transform:uppercase;background:linear-gradient(to right,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.f-copy{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right a{color:var(--gold);text-decoration:none;transition:color .3s;}
+.f-right a:hover{color:var(--cyan);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
+
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+@keyframes slideU{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideR{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem;}
+  .hero{padding:7rem 1.5rem 3.5rem;}
+  .form-outer{padding:4rem 1.5rem;}
+  .step-panel{padding:2rem 1.5rem;}
+  .col-3{grid-template-columns:1fr 1fr;}
+  .perks-strip{grid-template-columns:repeat(2,1fr);}
+  .perk:nth-child(2){border-right:none;}
+  .perk:nth-child(1),.perk:nth-child(2){border-bottom:1px solid var(--border);}
+  .role-grid{grid-template-columns:repeat(2,1fr);}
+  footer{flex-direction:column;text-align:center;padding:2rem 1.5rem;}
+  .h-vline,.h-vline2,.h-glow-g,.h-glow-c{display:none;}
+}
+@media(max-width:560px){
+  .col-2,.col-3{grid-template-columns:1fr;}
+  .role-grid{grid-template-columns:1fr 1fr;}
+  .step-lbl{display:none;}
+  .btn-row{flex-direction:column;}
+  .btn-back,.btn-next,.btn-submit{width:100%;justify-content:center;}
+  #successScreen{padding:3rem 1.5rem;}
+  .gender-grid{flex-wrap:wrap;}
+  .gender-card{min-width:80px;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="pc"></canvas>
+<div class="cursor" id="c"></div>
+<div class="cursor-ring" id="cr"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">VISION-S</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-pct" id="lp">0%</div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">VISION-S</a>
+  <a class="nav-back" href="https://saurav-pandey999.github.io/worldofvisions/"><span>← Back to Home</span></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="h-vline"></div><div class="h-vline2"></div>
+  <div class="h-glow-g"></div><div class="h-glow-c"></div>
+  <div class="hero-tag">Membership Application</div>
+  <h1 class="hero-h1">
+    <span>JOIN</span><br/>
+    <span class="stroke">THE</span><br/>
+    <span class="gold">VISION</span><span class="cyan">.</span>
+  </h1>
+  <p class="hero-sub">No age limit. No gatekeeping. Just passion, creativity, and the will to build something that matters.</p>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="g">✦</span>Join Vision-S</div>
+    <div class="ticker-item"><span class="t">✦</span>24h Review Process</div>
+    <div class="ticker-item"><span class="g">✦</span>Membership Card</div>
+    <div class="ticker-item"><span class="t">✦</span>No Age Restriction</div>
+    <div class="ticker-item"><span class="g">✦</span>Nepal & Switzerland</div>
+    <div class="ticker-item"><span class="t">✦</span>Build the Future</div>
+    <div class="ticker-item"><span class="g">✦</span>Join Vision-S</div>
+    <div class="ticker-item"><span class="t">✦</span>24h Review Process</div>
+    <div class="ticker-item"><span class="g">✦</span>Membership Card</div>
+    <div class="ticker-item"><span class="t">✦</span>No Age Restriction</div>
+    <div class="ticker-item"><span class="g">✦</span>Nepal & Switzerland</div>
+    <div class="ticker-item"><span class="t">✦</span>Build the Future</div>
+  </div>
+</div>
+
+<!-- PERKS -->
+<div class="perks-strip">
+  <div class="perk reveal"><div class="perk-icon">⚡</div><div class="perk-title">24h Review</div><div class="perk-sub">Fast & Transparent</div></div>
+  <div class="perk reveal d1"><div class="perk-icon">🪪</div><div class="perk-title">Membership Card</div><div class="perk-sub">Official & Digital</div></div>
+  <div class="perk reveal d2"><div class="perk-icon">🌍</div><div class="perk-title">Global Team</div><div class="perk-sub">Nepal & Switzerland</div></div>
+  <div class="perk reveal d3"><div class="perk-icon">🚀</div><div class="perk-title">Real Experience</div><div class="perk-sub">Grow & Contribute</div></div>
+</div>
+
+<div class="div-g"></div>
+
+<!-- FORM -->
+<div class="form-outer">
+
+  <!-- STEP BAR -->
+  <div class="step-bar reveal" id="stepBar">
+    <div class="step-bar-line"></div>
+    <div class="step-bar-fill" id="stepFill"></div>
+    <div class="step-item active" id="si0"><div class="step-dot"><span>1</span></div><div class="step-lbl">Personal</div></div>
+    <div class="step-item" id="si1"><div class="step-dot"><span>2</span></div><div class="step-lbl">Contact</div></div>
+    <div class="step-item" id="si2"><div class="step-dot"><span>3</span></div><div class="step-lbl">Role</div></div>
+    <div class="step-item" id="si3"><div class="step-dot"><span>4</span></div><div class="step-lbl">Review</div></div>
+  </div>
+
+  <div class="form-card reveal d1" id="formCard">
+    <form id="mainForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
+      <input type="hidden" name="access_key" value="5c20a84a-d36e-4a47-9157-a1bb83b2cbd6"/>
+      <input type="hidden" name="subject" value="New Vision-S Membership Application"/>
+      <input type="checkbox" name="botcheck" style="display:none;"/>
+
+      <!-- ══ STEP 1: PERSONAL INFO ══ -->
+      <div class="step-panel active" id="step1">
+        <div class="panel-head">
+          <div class="panel-num">Step 01 of 04</div>
+          <div class="panel-title">Personal Info<em>Tell us who you are</em></div>
+        </div>
+
+        <div class="field-row col-3">
+          <div class="field">
+            <label class="field-label">First Name <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="text" name="first_name" id="firstName" placeholder="e.g. Saurav" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-firstName">First name is required.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Middle Name <span class="opt">(optional)</span></label>
+            <div class="field-wrap"><input type="text" name="middle_name" placeholder="Optional"/><div class="field-line"></div></div>
+          </div>
+          <div class="field">
+            <label class="field-label">Last Name <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="text" name="last_name" id="lastName" placeholder="e.g. Pandey" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-lastName">Last name is required.</div>
+          </div>
+        </div>
+
+        <div class="field-row col-2">
+          <div class="field">
+            <label class="field-label">Father's Name <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="text" name="father_name" id="fatherName" placeholder="Father's full name" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-fatherName">Father's name is required.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Mother's Name <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="text" name="mother_name" id="motherName" placeholder="Mother's full name" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-motherName">Mother's name is required.</div>
+          </div>
+        </div>
+
+        <div class="field-row col-2">
+          <div class="field">
+            <label class="field-label">Date of Birth <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="date" name="dob" id="dob" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-dob">Date of birth is required.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Current School / College <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="text" name="school_college" id="school" placeholder="Your institution name" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-school">School / College is required.</div>
+          </div>
+        </div>
+
+        <!-- ── NEW: GENDER ── -->
+        <div class="field">
+          <label class="field-label">Gender <span class="req">✦</span></label>
+          <div class="gender-grid" id="genderGrid">
+            <label class="gender-card" onclick="selectGender(this,'Male')">
+              <input type="radio" name="gender" value="Male"/>
+              <div class="gender-card-inner"><span class="gender-icon">👦</span><span class="gender-name">Male</span></div>
+            </label>
+            <label class="gender-card" onclick="selectGender(this,'Female')">
+              <input type="radio" name="gender" value="Female"/>
+              <div class="gender-card-inner"><span class="gender-icon">👧</span><span class="gender-name">Female</span></div>
+            </label>
+            <label class="gender-card" onclick="selectGender(this,'Non-Binary')">
+              <input type="radio" name="gender" value="Non-Binary"/>
+              <div class="gender-card-inner"><span class="gender-icon">🌈</span><span class="gender-name">Non-Binary</span></div>
+            </label>
+            <label class="gender-card" onclick="selectGender(this,'Prefer not to say')">
+              <input type="radio" name="gender" value="Prefer not to say"/>
+              <div class="gender-card-inner"><span class="gender-icon">🤐</span><span class="gender-name">Prefer not to say</span></div>
+            </label>
+          </div>
+          <div class="field-err" id="err-gender">Please select your gender.</div>
+        </div>
+
+        <!-- ── NEW: NATIONALITY ── -->
+        <div class="field">
+          <label class="field-label">Nationality / Country <span class="req">✦</span></label>
+          <div class="field-wrap"><input type="text" name="nationality" id="nationality" placeholder="e.g. Nepali, Swiss, Indian…" required/><div class="field-line"></div></div>
+          <div class="field-err" id="err-nationality">Nationality is required.</div>
+        </div>
+
+        <!-- ── NEW: SOCIAL MEDIA ── -->
+        <div class="social-section">
+          <label class="field-label">Social Media <span class="opt">(at least one)</span></label>
+          <div class="social-hint">Fill whichever you have — Instagram, LinkedIn, TikTok or all three</div>
+          <div class="social-row">
+            <div class="social-platform"><span class="s-icon">📸</span>Instagram</div>
+            <input class="social-input" type="text" name="instagram" placeholder="@yourusername"/>
+          </div>
+          <div class="social-row">
+            <div class="social-platform"><span class="s-icon">⌨</span>LinkedIn</div>
+            <input class="social-input" type="text" name="linkedin" placeholder="linkedin.com/in/yourname"/>
+          </div>
+          <div class="social-row">
+            <div class="social-platform"><span class="s-icon">🎵</span>TikTok</div>
+            <input class="social-input" type="text" name="tiktok" placeholder="@yourusername"/>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <span></span>
+          <button type="button" class="btn-next" id="next1"><span class="btn-inner">Continue <span class="btn-arr">→</span></span></button>
+        </div>
+      </div>
+
+      <!-- ══ STEP 2: CONTACT ══ -->
+      <div class="step-panel" id="step2">
+        <div class="panel-head">
+          <div class="panel-num">Step 02 of 04</div>
+          <div class="panel-title">Contact Details<em>How can we reach you?</em></div>
+        </div>
+
+        <div class="field-row col-2">
+          <div class="field">
+            <label class="field-label">Phone Number <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="tel" name="phone" id="phone" placeholder="+977 98XXXXXXXX" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-phone">Phone number is required.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Email Address <span class="req">✦</span></label>
+            <div class="field-wrap"><input type="email" name="email" id="email" placeholder="you@email.com" required/><div class="field-line"></div></div>
+            <div class="field-err" id="err-email">A valid email is required.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Temporary Address <span class="req">✦</span></label>
+          <div class="field-wrap"><input type="text" name="temp_address" id="tempAddress" placeholder="Current city / district" required/><div class="field-line"></div></div>
+          <div class="field-err" id="err-tempAddress">Temporary address is required.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Permanent Address <span class="req">✦</span></label>
+          <div class="field-wrap"><input type="text" name="perm_address" id="permAddress" placeholder="Hometown / permanent location" required/><div class="field-line"></div></div>
+          <div class="field-err" id="err-permAddress">Permanent address is required.</div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" id="back2">← Back</button>
+          <button type="button" class="btn-next" id="next2"><span class="btn-inner">Continue <span class="btn-arr">→</span></span></button>
+        </div>
+      </div>
+
+      <!-- ══ STEP 3: ROLE & SKILLS ══ -->
+      <div class="step-panel" id="step3">
+        <div class="panel-head">
+          <div class="panel-num">Step 03 of 04</div>
+          <div class="panel-title">Role & Skills<em>What will you bring to Vision-S?</em></div>
+        </div>
+
+        <!-- Role picker -->
+        <div class="field">
+          <label class="field-label">Preferred Role <span class="req">✦</span></label>
+          <div class="role-grid" id="roleGrid">
+            <label class="role-card" onclick="selectRole(this,'Developer')"><input type="radio" name="role" value="Developer"/><div class="role-check">✓</div><span class="role-icon">💻</span><div class="role-name">Developer</div><div class="role-desc">Code & Build</div></label>
+            <label class="role-card" onclick="selectRole(this,'Designer')"><input type="radio" name="role" value="Designer"/><div class="role-check">✓</div><span class="role-icon">🎨</span><div class="role-name">Designer</div><div class="role-desc">Create & Design</div></label>
+            <label class="role-card" onclick="selectRole(this,'Marketing')"><input type="radio" name="role" value="Marketing Specialist"/><div class="role-check">✓</div><span class="role-icon">📣</span><div class="role-name">Marketing</div><div class="role-desc">Grow & Promote</div></label>
+            <label class="role-card" onclick="selectRole(this,'Content Creator')"><input type="radio" name="role" value="Content Creator"/><div class="role-check">✓</div><span class="role-icon">✍️</span><div class="role-name">Content</div><div class="role-desc">Write & Create</div></label>
+            <label class="role-card" onclick="selectRole(this,'Freelancer')"><input type="radio" name="role" value="Freelancer"/><div class="role-check">✓</div><span class="role-icon">🌐</span><div class="role-name">Freelancer</div><div class="role-desc">Flexible Work</div></label>
+            <label class="role-card" onclick="selectRole(this,'Intern')"><input type="radio" name="role" value="Intern"/><div class="role-check">✓</div><span class="role-icon">🎓</span><div class="role-name">Intern</div><div class="role-desc">Learn & Grow</div></label>
+            <label class="role-card" onclick="selectRole(this,'Community Manager')"><input type="radio" name="role" value="Community Manager"/><div class="role-check">✓</div><span class="role-icon">🤝</span><div class="role-name">Community</div><div class="role-desc">Connect & Lead</div></label>
+            <label class="role-card" onclick="selectRole(this,'Research & Development')"><input type="radio" name="role" value="Research & Development"/><div class="role-check">✓</div><span class="role-icon">🔬</span><div class="role-name">R&D</div><div class="role-desc">Research & Innovate</div></label>
+          </div>
+          <div class="field-err" id="err-role">Please select a role.</div>
+        </div>
+
+        <!-- Skills tags -->
+        <div class="field">
+          <label class="field-label">Skills / Expertise <span class="req">✦</span></label>
+          <div class="skills-wrap" id="skillsWrap" onclick="document.getElementById('skillsInput').focus()">
+            <input type="text" id="skillsInput" class="skills-input" placeholder="Type a skill and press Enter…"/>
+          </div>
+          <input type="hidden" name="skills" id="skillsHidden"/>
+          <div class="skills-hint">Press <strong>Enter</strong> or <strong>,</strong> after each skill</div>
+          <div class="field-err" id="err-skills">Add at least one skill.</div>
+        </div>
+
+        <!-- ── NEW: 3 WORDS ── -->
+        <div class="field">
+          <label class="field-label">Describe Yourself in 3 Words <span class="req">✦</span></label>
+          <div class="words-wrap" id="wordsWrap" onclick="document.getElementById('wordsInput').focus()">
+            <input type="text" id="wordsInput" class="words-input" placeholder="Type a word and press Enter…"/>
+          </div>
+          <input type="hidden" name="three_words" id="wordsHidden"/>
+          <div class="words-hint">Add exactly 3 words — press <strong>Enter</strong> after each</div>
+          <div class="words-count" id="wordsCount">0 / 3 words added</div>
+          <div class="field-err" id="err-words">Please add exactly 3 words.</div>
+        </div>
+
+        <!-- ── NEW: BIGGEST STRENGTH ── -->
+        <div class="field">
+          <label class="field-label">Your Biggest Strength <span class="req">✦</span></label>
+          <div class="field-wrap">
+            <textarea name="biggest_strength" id="biggestStrength" maxlength="300" placeholder="What is your biggest strength and how will it help Vision-S?" required></textarea>
+            <div class="field-line"></div>
+          </div>
+          <div class="char-count" id="cc-strength">0 / 300</div>
+          <div class="field-err" id="err-biggestStrength">Please share your biggest strength.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Why do you want to join? <span class="req">✦</span></label>
+          <div class="field-wrap"><textarea name="why_join" id="whyJoin" maxlength="500" placeholder="Tell us your reason for wanting to join Vision-S…" required></textarea><div class="field-line"></div></div>
+          <div class="char-count" id="cc-whyJoin">0 / 500</div>
+          <div class="field-err" id="err-whyJoin">Please tell us why you want to join.</div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Why should we select you? <span class="req">✦</span></label>
+          <div class="field-wrap"><textarea name="why_select" id="whySelect" maxlength="500" placeholder="What makes you the right fit for Vision-S?" required></textarea><div class="field-line"></div></div>
+          <div class="char-count" id="cc-whySelect">0 / 500</div>
+          <div class="field-err" id="err-whySelect">Please tell us why we should select you.</div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" id="back3">← Back</button>
+          <button type="button" class="btn-next" id="next3"><span class="btn-inner">Review <span class="btn-arr">→</span></span></button>
+        </div>
+      </div>
+
+      <!-- ══ STEP 4: REVIEW ══ -->
+      <div class="step-panel" id="step4">
+        <div class="panel-head">
+          <div class="panel-num">Step 04 of 04</div>
+          <div class="panel-title">Review & Submit<em>Double-check everything before sending</em></div>
+        </div>
+
+        <div id="reviewSummary" style="background:var(--bg3);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" id="summaryGrid"></div>
+        </div>
+
+        <div class="privacy-row">
+          <label style="position:relative;display:inline-block;">
+            <input type="checkbox" class="custom-cb" id="privacyCb" name="privacy" required/>
+            <div class="cb-box"><span class="cb-check">✓</span></div>
+          </label>
+          <div class="privacy-text">
+            I have read and accept the <a href="https://saurav-pandey999.github.io/worldofvisions/privacy.html" target="_blank">Privacy Policy</a>. I confirm all information provided is accurate and I understand that Vision-S will review my application within 24 hours.
+          </div>
+        </div>
+        <div class="field-err" id="err-privacy" style="margin-top:.5rem;">You must accept the Privacy Policy.</div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" id="back4">← Back</button>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <div class="spinner"></div>
+            <span class="btn-inner btn-text-wrap">Submit Application <span class="btn-arr">→</span></span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- SUCCESS -->
+    <div id="successScreen">
+      <div class="success-icon">🎉</div>
+      <div class="confetti-line"></div>
+      <div class="success-title"><span class="sg">Welcome</span> to <span class="sc">Vision-S</span></div>
+      <p class="success-sub">Your application has been submitted. Our team will review it and get back to you within 24 hours with your Membership Card.</p>
+      <div class="success-detail">Application submitted · Review: <span>Within 24 hours</span> · Card: <span>Upon approval</span></div>
+      <a class="success-btn" href="https://saurav-pandey999.github.io/worldofvisions/"><span>← Back to Home</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-inner">
+    <span class="mq-word">Join</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Build</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Vision-S</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Create</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Lead</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Join</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Build</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Vision-S</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Create</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Lead</span><span class="mq-word mc">✦</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">VISION-S</div>
+  <div class="f-copy">© 2026 Vision-S · All Rights Reserved</div>
+  <div class="f-right">A Vision Inspired by <a href="#">Saurav</a> &nbsp;·&nbsp; Nepal · Switzerland · Global</div>
+</footer>
+
 <script>
-document.getElementById("joinForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  const form = e.target;
+/* LOADER */
+const loader=document.getElementById('loader'),lp=document.getElementById('lp');
+let p=0;const ti=setInterval(()=>{p+=Math.floor(Math.random()*10)+4;if(p>=100){p=100;clearInterval(ti);}lp.textContent=p+'%';if(p>=100)setTimeout(()=>loader.classList.add('gone'),350);},65);
 
-  fetch("https://script.google.com/macros/s/AKfycbzWaUuxjbESp0yAVFUPXHtwWVtPzIO_cNILoWU9ZMdWwAKBqYYpzEPs534P9jssPkv7dw/exec", { // replace with your web app URL
-    method: "POST",
-    body: new FormData(form)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if(data.status === "success"){
-      window.location.href = "thanks.html";
-    }
-  })
-  .catch(err => {
-    alert("Submission failed. Try again!");
-    console.error(err);
-  });
+/* CURSOR */
+const cur=document.getElementById('c'),ring=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+function curBig(){cur.style.width='20px';cur.style.height='20px';ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='rgba(201,168,76,.9)';}
+function curNorm(){cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(201,168,76,.45)';}
+document.querySelectorAll('a,button,.role-card,.perk,.gender-card').forEach(el=>{el.addEventListener('mouseenter',curBig);el.addEventListener('mouseleave',curNorm);});
+
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
+
+/* REVEAL */
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* HERO PARALLAX */
+window.addEventListener('scroll',()=>{const t=document.querySelector('.hero-h1');if(t)t.style.transform=`translateY(${scrollY*.2}px)`;});
+
+/* PARTICLES */
+const canvas=document.getElementById('pc'),ctx=canvas.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const GOLD=[201,168,76],CYAN=[0,212,200];
+function rnd(a,b){return Math.random()*(b-a)+a;}
+for(let i=0;i<50;i++){const col=Math.random()<.5?GOLD:CYAN;pts.push({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(.4,2),vx:rnd(-.2,.2),vy:rnd(-.3,-.06),col,alpha:rnd(.2,.6),life:rnd(0,1),speed:rnd(.003,.009)});}
+(function dp(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.life+=p.speed;if(p.life>1)p.life=0;const a=p.alpha*Math.sin(p.life*Math.PI);ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.col},${a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.y<-10)p.y=H+10;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;});requestAnimationFrame(dp);})();
+
+/* MULTI-STEP */
+let currentStep=1;
+const totalSteps=4;
+function updateStepBar(step){
+  for(let i=0;i<totalSteps;i++){
+    const si=document.getElementById('si'+i);
+    si.classList.remove('active','done');
+    if(i+1<step)si.classList.add('done');
+    if(i+1===step)si.classList.add('active');
+  }
+  document.getElementById('stepFill').style.width=((step-1)/(totalSteps-1)*100)+'%';
+}
+function goToStep(step){
+  document.getElementById('step'+currentStep).classList.remove('active');
+  currentStep=step;
+  document.getElementById('step'+currentStep).classList.add('active');
+  updateStepBar(step);
+  document.getElementById('formCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* VALIDATION */
+function showErr(id,msg){
+  const el=document.getElementById('err-'+id);
+  if(el){if(msg)el.textContent=msg;el.classList.add('show');}
+  const inp=document.getElementById(id);
+  if(inp)inp.classList.add('has-error');
+}
+function clearErr(id){
+  const el=document.getElementById('err-'+id);if(el)el.classList.remove('show');
+  const inp=document.getElementById(id);if(inp)inp.classList.remove('has-error');
+}
+function validateStep(step){
+  let ok=true;
+  if(step===1){
+    ['firstName','lastName','fatherName','motherName','dob','school'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&!el.value.trim()){showErr(id);ok=false;}else clearErr(id);
+    });
+    if(!document.querySelector('input[name="gender"]:checked')){showErr('gender','Please select your gender.');ok=false;}else clearErr('gender');
+    const nat=document.getElementById('nationality');
+    if(!nat.value.trim()){showErr('nationality');ok=false;}else clearErr('nationality');
+  }
+  if(step===2){
+    const emailRx=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    ['phone','tempAddress','permAddress'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&!el.value.trim()){showErr(id);ok=false;}else clearErr(id);
+    });
+    const em=document.getElementById('email');
+    if(!em.value.trim()||!emailRx.test(em.value)){showErr('email','Valid email required.');ok=false;}else clearErr('email');
+  }
+  if(step===3){
+    if(!document.querySelector('input[name="role"]:checked')){showErr('role','Please select a role.');ok=false;}else clearErr('role');
+    if(!document.getElementById('skillsHidden').value.trim()){showErr('skills','Add at least one skill.');ok=false;}else clearErr('skills');
+    if(wordsList.length!==3){showErr('words','Please add exactly 3 words.');ok=false;}else clearErr('words');
+    const bs=document.getElementById('biggestStrength');
+    if(!bs.value.trim()){showErr('biggestStrength');ok=false;}else clearErr('biggestStrength');
+    const wj=document.getElementById('whyJoin');
+    if(!wj.value.trim()){showErr('whyJoin');ok=false;}else clearErr('whyJoin');
+    const ws=document.getElementById('whySelect');
+    if(!ws.value.trim()){showErr('whySelect');ok=false;}else clearErr('whySelect');
+  }
+  if(step===4){
+    if(!document.getElementById('privacyCb').checked){showErr('privacy','You must accept the Privacy Policy.');ok=false;}else clearErr('privacy');
+  }
+  return ok;
+}
+
+document.querySelectorAll('input,textarea,select').forEach(el=>{
+  el.addEventListener('input',()=>{el.classList.remove('has-error');const errEl=document.getElementById('err-'+el.id);if(errEl)errEl.classList.remove('show');});
 });
-</script>
 
- </body> </html>
+/* STEP NAV */
+document.getElementById('next1').addEventListener('click',()=>{if(validateStep(1))goToStep(2);});
+document.getElementById('next2').addEventListener('click',()=>{if(validateStep(2))goToStep(3);});
+document.getElementById('next3').addEventListener('click',()=>{if(validateStep(3)){buildReview();goToStep(4);}});
+document.getElementById('back2').addEventListener('click',()=>goToStep(1));
+document.getElementById('back3').addEventListener('click',()=>goToStep(2));
+document.getElementById('back4').addEventListener('click',()=>goToStep(3));
+
+/* GENDER SELECTOR */
+function selectGender(card,val){
+  document.querySelectorAll('.gender-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  clearErr('gender');
+}
+
+/* ROLE SELECTOR */
+function selectRole(card,roleName){
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  clearErr('role');
+}
+
+/* SKILLS TAGS */
+let skillsList=[];
+const skillsWrap=document.getElementById('skillsWrap'),skillsInput=document.getElementById('skillsInput'),skillsHidden=document.getElementById('skillsHidden');
+function addSkill(val){
+  const v=val.trim().replace(/,$/,'');
+  if(!v||skillsList.includes(v))return;
+  skillsList.push(v);
+  const tag=document.createElement('div');tag.className='skill-tag';
+  tag.innerHTML=`${v}<button class="skill-tag-remove" type="button">×</button>`;
+  tag.querySelector('.skill-tag-remove').addEventListener('click',()=>{skillsList=skillsList.filter(s=>s!==v);tag.remove();skillsHidden.value=skillsList.join(', ');});
+  skillsWrap.insertBefore(tag,skillsInput);
+  skillsHidden.value=skillsList.join(', ');
+  clearErr('skills');
+}
+skillsInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===','){e.preventDefault();addSkill(skillsInput.value);skillsInput.value='';}
+  if(e.key==='Backspace'&&!skillsInput.value&&skillsList.length){const last=skillsWrap.querySelector('.skill-tag:last-of-type');if(last){skillsList.pop();last.remove();skillsHidden.value=skillsList.join(', ');}}
+});
+skillsInput.addEventListener('blur',()=>{if(skillsInput.value.trim()){addSkill(skillsInput.value);skillsInput.value='';}});
+
+/* 3 WORDS TAGS */
+let wordsList=[];
+const wordsWrap=document.getElementById('wordsWrap'),wordsInput=document.getElementById('wordsInput'),wordsHidden=document.getElementById('wordsHidden'),wordsCount=document.getElementById('wordsCount');
+function updateWordsCount(){
+  wordsCount.textContent=`${wordsList.length} / 3 words added`;
+  wordsCount.classList.toggle('full',wordsList.length===3);
+  if(wordsList.length===3)wordsInput.disabled=true;
+  else wordsInput.disabled=false;
+}
+function addWord(val){
+  const v=val.trim().replace(/,$/,'').split(' ')[0]; // only first word
+  if(!v||wordsList.includes(v)||wordsList.length>=3)return;
+  wordsList.push(v);
+  const tag=document.createElement('div');tag.className='word-tag';
+  tag.innerHTML=`${v}<button class="word-tag-remove" type="button">×</button>`;
+  tag.querySelector('.word-tag-remove').addEventListener('click',()=>{wordsList=wordsList.filter(w=>w!==v);tag.remove();wordsHidden.value=wordsList.join(', ');updateWordsCount();});
+  wordsWrap.insertBefore(tag,wordsInput);
+  wordsHidden.value=wordsList.join(', ');
+  updateWordsCount();
+  clearErr('words');
+}
+wordsInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===','||e.key===' '){e.preventDefault();addWord(wordsInput.value);wordsInput.value='';}
+  if(e.key==='Backspace'&&!wordsInput.value&&wordsList.length){const last=wordsWrap.querySelector('.word-tag:last-of-type');if(last){wordsList.pop();last.remove();wordsHidden.value=wordsList.join(', ');updateWordsCount();}}
+});
+wordsInput.addEventListener('blur',()=>{if(wordsInput.value.trim()){addWord(wordsInput.value);wordsInput.value='';}});
+
+/* CHAR COUNTERS */
+function attachCounter(id,ccId,max){
+  const ta=document.getElementById(id),cc=document.getElementById(ccId);
+  ta.addEventListener('input',()=>{
+    const len=ta.value.length;cc.textContent=`${len} / ${max}`;
+    cc.className='char-count'+(len>max*.85?' warn':'')+(len>max*.95?' danger':'');
+  });
+}
+attachCounter('whyJoin','cc-whyJoin',500);
+attachCounter('whySelect','cc-whySelect',500);
+attachCounter('biggestStrength','cc-strength',300);
+
+/* BUILD REVIEW */
+function buildReview(){
+  const get=id=>{const el=document.getElementById(id);return el?el.value.trim():'';}
+  const role=document.querySelector('input[name="role"]:checked');
+  const gender=document.querySelector('input[name="gender"]:checked');
+  const ig=document.querySelector('input[name="instagram"]')?.value.trim();
+  const li=document.querySelector('input[name="linkedin"]')?.value.trim();
+  const tt=document.querySelector('input[name="tiktok"]')?.value.trim();
+  const socials=[ig?`📸 ${ig}`:'',li?`⌨ ${li}`:'',tt?`🎵 ${tt}`:''].filter(Boolean).join('  ·  ')||'—';
+  const fields=[
+    {l:'Full Name',v:[get('firstName'),get('lastName')].filter(Boolean).join(' ')},
+    {l:'Date of Birth',v:get('dob')},
+    {l:'Gender',v:gender?gender.value:'—'},
+    {l:'Nationality',v:get('nationality')},
+    {l:'Father\'s Name',v:get('fatherName')},
+    {l:'Mother\'s Name',v:get('motherName')},
+    {l:'Phone',v:get('phone')},
+    {l:'Email',v:get('email')},
+    {l:'Temp. Address',v:get('tempAddress')},
+    {l:'Perm. Address',v:get('permAddress')},
+    {l:'School / College',v:get('school')},
+    {l:'Social Media',v:socials},
+    {l:'Role Applied',v:role?role.value:'—'},
+    {l:'Skills',v:skillsHidden.value||'—'},
+    {l:'3 Words',v:wordsHidden.value||'—'},
+    {l:'Biggest Strength',v:get('biggestStrength')},
+  ];
+  document.getElementById('summaryGrid').innerHTML=fields.map(f=>`
+    <div>
+      <div style="font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem;">${f.l}</div>
+      <div style="font-size:.88rem;color:var(--white);font-weight:500;word-break:break-word;">${f.v||'—'}</div>
+    </div>
+  `).join('');
+}
+
+/* FORM SUBMIT */
+document.getElementById('mainForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!validateStep(4))return;
+  const btn=document.getElementById('submitBtn');btn.classList.add('loading');
+  const data=new FormData(e.target);
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data});
+    const json=await res.json();
+    if(json.success){
+      document.getElementById('mainForm').style.display='none';
+      document.getElementById('stepBar').style.display='none';
+      document.getElementById('successScreen').classList.add('show');
+      launchConfetti();
+    }else{alert('Something went wrong. Please try again.');}
+  }catch(err){alert('Network error. Please check your connection.');}
+  finally{btn.classList.remove('loading');}
+});
+
+/* CONFETTI */
+function launchConfetti(){
+  const colors=['#c9a84c','#00d4c8','#ffffff','#e8c97a'];
+  function rnd(a,b){return Math.random()*(b-a)+a;}
+  for(let i=0;i<80;i++){
+    const d=document.createElement('div');const size=rnd(5,10);
+    Object.assign(d.style,{position:'fixed',left:rnd(10,90)+'%',top:'-20px',width:size+'px',height:size+'px',background:colors[Math.floor(Math.random()*colors.length)],borderRadius:Math.random()>.5?'50%':'0',zIndex:'99999',pointerEvents:'none',animation:`cfetti ${rnd(1.5,3)}s ease ${rnd(0,.8)}s forwards`,transform:`rotate(${rnd(0,360)}deg)`});
+    document.body.appendChild(d);setTimeout(()=>d.remove(),4000);
+  }
+  if(!document.getElementById('cfStyle')){const s=document.createElement('style');s.id='cfStyle';s.textContent=`@keyframes cfetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(${innerHeight+100}px) rotate(720deg);opacity:0}}`;document.head.appendChild(s);}
+}
+
+updateStepBar(1);
+</script>
+</body>
+</html>
