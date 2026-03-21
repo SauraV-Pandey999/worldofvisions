@@ -1,44 +1,816 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>page</title>
-     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="hr.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — Vision-S</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+/* ─── ROOT ──────────────────────────────────── */
+:root{
+  --bg:        #000000;
+  --bg2:       #080808;
+  --bg3:       #0f0f0f;
+  --bg4:       #141414;
+  --white:     #ffffff;
+  --off:       #e0e0e0;
+  --muted:     #666666;
+  --dimmed:    #2a2a2a;
+  --border:    rgba(255,255,255,0.06);
+  --gold:      #c9a84c;
+  --gold-lt:   #e8c97a;
+  --gold-dk:   #6b4f1e;
+  --gold-glow: rgba(201,168,76,0.13);
+  --gold-line: rgba(201,168,76,0.35);
+  --cyan:      #00d4c8;
+  --cyan-dk:   #006b66;
+  --cyan-glow: rgba(0,212,200,0.10);
+  --cyan-line: rgba(0,212,200,0.28);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  overflow-x:hidden;cursor:none;
+  min-height:100vh;
+}
+
+/* grain */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── CURSOR ──────────────────────────────── */
+.cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s,background .4s;
+  mix-blend-mode:difference;
+}
+.cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(201,168,76,.45);border-radius:50%;
+  pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s,border-color .3s;
+}
+@media(hover:none){.cursor,.cursor-ring{display:none;}}
+
+/* ─── PARTICLES ───────────────────────────── */
+#pc{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.4;}
+
+/* ─── LOADER ──────────────────────────────── */
+#loader{
+  position:fixed;inset:0;background:var(--bg);z-index:10000;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.8rem;
+  transition:opacity .8s,visibility .8s;
+}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(1.4rem,4vw,2rem);letter-spacing:.7em;color:var(--white);
+  clip-path:inset(0 100% 0 0);animation:revTxt .9s cubic-bezier(.16,1,.3,1) .2s forwards;
+}
+@keyframes revTxt{to{clip-path:inset(0 0% 0 0)}}
+.ld-bar-wrap{width:200px;height:1px;background:rgba(255,255,255,.07);}
+.ld-bar{height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));width:0;animation:ldbar 1.9s cubic-bezier(.4,0,.2,1) .4s forwards;}
+@keyframes ldbar{to{width:100%}}
+.ld-pct{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.3em;color:var(--muted);}
+
+/* ─── NAV ─────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(to bottom,rgba(0,0,0,.96),transparent);
+  transition:backdrop-filter .4s,background .4s;
+}
+nav.scrolled{backdrop-filter:blur(14px);background:rgba(0,0,0,.88);}
+.nav-logo{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:1.05rem;letter-spacing:.4em;color:var(--white);
+  text-decoration:none;text-transform:uppercase;position:relative;cursor:none;
+}
+.nav-logo::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+  transform:scaleX(0);transform-origin:left;transition:transform .5s ease;
+}
+.nav-logo:hover::after{transform:scaleX(1);}
+.nav-back{
+  font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.25em;
+  color:var(--muted);text-decoration:none;text-transform:uppercase;
+  border:1px solid var(--dimmed);padding:.45rem 1rem;
+  position:relative;overflow:hidden;transition:color .3s,border-color .3s;cursor:none;
+}
+.nav-back::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--cyan));
+  transform:translateX(-101%);transition:transform .38s cubic-bezier(.16,1,.3,1);
+}
+.nav-back:hover{color:var(--bg);border-color:var(--gold);}
+.nav-back:hover::before{transform:translateX(0);}
+.nav-back span{position:relative;z-index:1;}
+
+/* ─── HERO ────────────────────────────────── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:9rem 3rem 4rem;position:relative;overflow:hidden;
+}
+.h-vline{
+  position:absolute;top:0;right:10%;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);
+  opacity:0;animation:fIn 1s ease 2.2s forwards;
+}
+.h-vline2{
+  position:absolute;top:0;right:20%;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--border) 40%,var(--border) 60%,transparent);
+  opacity:0;animation:fIn 1s ease 2.4s forwards;
+}
+.h-glow-g{
+  position:absolute;top:15%;right:3%;width:550px;height:550px;
+  background:radial-gradient(circle,var(--gold-glow),transparent 65%);
+  pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.5s forwards;
+}
+.h-glow-c{
+  position:absolute;bottom:10%;right:18%;width:380px;height:380px;
+  background:radial-gradient(circle,var(--cyan-glow),transparent 65%);
+  pointer-events:none;opacity:0;animation:fIn 1.2s ease 2.8s forwards;
+}
+.hero-tag{
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  letter-spacing:.5em;color:var(--gold);text-transform:uppercase;
+  margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;
+  opacity:0;animation:slideR .7s ease 2s forwards;
+}
+.hero-tag::before{content:'';width:28px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.hero-h1{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(3.5rem,11vw,11rem);line-height:.9;
+  letter-spacing:-.02em;text-transform:uppercase;
+  opacity:0;animation:slideU .9s cubic-bezier(.16,1,.3,1) 2.1s forwards;
+}
+.hero-h1 .stroke{color:transparent;-webkit-text-stroke:1px var(--white);}
+.hero-h1 .gold{color:var(--gold);}
+.hero-h1 .cyan{color:var(--cyan);}
+.hero-sub{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(.95rem,2vw,1.3rem);color:var(--muted);
+  margin-top:2rem;max-width:480px;line-height:1.8;
+  opacity:0;animation:slideU .8s ease 2.3s forwards;
+}
+.hero-scroll{
+  position:absolute;bottom:2.5rem;left:3rem;
+  display:flex;align-items:center;gap:1rem;
+  font-family:'Space Mono',monospace;font-size:.52rem;
+  letter-spacing:.4em;color:var(--muted);text-transform:uppercase;
+  opacity:0;animation:fIn 1s ease 2.8s forwards;
+}
+.sline{width:40px;height:1px;background:var(--dimmed);position:relative;overflow:hidden;}
+.sline::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+  transform:translateX(-100%);animation:sA 2s ease 3.2s infinite;
+}
+@keyframes sA{0%{transform:translateX(-100%)}50%{transform:translateX(0)}100%{transform:translateX(100%)}}
+
+/* ─── TICKER ──────────────────────────────── */
+.ticker-wrap{
+  width:100%;overflow:hidden;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:.7rem 0;background:var(--bg2);
+}
+.ticker{display:flex;width:max-content;animation:tick 26s linear infinite;}
+.ticker:hover{animation-play-state:paused;}
+.ticker-item{
+  font-family:'Montserrat',sans-serif;font-weight:700;
+  font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;
+  white-space:nowrap;padding:0 2.5rem;color:var(--muted);
+}
+.g{color:var(--gold);} .t{color:var(--cyan);}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ─── CONTACT SECTION ─────────────────────── */
+.contact-section{
+  padding:7rem 3rem;max-width:1300px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;
+}
+
+/* LEFT INFO */
+.contact-info{}
+.label{
+  display:inline-flex;align-items:center;gap:.8rem;
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  letter-spacing:.45em;color:var(--gold);text-transform:uppercase;margin-bottom:2rem;
+}
+.label::before{content:'';width:20px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.sec-title{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(2.2rem,5vw,4.5rem);line-height:1;
+  letter-spacing:-.02em;text-transform:uppercase;margin-bottom:1.5rem;
+}
+.sec-title em{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:400;
+  color:var(--muted);display:block;font-size:.45em;
+  letter-spacing:.06em;text-transform:none;margin-top:.4rem;
+}
+.info-desc{
+  font-size:clamp(.88rem,1.4vw,1rem);line-height:1.9;
+  color:var(--muted);font-weight:300;margin-bottom:3rem;max-width:400px;
+}
+
+/* contact cards */
+.contact-cards{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);}
+.cc{
+  background:var(--bg2);padding:1.5rem 2rem;
+  display:flex;align-items:center;gap:1.5rem;
+  position:relative;overflow:hidden;
+  transition:background .3s;cursor:none;
+}
+.cc::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,var(--gold),var(--cyan));
+  transform:scaleY(0);transform-origin:bottom;transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.cc:hover{background:var(--bg3);}
+.cc:hover::before{transform:scaleY(1);}
+.cc-icon{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(0,212,200,.08));
+  border:1px solid var(--gold-line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+  transition:border-color .3s,transform .3s;
+}
+.cc:hover .cc-icon{border-color:var(--cyan-line);transform:scale(1.08);}
+.cc-body{}
+.cc-lbl{
+  font-family:'Space Mono',monospace;font-size:.52rem;
+  letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem;
+}
+.cc-val{
+  font-family:'Montserrat',sans-serif;font-weight:600;
+  font-size:.88rem;color:var(--off);letter-spacing:.02em;
+}
+.cc-val a{color:inherit;text-decoration:none;transition:color .3s;}
+.cc-val a:hover{color:var(--gold);}
+
+/* social strip */
+.social-strip{display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;}
+.soc-btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid var(--dimmed);padding:.55rem 1.2rem;
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.2em;color:var(--muted);text-transform:uppercase;
+  text-decoration:none;position:relative;overflow:hidden;
+  transition:color .3s,border-color .3s;cursor:none;
+}
+.soc-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--cyan));
+  transform:translateY(101%);transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.soc-btn:hover{color:var(--bg);border-color:var(--gold);}
+.soc-btn:hover::before{transform:translateY(0);}
+.soc-btn span{position:relative;z-index:1;display:flex;align-items:center;gap:.5rem;}
+
+/* ─── FORM ────────────────────────────────── */
+.form-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:3rem;position:relative;overflow:hidden;
+}
+.form-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+}
+.form-wrap::after{
+  content:'';position:absolute;bottom:-200px;right:-150px;
+  width:400px;height:400px;
+  background:radial-gradient(circle,var(--gold-glow),transparent 65%);
+  pointer-events:none;
+}
+
+.form-title{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:1.4rem;letter-spacing:-.01em;text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.form-sub{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:.95rem;color:var(--muted);margin-bottom:2.5rem;
+}
+
+.field{margin-bottom:1.8rem;position:relative;}
+.field-label{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.35em;color:var(--muted);text-transform:uppercase;
+  display:block;margin-bottom:.7rem;
+  transition:color .3s;
+}
+.field:focus-within .field-label{color:var(--gold);}
+
+.field input,.field textarea,.field select{
+  width:100%;background:var(--bg3);
+  border:1px solid var(--dimmed);
+  color:var(--white);
+  font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:400;
+  padding:1rem 1.2rem;outline:none;
+  transition:border-color .3s,box-shadow .3s,background .3s;
+  -webkit-appearance:none;border-radius:0;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);font-weight:300;}
+.field input:focus,.field textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-glow),0 0 20px var(--gold-glow);
+  background:var(--bg4);
+}
+.field textarea{resize:vertical;min-height:130px;line-height:1.7;}
+
+/* field underline anim */
+.field-line{
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.field:focus-within .field-line{transform:scaleX(1);}
+
+/* field row */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+
+/* submit */
+.submit-btn{
+  width:100%;padding:1.1rem;
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'Montserrat',sans-serif;font-weight:700;
+  font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;
+  cursor:none;position:relative;overflow:hidden;
+  transition:color .38s,border-color .38s;
+  display:flex;align-items:center;justify-content:center;gap:.8rem;
+}
+.submit-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--cyan));
+  transform:translateX(-101%);transition:transform .42s cubic-bezier(.16,1,.3,1);
+}
+.submit-btn:hover{color:var(--bg);border-color:var(--cyan);}
+.submit-btn:hover::before{transform:translateX(0);}
+.submit-btn .btn-inner{position:relative;z-index:1;display:flex;align-items:center;gap:.8rem;}
+.btn-arr{transition:transform .3s;}
+.submit-btn:hover .btn-arr{transform:translateX(5px);}
+
+/* loading state */
+.submit-btn.loading{pointer-events:none;}
+.submit-btn.loading .btn-text{opacity:0;}
+.spinner{
+  display:none;width:16px;height:16px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top-color:var(--white);border-radius:50%;
+  animation:spin .6s linear infinite;position:absolute;
+}
+.submit-btn.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* success / error */
+.form-msg{
+  display:none;margin-top:1.2rem;padding:1rem 1.4rem;
+  font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;
+  text-transform:uppercase;border:1px solid;
+}
+.form-msg.success{color:var(--cyan);border-color:var(--cyan-line);background:rgba(0,212,200,.05);}
+.form-msg.error{color:var(--gold);border-color:var(--gold-line);background:rgba(201,168,76,.05);}
+.form-msg.show{display:block;animation:slideU .4s ease;}
+
+/* ─── DIVIDERS ────────────────────────────── */
+.div-g{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--gold-line) 30%,var(--cyan-line) 70%,transparent);}
+.div-p{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--border) 20%,var(--border) 80%,transparent);}
+
+/* ─── MAP / FIND US STRIP ─────────────────── */
+.find-strip{
+  padding:5rem 3rem;max-width:1300px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+}
+.find-left{}
+.find-title{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(1.8rem,4vw,3rem);text-transform:uppercase;
+  letter-spacing:-.02em;margin-bottom:1rem;
+}
+.find-title span{color:var(--gold);}
+.find-desc{font-size:.9rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.find-right{display:flex;flex-direction:column;gap:1rem;}
+.find-card{
+  background:var(--bg2);border:1px solid var(--border);
+  padding:1.5rem;display:flex;align-items:center;gap:1.2rem;
+  transition:border-color .3s,background .3s;
+}
+.find-card:hover{border-color:var(--gold-line);background:var(--bg3);}
+.fc-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--cyan));
+  box-shadow:0 0 8px var(--gold-glow);
+}
+.fc-text{font-size:.88rem;color:var(--off);font-weight:300;line-height:1.6;}
+.fc-text strong{color:var(--white);font-weight:600;display:block;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem;}
+
+/* ─── MARQUEE ─────────────────────────────── */
+.mq-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.mq-inner{display:flex;width:max-content;animation:mqA 22s linear infinite;padding:1.8rem 0;}
+.mq-word{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:clamp(2.5rem,5vw,4.5rem);text-transform:uppercase;
+  padding:0 1.5rem;white-space:nowrap;letter-spacing:-.02em;
+  color:transparent;-webkit-text-stroke:1px var(--dimmed);
+}
+.mq-word.mg{-webkit-text-stroke:1px var(--gold);}
+.mq-word.mc{-webkit-text-stroke:1px var(--cyan);}
+@keyframes mqA{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ─── FOOTER ──────────────────────────────── */
+footer{
+  border-top:1px solid var(--border);padding:2.5rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.f-logo{
+  font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:.9rem;letter-spacing:.5em;text-transform:uppercase;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.f-copy{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right a{color:var(--gold);text-decoration:none;transition:color .3s;}
+.f-right a:hover{color:var(--cyan);}
+
+/* ─── REVEAL ANIMATIONS ───────────────────── */
+.reveal{opacity:0;transform:translateY(35px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal.from-left{transform:translateX(-40px);}
+.reveal.from-left.vis{transform:translateX(0);}
+.reveal.from-right{transform:translateX(40px);}
+.reveal.from-right.vis{transform:translateX(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}.d4{transition-delay:.4s;}
+
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+@keyframes slideU{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideR{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ─── RESPONSIVE ──────────────────────────── */
+@media(max-width:960px){
+  nav{padding:1.2rem 1.5rem;}
+  .hero{padding:7rem 1.5rem 3.5rem;}
+  .contact-section{grid-template-columns:1fr;gap:3.5rem;padding:5rem 1.5rem;}
+  .find-strip{grid-template-columns:1fr;gap:2.5rem;padding:4rem 1.5rem;}
+  .form-wrap{padding:2rem 1.5rem;}
+  footer{flex-direction:column;text-align:center;padding:2rem 1.5rem;}
+  .h-vline,.h-vline2,.h-glow-g,.h-glow-c{display:none;}
+}
+@media(max-width:580px){
+  .field-row{grid-template-columns:1fr;}
+  .hero-h1{font-size:clamp(3rem,15vw,5rem);}
+  .social-strip{gap:.6rem;}
+  .soc-btn{padding:.45rem .9rem;font-size:.5rem;}
+  .contact-cards{margin-bottom:1rem;}
+  footer{padding:1.8rem 1.2rem;}
+}
+</style>
 </head>
 <body>
-    
-    <div class="container">
-        <div class="front side">
-            <div class="content">
-                <br><br><br>
-                <br><br><br>
-                <h1></h1>
-            </div>
+
+<canvas id="pc"></canvas>
+<div class="cursor" id="c"></div>
+<div class="cursor-ring" id="cr"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">VISION-S</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-pct" id="lp">0%</div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">VISION-S</a>
+  <a class="nav-back" href="https://saurav-pandey999.github.io/worldofvisions/"><span>← Back to Home</span></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="h-vline"></div>
+  <div class="h-vline2"></div>
+  <div class="h-glow-g"></div>
+  <div class="h-glow-c"></div>
+  <div class="hero-tag">Get in Touch</div>
+  <h1 class="hero-h1">
+    <span>LET'S</span><br/>
+    <span class="stroke">CONNECT</span><br/>
+    <span class="cyan">TOGETHER</span>
+  </h1>
+  <p class="hero-sub">Have a question, collaboration idea, or just want to say hello? We'd love to hear from you.</p>
+  <div class="hero-scroll"><div class="sline"></div>Scroll down</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="g">✦</span>Contact Vision-S</div>
+    <div class="ticker-item"><span class="t">✦</span>We Respond Fast</div>
+    <div class="ticker-item"><span class="g">✦</span>Saurav Pandey</div>
+    <div class="ticker-item"><span class="t">✦</span>Nepal & Worldwide</div>
+    <div class="ticker-item"><span class="g">✦</span>Students Welcome</div>
+    <div class="ticker-item"><span class="t">✦</span>Let's Build Together</div>
+    <div class="ticker-item"><span class="g">✦</span>Vision-S</div>
+    <div class="ticker-item"><span class="t">✦</span>Contact Vision-S</div>
+    <div class="ticker-item"><span class="g">✦</span>We Respond Fast</div>
+    <div class="ticker-item"><span class="t">✦</span>Saurav Pandey</div>
+    <div class="ticker-item"><span class="g">✦</span>Nepal & Worldwide</div>
+    <div class="ticker-item"><span class="t">✦</span>Students Welcome</div>
+    <div class="ticker-item"><span class="g">✦</span>Let's Build Together</div>
+    <div class="ticker-item"><span class="t">✦</span>Vision-S</div>
+  </div>
+</div>
+
+<!-- CONTACT SECTION -->
+<div class="contact-section">
+
+  <!-- LEFT: INFO -->
+  <div class="contact-info">
+    <div class="reveal"><div class="label">Reach Out</div></div>
+    <div class="reveal d1">
+      <h2 class="sec-title">SAY<br/>HELLO<em>we don't bite — we build.</em></h2>
+    </div>
+    <p class="info-desc reveal d2">Whether you're a student, a collaborator, a partner, or just curious about what Vision-S is — every message matters. Saurav reads every single one.</p>
+
+    <div class="contact-cards reveal d2">
+      <div class="cc">
+        <div class="cc-icon">✉️</div>
+        <div class="cc-body">
+          <div class="cc-lbl">Email</div>
+          <div class="cc-val"><a href="mailto:visions.saurav@gmail.com">visions.saurav@gmail.com</a></div>
         </div>
-
-        <div class="back side">
-            <div class="content">
-                <h1>Contact Me</h1>
-                <form action="https://api.web3forms.com/submit" method="POST">
-  <input type="hidden" name="access_key" value="5c20a84a-d36e-4a47-9157-a1bb83b2cbd6">
-
-                    <label for="">Your Name  :</label>
-                    <br>
-                    <input type="text" name="name" placeholder="Put your username">
-                    <br>
-                    <label for="">Your E-mail</label>
-                    <input type="email" name="email" placeholder="Example@gmail.com">
-                    <br>
-                    <label for="">Your Message  :</label>
-                    <textarea type="text" name="Message" placeholder="The Subject"></textarea>
-                    <br>
-                    <input type="submit" name="" value="Done">
-                </form>
-            </div>
+      </div>
+      <div class="cc">
+        <div class="cc-icon">🌍</div>
+        <div class="cc-body">
+          <div class="cc-lbl">Location</div>
+          <div class="cc-val">Nepal — Building Globally</div>
         </div>
-
+      </div>
+      <div class="cc">
+        <div class="cc-icon">⚡</div>
+        <div class="cc-body">
+          <div class="cc-lbl">Response Time</div>
+          <div class="cc-val">Usually within 24 hours</div>
+        </div>
+      </div>
+      <div class="cc">
+        <div class="cc-icon">🎯</div>
+        <div class="cc-body">
+          <div class="cc-lbl">Open For</div>
+          <div class="cc-val">Collabs · Projects · Ideas · Feedback</div>
+        </div>
+      </div>
     </div>
 
+    <div class="social-strip reveal d3">
+      <a class="soc-btn" href="https://saurav-pandey999.github.io/worldofvisions/" target="_blank"><span>🌐 Website</span></a>
+      <a class="soc-btn" href="mailto:visions.saurav@gmail.com"><span>✉ Email</span></a>
+      <a class="soc-btn" href="#"><span>📸 Instagram</span></a>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="form-wrap reveal from-right d1">
+    <div class="form-title">Send a Message</div>
+    <p class="form-sub">Fill in the form — Saurav will get back to you personally.</p>
+
+    <form id="contactForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
+      <input type="hidden" name="access_key" value="5c20a84a-d36e-4a47-9157-a1bb83b2cbd6"/>
+      <input type="hidden" name="subject" value="New Contact from Vision-S Website"/>
+      <input type="checkbox" name="botcheck" style="display:none;"/>
+
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" for="fname">Your Name</label>
+          <input type="text" id="fname" name="name" placeholder="e.g. Saurav Pandey" required/>
+          <div class="field-line"></div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="femail">Email Address</label>
+          <input type="email" id="femail" name="email" placeholder="you@email.com" required/>
+          <div class="field-line"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="fsubject">Subject</label>
+        <input type="text" id="fsubject" name="subject_line" placeholder="What's this about?"/>
+        <div class="field-line"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="fmsg">Your Message</label>
+        <textarea id="fmsg" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+        <div class="field-line"></div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <div class="spinner"></div>
+        <span class="btn-inner">
+          <span class="btn-text">Send Message</span>
+          <span class="btn-arr">→</span>
+        </span>
+      </button>
+
+      <div class="form-msg success" id="successMsg">✦ &nbsp; Message sent! Saurav will get back to you soon.</div>
+      <div class="form-msg error" id="errorMsg">✦ &nbsp; Something went wrong. Please try again or email directly.</div>
+    </form>
+  </div>
+</div>
+
+<div class="div-g"></div>
+
+<!-- FIND US STRIP -->
+<div class="find-strip">
+  <div class="find-left reveal from-left">
+    <div class="label">Based In</div>
+    <h2 class="find-title">BUILT IN <span>NEPAL.</span><br/>MADE FOR THE WORLD.</h2>
+    <p class="find-desc" style="margin-top:1rem;">Vision-S was born in Nepal and is digitally accessible to students and collaborators across the entire globe. Distance is never a barrier to vision.</p>
+  </div>
+  <div class="find-right reveal from-right d1">
+    <div class="find-card">
+      <div class="fc-dot"></div>
+      <div class="fc-text"><strong>Headquarters</strong>Nepal — Digital & Remote</div>
+    </div>
+    <div class="find-card">
+      <div class="fc-dot"></div>
+      <div class="fc-text"><strong>Operating Since</strong>2023 — Growing Every Day</div>
+    </div>
+    <div class="find-card">
+      <div class="fc-dot"></div>
+      <div class="fc-text"><strong>Reach</strong>Students Across Nepal & Beyond</div>
+    </div>
+    <div class="find-card">
+      <div class="fc-dot"></div>
+      <div class="fc-text"><strong>CEO & Founder</strong>Saurav Pandey — Grade 11</div>
+    </div>
+  </div>
+</div>
+
+<div class="div-p"></div>
+
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-inner">
+    <span class="mq-word">Contact</span>
+    <span class="mq-word mg">✦</span>
+    <span class="mq-word">Connect</span>
+    <span class="mq-word mc">✦</span>
+    <span class="mq-word">Collaborate</span>
+    <span class="mq-word mg">✦</span>
+    <span class="mq-word">Create</span>
+    <span class="mq-word mc">✦</span>
+    <span class="mq-word">Vision-S</span>
+    <span class="mq-word mg">✦</span>
+    <span class="mq-word">Contact</span>
+    <span class="mq-word mc">✦</span>
+    <span class="mq-word">Connect</span>
+    <span class="mq-word mg">✦</span>
+    <span class="mq-word">Collaborate</span>
+    <span class="mq-word mc">✦</span>
+    <span class="mq-word">Create</span>
+    <span class="mq-word mg">✦</span>
+    <span class="mq-word">Vision-S</span>
+    <span class="mq-word mc">✦</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">VISION-S</div>
+  <div class="f-copy">© 2026 Vision-S · All Rights Reserved</div>
+  <div class="f-right">A Vision Inspired by <a href="#">Saurav</a> &nbsp;·&nbsp; Nepal · Digital · Global</div>
+</footer>
+
+<script>
+/* ── LOADER ─────────────────────── */
+const loader=document.getElementById('loader'),lp=document.getElementById('lp');
+let p=0;
+const ti=setInterval(()=>{
+  p+=Math.floor(Math.random()*10)+4;if(p>=100){p=100;clearInterval(ti);}
+  lp.textContent=p+'%';
+  if(p>=100)setTimeout(()=>loader.classList.add('gone'),350);
+},65);
+
+/* ── CURSOR ──────────────────────── */
+const cur=document.getElementById('c'),ring=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('a,button,.cc,.soc-btn,.find-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='rgba(201,168,76,.9)';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(201,168,76,.45)';});
+});
+
+/* ── NAV SCROLL ──────────────────── */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>80));
+
+/* ── REVEAL ──────────────────────── */
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ── HERO PARALLAX ───────────────── */
+window.addEventListener('scroll',()=>{
+  const y=scrollY;
+  const t=document.querySelector('.hero-h1');
+  if(t)t.style.transform=`translateY(${y*.22}px)`;
+});
+
+/* ── PARTICLES ───────────────────── */
+const canvas=document.getElementById('pc');
+const ctx=canvas.getContext('2d');
+let W,H,pts=[];
+function rsz(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const GOLD=[201,168,76],CYAN=[0,212,200];
+function rnd(a,b){return Math.random()*(b-a)+a;}
+for(let i=0;i<50;i++){
+  const col=Math.random()<.5?GOLD:CYAN;
+  pts.push({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(.4,2),vx:rnd(-.2,.2),vy:rnd(-.3,-.06),col,alpha:rnd(.2,.65),life:rnd(0,1),speed:rnd(.003,.009)});
+}
+(function dp(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.life+=p.speed;if(p.life>1)p.life=0;
+    const a=p.alpha*Math.sin(p.life*Math.PI);
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.col},${a})`;ctx.fill();
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.y<-10)p.y=H+10;
+    if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+  });
+  requestAnimationFrame(dp);
+})();
+
+/* ── FORM SUBMIT ─────────────────── */
+const form=document.getElementById('contactForm');
+const btn=document.getElementById('submitBtn');
+const succMsg=document.getElementById('successMsg');
+const errMsg=document.getElementById('errorMsg');
+
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  btn.classList.add('loading');
+  succMsg.classList.remove('show');
+  errMsg.classList.remove('show');
+
+  const data=new FormData(form);
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data});
+    const json=await res.json();
+    if(json.success){
+      succMsg.classList.add('show');
+      form.reset();
+      // animate success
+      btn.style.borderColor='var(--cyan)';
+      btn.style.color='var(--cyan)';
+      setTimeout(()=>{btn.style.borderColor='';btn.style.color='';},3000);
+    } else {
+      errMsg.classList.add('show');
+    }
+  } catch(err){
+    errMsg.classList.add('show');
+  } finally{
+    btn.classList.remove('loading');
+  }
+});
+
+/* ── INPUT FLOAT ANIMATION ───────── */
+document.querySelectorAll('.field input,.field textarea').forEach(inp=>{
+  inp.addEventListener('focus',()=>{
+    inp.parentElement.querySelector('.field-label').style.color='var(--gold)';
+  });
+  inp.addEventListener('blur',()=>{
+    if(!inp.value) inp.parentElement.querySelector('.field-label').style.color='';
+  });
+});
+
+/* ── MAGNETIC SUBMIT ─────────────── */
+btn.addEventListener('mousemove',e=>{
+  const r=btn.getBoundingClientRect();
+  const dx=(e.clientX-r.left-r.width/2)*.15;
+  const dy=(e.clientY-r.top-r.height/2)*.15;
+  btn.style.transform=`translate(${dx}px,${dy}px)`;
+});
+btn.addEventListener('mouseleave',()=>btn.style.transform='');
+</script>
 </body>
 </html>
