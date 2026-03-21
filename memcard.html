@@ -1,352 +1,936 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Membership Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vision-S Membership Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <style>
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    background: #0f0f0f;
-    overflow-x: hidden;
+:root{
+  --bg:#000;--bg2:#080808;--bg3:#0f0f0f;
+  --gold:#c9a84c;--gold-lt:#e8c97a;--gold-dk:#8a6a1f;
+  --gold-glow:rgba(201,168,76,.18);--gold-line:rgba(201,168,76,.3);
+  --cyan:#00d4c8;--cyan-glow:rgba(0,212,200,.12);--cyan-line:rgba(0,212,200,.25);
+  --white:#fff;--muted:#555;--dimmed:#1a1a1a;--border:rgba(255,255,255,.05);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  overflow-x:hidden;cursor:none;
+  min-height:100vh;display:flex;flex-direction:column;
 }
 
-h1 {
-    margin-top: 40px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 2.5rem;
-    color: #fff;
-    text-shadow: 0 0 10px #00ffe0, 0 0 20px #00ffe0;
+/* ── NOISE OVERLAY ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Neon animated background effect */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(270deg,#0ff,#f0f,#ff0,#0ff);
-    background-size: 600% 600%;
-    animation: gradientAnim 15s ease infinite;
-    opacity: 0.1;
-    z-index: -1;
+/* ── CURSOR ── */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .25s,height .25s;}
+.cursor-ring{position:fixed;width:38px;height:38px;border:1px solid rgba(201,168,76,.4);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+@media(hover:none){.cursor,.cursor-ring{display:none;}}
+
+/* ── PARTICLES ── */
+#pc{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:1.4rem 3rem;display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(to bottom,rgba(0,0,0,.95),transparent);
+  transition:backdrop-filter .4s,background .4s;
+}
+nav.scrolled{backdrop-filter:blur(14px);background:rgba(0,0,0,.85);}
+.nav-logo{
+  font-weight:900;font-size:.95rem;letter-spacing:.5em;text-transform:uppercase;
+  text-decoration:none;color:var(--white);position:relative;cursor:none;
+}
+.nav-logo::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;
+  background:linear-gradient(to right,var(--gold),var(--cyan));
+  transform:scaleX(0);transform-origin:left;transition:transform .5s;
+}
+.nav-logo:hover::after{transform:scaleX(1);}
+.nav-tag{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;}
+.nav-back{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.22em;color:var(--muted);text-decoration:none;text-transform:uppercase;border:1px solid #1a1a1a;padding:.45rem 1rem;position:relative;overflow:hidden;transition:color .3s,border-color .3s;cursor:none;}
+.nav-back::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--cyan));transform:translateX(-101%);transition:transform .38s cubic-bezier(.16,1,.3,1);}
+.nav-back:hover{color:var(--bg);border-color:var(--gold);}
+.nav-back:hover::before{transform:translateX(0);}
+.nav-back span{position:relative;z-index:1;}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;background:var(--bg);z-index:10000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+  transition:opacity .9s,visibility .9s;
+}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{
+  font-weight:900;font-size:clamp(1.2rem,4vw,1.8rem);letter-spacing:.8em;
+  color:var(--white);clip-path:inset(0 100% 0 0);
+  animation:revTxt .9s cubic-bezier(.16,1,.3,1) .3s forwards;
+}
+@keyframes revTxt{to{clip-path:inset(0 0% 0 0)}}
+.ld-bar-wrap{width:180px;height:1px;background:rgba(255,255,255,.06);}
+.ld-bar{height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));width:0;animation:ldbar 2s cubic-bezier(.4,0,.2,1) .5s forwards;}
+@keyframes ldbar{to{width:100%}}
+.ld-pct{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.35em;color:var(--muted);}
+
+/* ── HERO SECTION ── */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:8rem 2rem 4rem;overflow:hidden;
+  text-align:center;
+}
+.hero-glow-g{position:absolute;top:15%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--gold-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.5s ease 2.2s forwards;}
+.hero-glow-c{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,var(--cyan-glow),transparent 65%);pointer-events:none;opacity:0;animation:fIn 1.5s ease 2.5s forwards;}
+.hero-vline{position:absolute;top:0;left:50%;width:1px;height:0;background:linear-gradient(to bottom,transparent,var(--gold-line) 40%,var(--cyan-line) 60%,transparent);animation:vlineIn 1.5s ease 2s forwards;}
+@keyframes vlineIn{to{height:100%;}}
+.hero-eyebrow{
+  font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.6em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:2rem;
+  display:flex;align-items:center;gap:.8rem;
+  opacity:0;animation:slideU .7s ease 2.1s forwards;
+}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:24px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.hero-h1{
+  font-weight:900;font-size:clamp(3rem,10vw,9rem);
+  line-height:.88;letter-spacing:-.02em;text-transform:uppercase;
+  opacity:0;animation:slideU .9s cubic-bezier(.16,1,.3,1) 2.2s forwards;
+}
+.hero-h1 .line1{display:block;color:var(--white);}
+.hero-h1 .line2{display:block;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.25);}
+.hero-h1 .line3{display:block;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(.9rem,2vw,1.2rem);color:var(--muted);
+  max-width:480px;line-height:1.9;margin-top:2rem;
+  opacity:0;animation:slideU .8s ease 2.4s forwards;
+}
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+  opacity:0;animation:fIn 1s ease 3s forwards;
+}
+.scroll-hint-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease infinite;}
+@keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.2);}}
+.scroll-hint-txt{font-family:'Space Mono',monospace;font-size:.45rem;letter-spacing:.4em;color:var(--muted);text-transform:uppercase;}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  position:relative;z-index:2;
+  width:100%;overflow:hidden;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:.65rem 0;background:var(--bg2);
+}
+.ticker{display:flex;width:max-content;animation:tick 30s linear infinite;}
+.ticker:hover{animation-play-state:paused;}
+.ticker-item{font-family:'Space Mono',monospace;font-weight:700;font-size:.55rem;letter-spacing:.4em;text-transform:uppercase;white-space:nowrap;padding:0 2.5rem;color:var(--muted);}
+.tg{color:var(--gold);} .tc{color:var(--cyan);}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── CODE SECTION ── */
+.code-section{
+  position:relative;z-index:2;
+  padding:7rem 2rem;display:flex;flex-direction:column;align-items:center;
+  max-width:700px;margin:0 auto;width:100%;
+}
+.section-tag{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.5em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.7rem;}
+.section-tag::before{content:'';width:20px;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));}
+.section-title{font-weight:900;font-size:clamp(2rem,5vw,3.5rem);text-transform:uppercase;letter-spacing:-.02em;text-align:center;margin-bottom:.6rem;line-height:.95;}
+.section-title .gold{color:var(--gold);}
+.section-title .stroke{color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);}
+.section-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--muted);text-align:center;margin-bottom:3.5rem;line-height:1.8;}
+
+/* Input box */
+.input-wrap{
+  position:relative;width:100%;max-width:480px;
+  border:1px solid var(--dimmed);background:var(--bg2);
+  transition:border-color .3s,box-shadow .3s;
+}
+.input-wrap:focus-within{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-glow),0 0 40px var(--gold-glow);
+}
+.input-icon{position:absolute;left:1.4rem;top:50%;transform:translateY(-50%);opacity:.3;font-size:.9rem;transition:opacity .3s;}
+.input-wrap:focus-within .input-icon{opacity:.9;}
+#codeInput{
+  width:100%;background:transparent;border:none;outline:none;
+  padding:1.2rem 1.4rem 1.2rem 3.2rem;
+  font-family:'Space Mono',monospace;font-size:1rem;letter-spacing:.2em;
+  color:var(--white);text-transform:uppercase;
+}
+#codeInput::placeholder{color:var(--muted);letter-spacing:.15em;font-size:.85rem;text-transform:none;}
+.input-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.input-wrap:focus-within .input-line{transform:scaleX(1);}
+
+/* CTA button */
+.cta-btn{
+  margin-top:1.5rem;
+  display:inline-flex;align-items:center;gap:.9rem;
+  font-weight:700;font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--gold);background:transparent;
+  border:1px solid var(--gold);padding:1.1rem 2.8rem;
+  position:relative;overflow:hidden;cursor:none;
+  transition:color .38s,border-color .38s;
+}
+.cta-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--cyan));
+  transform:translateX(-101%);transition:transform .42s cubic-bezier(.16,1,.3,1);
+}
+.cta-btn:hover{color:var(--bg);border-color:var(--cyan);}
+.cta-btn:hover::before{transform:translateX(0);}
+.cta-btn-inner{position:relative;z-index:1;display:flex;align-items:center;gap:.9rem;}
+.cta-arr{transition:transform .3s;}
+.cta-btn:hover .cta-arr{transform:translateX(5px);}
+
+/* Error msg */
+.err-msg{
+  font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.25em;
+  color:#ff4d4d;text-transform:uppercase;margin-top:.8rem;
+  opacity:0;transition:opacity .3s;
+}
+.err-msg.show{opacity:1;}
+
+/* ── CARD REVEAL SECTION ── */
+#cardSection{
+  position:relative;z-index:2;
+  padding:0 2rem 8rem;
+  display:none;
+  flex-direction:column;align-items:center;
+}
+#cardSection.show{display:flex;animation:sectionIn .8s cubic-bezier(.16,1,.3,1);}
+@keyframes sectionIn{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARD STAGE */
+.card-stage{
+  perspective:1200px;width:100%;max-width:500px;
+  display:flex;justify-content:center;
 }
 
-@keyframes gradientAnim {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+/* THE CARD — exact credit card ratio 85.6×54mm */
+.mc{
+  position:relative;width:100%;max-width:500px;
+  height:315px;border-radius:18px;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  animation:cardFloat 6s ease-in-out infinite, cardIn 1s cubic-bezier(.16,1,.3,1) both;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.15) inset,
+    0 -2px 0 rgba(0,0,0,.6) inset,
+    1px 0 0 rgba(255,255,255,.06) inset,
+    -1px 0 0 rgba(0,0,0,.3) inset,
+    0 35px 90px rgba(0,0,0,.85),
+    0 8px 24px rgba(0,0,0,.5),
+    0 0 80px var(--card-glow,rgba(201,168,76,.18));
+  transition:box-shadow .5s;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:rotateY(-30deg) translateY(60px) scale(.9);}
+  to{opacity:1;transform:rotateY(0deg) translateY(0px) scale(1);}
+}
+@keyframes cardFloat{
+  0%,100%{transform:translateY(0) rotateX(1deg) rotateY(0deg);}
+  33%{transform:translateY(-10px) rotateX(-1deg) rotateY(.5deg);}
+  66%{transform:translateY(-6px) rotateX(.5deg) rotateY(-.5deg);}
 }
 
-.card-container {
-    margin: 50px auto;
-    perspective: 1000px;
-    width: 450px;
+/* LAYERED SHINE — two sweeps for holographic feel */
+.mc-shine{
+  position:absolute;inset:0;z-index:10;pointer-events:none;
+  background:linear-gradient(
+    108deg,
+    transparent 15%,
+    rgba(255,255,255,.03) 30%,
+    rgba(255,255,255,.18) 48%,
+    rgba(255,255,255,.06) 55%,
+    rgba(255,255,255,.02) 65%,
+    transparent 78%
+  );
+  animation:shineRun 6s linear infinite;
+}
+.mc-shine2{
+  position:absolute;inset:0;z-index:9;pointer-events:none;
+  background:linear-gradient(
+    200deg,
+    transparent 30%,
+    rgba(255,255,255,.05) 50%,
+    transparent 70%
+  );
+  animation:shineRun2 8s linear infinite 2s;
+}
+@keyframes shineRun{
+  0%{transform:translateX(-160%) skewX(-10deg);}
+  100%{transform:translateX(160%) skewX(-10deg);}
+}
+@keyframes shineRun2{
+  0%{transform:translateX(-160%) skewX(5deg);}
+  100%{transform:translateX(160%) skewX(5deg);}
 }
 
-.membership-card {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    border-radius: 20px;
-    padding: 25px 35px;
-    color: #fff;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    font-weight: 600;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: #222;
+/* DECO CIRCLES */
+.mc-deco1{position:absolute;bottom:-90px;right:-90px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.07);pointer-events:none;z-index:1;}
+.mc-deco2{position:absolute;bottom:-50px;right:-50px;width:190px;height:190px;border-radius:50%;border:1px solid rgba(255,255,255,.05);pointer-events:none;z-index:1;}
+.mc-deco3{position:absolute;top:-70px;left:-70px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,.03);pointer-events:none;z-index:1;}
+/* subtle diagonal texture lines */
+.mc-deco4{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(
+    -55deg,
+    transparent,transparent 3px,
+    rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px
+  );
 }
 
-.membership-card .shine {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-    transform: rotate(25deg);
-    animation: shineAnim 3s linear infinite;
+/* CARD INNER */
+.mc-inner{
+  position:relative;z-index:5;
+  width:100%;height:100%;
+  padding:24px 30px 22px;
+  display:flex;flex-direction:column;justify-content:space-between;
 }
 
-@keyframes shineAnim {
-    0%{transform: translateX(-100%) rotate(25deg);}
-    100%{transform: translateX(100%) rotate(25deg);}
+/* ROW 1 — LOGO left, RANK right */
+.mc-row1{display:flex;justify-content:space-between;align-items:flex-start;}
+.mc-logo{
+  font-weight:900;font-size:1rem;letter-spacing:.5em;
+  text-transform:uppercase;
+  text-shadow:0 1px 8px rgba(0,0,0,.6),0 0 20px rgba(0,0,0,.4);
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+.mc-rank-badge{
+  font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.28em;
+  text-transform:uppercase;padding:.32rem .75rem;
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(6px);
+  white-space:nowrap;
+  text-shadow:0 1px 3px rgba(0,0,0,.8);
+  box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
 }
 
-.card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/* ROW 2 — CHIP + NFC */
+.mc-row2{display:flex;align-items:center;gap:16px;}
 
-.card-rank {
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-}
-
-.card-logo {
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    opacity: 0.8;
-}
-
-/* Card center */
-.card-number {
-    font-size: 1.2rem;
-    letter-spacing: 3px;
-    margin-top: 25px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-}
-
-.card-name {
-    font-size: 1rem;
-    text-transform: uppercase;
-    margin-top: 15px;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-}
-
-.card-date {
-    font-size: 0.9rem;
-    margin-top: 10px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-}
-
-/* Card bottom */
-.card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-}
-
-.card-member-level {
-    font-size: 1rem;
-    font-weight: 700;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-}
-
-.card-footer {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    opacity: 0.8;
-}
-
-/* QR placement */
-.card-qr {
-    position: absolute;
-    right: 25px;
-    top: 100px;
-    width: 70px;
-    height: 70px;
-    background: #fff;
-    padding: 5px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-}
-
-/* Rank-based metallic gradients */
-.card-bronze { background: linear-gradient(135deg,#3c1f0b 0%,#8c5e2c 50%,#4b2c0f 100%); color:#fff2e0; }
-.card-silver { background: linear-gradient(135deg,#c0c0c0 0%,#e0e0e0 50%,#a8a8a8 100%); color:#000; }
-.card-gold { background: linear-gradient(135deg,#d4af37 0%,#ffd700 50%,#b38b00 100%); color:#000; }
-.card-platinum { background: linear-gradient(135deg,#e5e4e2 0%,#c0c0c0 50%,#a0a0a0 100%); color:#000; }
-.card-diamond { background: linear-gradient(135deg,#1e1e2f 0%,#4b3b8f 50%,#d16ba5 100%); color:#f0e8ff; }
-.card-crown { background: linear-gradient(135deg,#6a0dad 0%,#d4af37 50%,#4b007f 100%); color:#fff; }
-.card-ruby { background: linear-gradient(135deg,#9b111e 0%,#e0115f 50%,#66000f 100%); color:#fff; }
-.card-conqueror {background: linear-gradient(135deg,
-        #1e1e2f 0%,      /* deep blue base */
-        #4b3b8f 35%,     /* purple metallic tone */
-        #d16ba5 65%,     /* subtle pink shimmer */
-        #1e1e2f 100%     /* deep edge for depth */
+/* CHIP — detailed EMV */
+.mc-chip{
+  width:50px;height:40px;border-radius:7px;flex-shrink:0;
+  background:
+    linear-gradient(160deg,
+      #b8922a 0%,#ead97c 18%,#c9a84c 35%,
+      #f5e590 50%,#c9a84c 65%,#e8c97a 80%,#9a7a28 100%
     );
-    color: #f0e8ff;     /* soft metallic text */
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(96, 11, 225, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    position: relative;
-    overflow: hidden;
+  border:1px solid rgba(255,255,255,.45);
+  position:relative;overflow:hidden;
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -1px 0 rgba(0,0,0,.3);
+}
+.mc-chip::before{content:'';position:absolute;top:13px;left:0;right:0;height:1px;background:rgba(0,0,0,.18);}
+.mc-chip::after{content:'';position:absolute;bottom:13px;left:0;right:0;height:1px;background:rgba(0,0,0,.18);}
+.mc-chip-vline{position:absolute;top:4px;bottom:4px;left:50%;width:1px;background:rgba(0,0,0,.15);}
+.mc-chip-hbox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:14px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.08);border-radius:2px;}
 
-}
-.card-elite {
-    background: linear-gradient(135deg,
-        #0f1e1f 0%,       /* dark teal base */
-        #1fb2a6 40%,      /* teal metallic highlight */
-        #2fd1c2 70%,      /* light shimmer */
-        #0f1e1f 100%      /* dark edge for depth */
-    );
-    color: #131313;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.card-royal {
-    background: linear-gradient(135deg,
-        #1a0f2b 0%,       /* deep violet base */
-        #5d3fa3 40%,      /* royal purple highlight */
-        #9b7ed1 70%,      /* soft violet shimmer */
-        #1a0f2b 100%      /* dark edge for depth */
-    );
-    color: #f0eaff;      /* soft metallic text */
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(228, 199, 8, 0.6);
-    border: 1px solid rgba(255,255,255,0.15);
-}
-.card-ocean {
-    background: linear-gradient(135deg,
-        #0c1a26 0%,       /* deep navy base */
-        #007d91 35%,      /* teal metallic highlight */
-        #845ec2 70%,      /* subtle purple shimmer */
-        #0c1a26 100%      /* dark edge for depth */
-    );
-    color: #e0f7ff;     /* soft metallic text */
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(38, 164, 19, 0.6);
-    border: 1px solid rgba(255,255,255,0.15);
-}
-.card-sunset {
-    background: linear-gradient(135deg,
-        #2c1e1a 0%,       /* dark chocolate base */
-        #d4af37 35%,      /* rich gold metallic highlight */
-        #ff8fa3 65%,      /* soft pink shimmer */
-        #2c1e1a 100%      /* dark edge for depth */
-    );
-    color: #fff4e6;     /* metallic soft text */
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(184, 211, 9, 0.6);
-    border: 1px solid rgba(255,255,255,0.15);
+/* NFC arcs */
+.mc-nfc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+.mc-nfc-arc{
+  width:var(--w);height:calc(var(--w)*.56);
+  border:2px solid rgba(255,255,255,.35);border-bottom:none;
+  border-radius:var(--w) var(--w) 0 0;
 }
 
-
-
-.input-section {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ROW 3 — NUMBER */
+.mc-number{
+  font-family:'Space Mono',monospace;
+  font-size:1.05rem;letter-spacing:.34em;font-weight:700;
+  text-shadow:0 2px 8px rgba(0,0,0,.7),0 1px 2px rgba(0,0,0,.9);
+  filter:drop-shadow(0 1px 4px rgba(0,0,0,.6));
 }
 
-.input-section input {
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: none;
-    margin-bottom: 15px;
-    font-size: 1rem;
-    width: 300px;
+/* ROW 4 — NAME / META + QR */
+.mc-row4{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;}
+.mc-left{display:flex;flex-direction:column;gap:6px;min-width:0;}
+
+.mc-label{
+  font-family:'Space Mono',monospace;font-size:.4rem;letter-spacing:.35em;
+  text-transform:uppercase;
+  opacity:0;/* hidden — shown by theme override */
+  margin-bottom:1px;
+}
+/* always show label */
+.mc-label{opacity:.55 !important;}
+
+.mc-name{
+  font-weight:900;font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 2px 10px rgba(0,0,0,.8),0 1px 3px rgba(0,0,0,.9);
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.7));
+  line-height:1.1;
 }
 
-.input-section button {
-    padding: 12px 25px;
-    border-radius: 12px;
-    border: none;
-    background: #00b894;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
+.mc-meta-row{display:flex;gap:20px;align-items:flex-end;margin-top:2px;}
+.mc-meta-col{display:flex;flex-direction:column;gap:3px;}
+.mc-meta-lbl{
+  font-family:'Space Mono',monospace;font-size:.38rem;letter-spacing:.3em;
+  text-transform:uppercase;
+  text-shadow:0 1px 4px rgba(0,0,0,.7);
+  opacity:.6;
+}
+.mc-role{
+  font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.18em;
+  text-transform:uppercase;font-weight:700;
+  text-shadow:0 1px 5px rgba(0,0,0,.8);
+  white-space:nowrap;
+}
+.mc-valid{
+  font-family:'Space Mono',monospace;font-size:.52rem;
+  letter-spacing:.18em;font-weight:700;text-transform:uppercase;
+  text-shadow:0 1px 5px rgba(0,0,0,.8);
 }
 
-.input-section button:hover {
-    background: #019975;
+/* QR */
+.mc-qr{
+  width:72px;height:72px;background:#fff;
+  padding:5px;border-radius:8px;flex-shrink:0;
+  box-shadow:
+    0 4px 18px rgba(0,0,0,.6),
+    0 1px 0 rgba(255,255,255,.5) inset;
+  margin-bottom:0;
+}
+.mc-qr canvas{display:block;border-radius:3px;}
+
+/* ── CARD THEMES — all with full-opacity text ── */
+.cl-elite{
+  --card-glow:rgba(0,212,200,.25);
+  background:linear-gradient(140deg,#061818 0%,#0d5550 25%,#1fb2a6 55%,#0a8a80 80%,#061818 100%);
+  color:#ffffff;
+  border:1px solid rgba(0,212,200,.3);
+}
+.cl-ocean{
+  --card-glow:rgba(0,125,200,.25);
+  background:linear-gradient(140deg,#050d18 0%,#003a5c 25%,#006fa8 55%,#6b3fa0 80%,#050d18 100%);
+  color:#ffffff;
+  border:1px solid rgba(0,150,200,.3);
+}
+.cl-sunset{
+  --card-glow:rgba(220,140,60,.28);
+  background:linear-gradient(140deg,#180a06 0%,#7a3a10 20%,#c9842c 45%,#e8a040 65%,#c06080 85%,#180a06 100%);
+  color:#ffffff;
+  border:1px solid rgba(220,160,80,.35);
+}
+.cl-gold{
+  --card-glow:rgba(201,168,76,.3);
+  background:linear-gradient(140deg,#0d0900 0%,#5a3c00 20%,#c9a84c 45%,#ffd700 65%,#a07820 85%,#0d0900 100%);
+  color:#ffffff;
+  border:1px solid rgba(255,215,0,.35);
+}
+.cl-silver{
+  --card-glow:rgba(160,160,180,.2);
+  background:linear-gradient(140deg,#1c1c1e 0%,#5a5a5e 20%,#b0b0b8 45%,#e0e0e8 65%,#8a8a90 85%,#1c1c1e 100%);
+  color:#ffffff;
+  border:1px solid rgba(220,220,230,.3);
+}
+.cl-diamond{
+  --card-glow:rgba(100,80,200,.3);
+  background:linear-gradient(140deg,#0e0a20 0%,#2a1e6e 25%,#5040a8 50%,#c060b0 75%,#0e0a20 100%);
+  color:#ffffff;
+  border:1px solid rgba(180,140,230,.3);
+}
+.cl-royal{
+  --card-glow:rgba(100,70,200,.3);
+  background:linear-gradient(140deg,#0a0516 0%,#2e1860 25%,#5a38a8 50%,#8a60c8 75%,#0a0516 100%);
+  color:#ffffff;
+  border:1px solid rgba(160,120,220,.3);
+}
+.cl-crown{
+  --card-glow:rgba(180,120,220,.3);
+  background:linear-gradient(140deg,#2a0460 0%,#6a18b0 30%,#c9a84c 60%,#8000c0 85%,#2a0460 100%);
+  color:#ffffff;
+  border:1px solid rgba(200,168,76,.35);
+}
+.cl-ruby{
+  --card-glow:rgba(200,20,60,.3);
+  background:linear-gradient(140deg,#1a0008 0%,#6e0018 25%,#c01040 50%,#e8305a 70%,#6e0018 100%);
+  color:#ffffff;
+  border:1px solid rgba(240,80,100,.3);
+}
+.cl-conqueror{
+  --card-glow:rgba(100,60,180,.28);
+  background:linear-gradient(140deg,#0a0818 0%,#28186e 25%,#4a38a0 50%,#b050a0 75%,#0a0818 100%);
+  color:#ffffff;
+  border:1px solid rgba(160,100,200,.28);
+}
+.cl-bronze{
+  --card-glow:rgba(140,80,30,.25);
+  background:linear-gradient(140deg,#180800 0%,#5c2808 25%,#9a5828 50%,#c07840 70%,#5c2808 100%);
+  color:#ffffff;
+  border:1px solid rgba(180,120,60,.35);
+}
+.cl-platinum{
+  --card-glow:rgba(200,200,220,.18);
+  background:linear-gradient(140deg,#181820 0%,#585870 25%,#a8a8c0 50%,#d8d8e8 70%,#585870 100%);
+  color:#ffffff;
+  border:1px solid rgba(220,220,240,.35);
 }
 
-.hidden { display: none; }
+/* ── CARD STATS BELOW ── */
+.card-stats{
+  margin-top:3rem;width:100%;max-width:480px;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--border);
+}
+.cs{
+  padding:1.5rem 1rem;text-align:center;border-right:1px solid var(--border);
+  position:relative;overflow:hidden;transition:background .3s;
+}
+.cs:last-child{border-right:none;}
+.cs::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,var(--gold),var(--cyan));transform:scaleX(0);transition:transform .4s;}
+.cs:hover::after{transform:scaleX(1);}
+.cs:hover{background:#0a0a0a;}
+.cs-val{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.cs-lbl{font-weight:700;font-size:.8rem;color:var(--white);margin-top:.3rem;}
+.cs-lbl.gold{background:linear-gradient(to right,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ── DOWNLOAD BTN ── */
+.dl-btn{
+  margin-top:2rem;
+  display:inline-flex;align-items:center;gap:.8rem;
+  font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);background:transparent;
+  border:1px solid var(--dimmed);padding:.9rem 2rem;
+  position:relative;overflow:hidden;cursor:none;
+  transition:color .35s,border-color .35s;
+}
+.dl-btn::before{content:'';position:absolute;inset:0;background:var(--dimmed);transform:translateX(-101%);transition:transform .38s cubic-bezier(.16,1,.3,1);}
+.dl-btn:hover{color:var(--white);border-color:rgba(255,255,255,.15);}
+.dl-btn:hover::before{transform:translateX(0);}
+.dl-btn span{position:relative;z-index:1;}
+
+/* ── RESET BTN ── */
+.reset-btn{
+  margin-top:.8rem;
+  font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.25em;
+  color:var(--muted);background:none;border:none;cursor:none;
+  text-transform:uppercase;text-decoration:underline;text-decoration-color:transparent;
+  transition:color .3s,text-decoration-color .3s;padding:.5rem;
+}
+.reset-btn:hover{color:var(--gold);text-decoration-color:var(--gold);}
+
+/* ── MARQUEE ── */
+.mq-wrap{
+  position:relative;z-index:2;
+  overflow:hidden;border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);margin-top:auto;
+}
+.mq-inner{display:flex;width:max-content;animation:mqA 20s linear infinite;padding:1.5rem 0;}
+.mq-word{
+  font-weight:900;font-size:clamp(2rem,4vw,3.5rem);text-transform:uppercase;
+  padding:0 1.5rem;white-space:nowrap;letter-spacing:-.02em;
+  color:transparent;-webkit-text-stroke:1px #1a1a1a;
+}
+.mq-word.mg{-webkit-text-stroke:1px var(--gold-dk);}
+.mq-word.mc{-webkit-text-stroke:1px rgba(0,212,200,.25);}
+@keyframes mqA{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:2;
+  border-top:1px solid var(--border);
+  padding:2rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.f-logo{font-weight:900;font-size:.85rem;letter-spacing:.5em;text-transform:uppercase;background:linear-gradient(to right,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.f-copy,.f-right{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.f-right a{color:var(--gold);text-decoration:none;transition:color .3s;}
+.f-right a:hover{color:var(--cyan);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}
+
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+@keyframes slideU{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav{padding:1.2rem 1.5rem;}
+  .hero{padding:7rem 1.5rem 3rem;}
+  .code-section{padding:5rem 1.5rem;}
+  #cardSection{padding:0 1.5rem 5rem;}
+  .mc{height:240px;padding:22px 22px;}
+  .mc-number{font-size:.85rem;letter-spacing:.18em;}
+  .card-stats{grid-template-columns:1fr;}
+  .cs{border-right:none;border-bottom:1px solid var(--border);}
+  .cs:last-child{border-bottom:none;}
+  footer{flex-direction:column;text-align:center;padding:1.5rem;}
+}
 </style>
 </head>
 <body>
 
-<h1>Premium Membership Card</h1>
+<canvas id="pc"></canvas>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="cr"></div>
 
-<div class="input-section">
-    <input type="text" id="codeInput" placeholder="Enter your membership code">
-    <button id="showCardBtn">Show Membership Card</button>
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">VISION·S</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-pct" id="ldpct">0%</div>
 </div>
 
-<div class="card-container hidden" id="cardContainer">
-    <div class="membership-card" id="membershipCard">
-        <div class="shine"></div>
-        <div class="card-top">
-            <div class="card-rank" id="cardRank">PLATINUM MEMBER</div>
-            <div class="card-logo">VISION-S</div>
-        </div>
-        <div class="card-number" id="cardNumber">1234 5678 9012 3456</div>
-        <div class="card-name" id="cardName">SAURAV PANDEY</div>
-        <div class="card-date" id="cardDate">VALID TILL 12/25</div>
-        <div class="card-qr" id="cardQR"></div> <!-- QR code container -->
-        <div class="card-bottom">
-           <div class="card-member-role" id="cardRole">CEO</div>
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="https://saurav-pandey999.github.io/worldofvisions/">VISION-S</a>
+  <a class="nav-back" href="https://saurav-pandey999.github.io/worldofvisions/"><span>← Back to Home</span></a>
+</nav>
 
-            <div class="card-footer">VISION-S MEMBERSHIP CARD</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow-g"></div>
+  <div class="hero-glow-c"></div>
+  <div class="hero-vline"></div>
+  <div class="hero-eyebrow">Members Only Access</div>
+  <h1 class="hero-h1">
+    <span class="line1">YOUR</span>
+    <span class="line2">CARD</span>
+    <span class="line3">AWAITS.</span>
+  </h1>
+  <p class="hero-sub">Enter your exclusive membership code below to reveal your personalised Vision-S card — your digital proof of belonging.</p>
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <div class="scroll-hint-txt">Enter code</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="tg">✦</span>Vision-S Members</div>
+    <div class="ticker-item"><span class="tc">✦</span>Exclusive Access</div>
+    <div class="ticker-item"><span class="tg">✦</span>Enter Your Code</div>
+    <div class="ticker-item"><span class="tc">✦</span>Nepal &amp; Switzerland</div>
+    <div class="ticker-item"><span class="tg">✦</span>Premium Membership</div>
+    <div class="ticker-item"><span class="tc">✦</span>Digital Card</div>
+    <div class="ticker-item"><span class="tg">✦</span>Vision-S Members</div>
+    <div class="ticker-item"><span class="tc">✦</span>Exclusive Access</div>
+    <div class="ticker-item"><span class="tg">✦</span>Enter Your Code</div>
+    <div class="ticker-item"><span class="tc">✦</span>Nepal &amp; Switzerland</div>
+    <div class="ticker-item"><span class="tg">✦</span>Premium Membership</div>
+    <div class="ticker-item"><span class="tc">✦</span>Digital Card</div>
+  </div>
+</div>
+
+<!-- CODE INPUT -->
+<div class="code-section">
+  <div class="section-tag">Member Portal</div>
+  <h2 class="section-title reveal">Enter Your <span class="gold">Code</span></h2>
+  <p class="section-sub reveal d1">Your unique membership code was sent to you upon approval. It's case-insensitive.</p>
+
+  <div class="input-wrap reveal d2">
+    <span class="input-icon">⌨</span>
+    <input type="text" id="codeInput" placeholder="e.g. The one you got in mail" autocomplete="off" spellcheck="false"/>
+    <div class="input-line"></div>
+  </div>
+  <div class="err-msg" id="errMsg">✕ &nbsp;Invalid code. Please check and try again.</div>
+
+  <button class="cta-btn reveal d3" id="showCardBtn">
+    <span class="cta-btn-inner">Reveal My Card <span class="cta-arr">→</span></span>
+  </button>
+</div>
+
+<!-- CARD SECTION -->
+<div id="cardSection">
+
+  <div class="section-tag" style="margin-bottom:2rem;">Vision-S · Verified Member</div>
+
+  <div class="card-stage" id="cardStage">
+    <div class="mc" id="mc">
+      <div class="mc-shine"></div>
+      <div class="mc-shine2"></div>
+      <div class="mc-deco1"></div>
+      <div class="mc-deco2"></div>
+      <div class="mc-deco3"></div>
+      <div class="mc-deco4"></div>
+      <div class="mc-inner">
+        <!-- Row 1: Logo + Rank badge -->
+        <div class="mc-row1">
+          <div class="mc-logo">VISION-S</div>
+          <div class="mc-rank-badge" id="mcRank">ELITE MEMBER</div>
         </div>
+        <!-- Row 2: Chip + NFC -->
+        <div class="mc-row2">
+          <div class="mc-chip">
+            <div class="mc-chip-vline"></div>
+            <div class="mc-chip-hbox"></div>
+          </div>
+          <div class="mc-nfc">
+            <div class="mc-nfc-arc" style="--w:10px"></div>
+            <div class="mc-nfc-arc" style="--w:17px"></div>
+            <div class="mc-nfc-arc" style="--w:24px"></div>
+          </div>
+        </div>
+        <!-- Row 3: Card number -->
+        <div class="mc-number" id="mcNumber">•••• &nbsp;•••• &nbsp;•••• &nbsp;••••</div>
+        <!-- Row 4: Name/meta + QR -->
+        <div class="mc-row4">
+          <div class="mc-left">
+            <div class="mc-label">Card Holder</div>
+            <div class="mc-name" id="mcName">MEMBER NAME</div>
+            <div class="mc-meta-row">
+              <div class="mc-meta-col">
+                <div class="mc-meta-lbl">Role</div>
+                <div class="mc-role" id="mcRole">—</div>
+              </div>
+              <div class="mc-meta-col">
+                <div class="mc-meta-lbl">Valid Thru</div>
+                <div class="mc-valid" id="mcValid">——</div>
+              </div>
+            </div>
+          </div>
+          <div class="mc-qr" id="mcQR"></div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="card-stats" id="cardStats">
+    <div class="cs">
+      <div class="cs-val">Member</div>
+      <div class="cs-lbl gold" id="statName">—</div>
+    </div>
+    <div class="cs">
+      <div class="cs-val">Tier</div>
+      <div class="cs-lbl gold" id="statLevel">—</div>
+    </div>
+    <div class="cs">
+      <div class="cs-val">Valid Until</div>
+      <div class="cs-lbl gold" id="statValid">—</div>
+    </div>
+  </div>
+
+  <button class="dl-btn" id="dlBtn"><span>↓ &nbsp;Download Card Image</span></button>
+  <button class="reset-btn" id="resetBtn">← Enter a different code</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<!-- MARQUEE -->
+<div class="mq-wrap" style="margin-top:4rem;">
+  <div class="mq-inner">
+    <span class="mq-word">Vision</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Inspire</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Members</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Lead</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Nepal</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Vision</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Inspire</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Members</span><span class="mq-word mc">✦</span>
+    <span class="mq-word">Lead</span><span class="mq-word mg">✦</span>
+    <span class="mq-word">Nepal</span><span class="mq-word mc">✦</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">VISION-S</div>
+  <div class="f-copy">© 2026 Vision-S · All Rights Reserved</div>
+  <div class="f-right">Built by <a href="#">Saurav Pandey</a> · Nepal · Switzerland · Global</div>
+</footer>
+
 <script>
-// Example member database
+/* ── MEMBER DATABASE ── */
 const members = {
-    "VS1CR7": { name: "Saurav Pandey", level: "elite", number: "1234 5678 9012 3456", date: "LIFETIME", rank:"ELITE MEMBER/OWNER", role: "CEO" },
-    "VS2RT": { name: "Rajat Thakur", level: "ocean", number: "9876 5432 1098 7654", date: "12/2030", rank:"CONQUEROR MEMBER", role: "Operation Coordinator" },
-    "VS3PY": { name: "Pritam Yadav", level: "sunset", number: "1111 2222 3333 4444", date: "12/2030", rank:"CONQUEROR MEMBER", role: "Marketing Manager" },
-    "CVS45": { name: "Rupak Shrestha", level: "silver", number: "8888 7777 6666 5555", date: "12/26", rank:"SILVER MEMBER", role: "FREELANCER" },
-        "CVS5": { name: "SAKSHYAM POUDEL", level: "gold", number: "5555 6666 7777 8888", date: "12/26", rank:"GOLD MEMBER", role: "FREELANCER" },
-  "CVS67": { name: "Ravi shankar Mahato", level: "silver", number: "4829 1034 7751 6690", date: "12/26", rank:"SILVER MEMBER", role: "INTERN" },
+  "VS1CR7":  { name:"Saurav Pandey",       level:"elite",     number:"1234 5678 9012 3456", date:"LIFETIME",  rank:"ELITE MEMBER / OWNER", role:"CEO" },
+  "VS2RT":   { name:"Rajat Thakur",         level:"ocean",     number:"9876 5432 1098 7654", date:"12/2030",   rank:"CONQUEROR MEMBER",      role:"Operation Coordinator" },
+  "VS3PY":   { name:"Pritam Yadav",         level:"sunset",    number:"1111 2222 3333 4444", date:"12/2030",   rank:"CONQUEROR MEMBER",      role:"Marketing Manager" },
+  "CVS45":   { name:"Rupak Shrestha",       level:"silver",    number:"8888 7777 6666 5555", date:"12/26",     rank:"SILVER MEMBER",         role:"Freelancer" },
+  "CVS5":    { name:"Sakshyam Poudel",      level:"gold",      number:"5555 6666 7777 8888", date:"12/26",     rank:"GOLD MEMBER",           role:"Freelancer" },
+  "CVS67":   { name:"Ravi Shankar Mahato",  level:"silver",    number:"4829 1034 7751 6690", date:"12/26",     rank:"SILVER MEMBER",         role:"Intern" },
 };
 
-const codeInput = document.getElementById('codeInput');
-const showCardBtn = document.getElementById('showCardBtn');
+/* ── LOADER ── */
+const loader=document.getElementById('loader'),ldpct=document.getElementById('ldpct');
+let pct=0;
+const lt=setInterval(()=>{
+  pct+=Math.floor(Math.random()*12)+3;
+  if(pct>=100){pct=100;clearInterval(lt);}
+  ldpct.textContent=pct+'%';
+  if(pct>=100)setTimeout(()=>loader.classList.add('gone'),400);
+},70);
 
-function showCard() {
-    const code = codeInput.value.trim().toUpperCase();
-    if (members[code]) {
-        const member = members[code];
-        const card = document.getElementById('membershipCard');
-        card.className = `membership-card card-${member.level}`;
-        document.getElementById('cardRank').innerText = member.rank.toUpperCase();
-        document.getElementById('cardNumber').innerText = member.number;
-        document.getElementById('cardName').innerText = member.name.toUpperCase();
-        document.getElementById('cardDate').innerText = `VALID TILL ${member.date}`;
-        document.getElementById('cardRole').innerText = member.role.toUpperCase();
-        document.getElementById('cardContainer').classList.remove('hidden');
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'),cring=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function rf(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(rf);})();
+function curBig(){cur.style.width='18px';cur.style.height='18px';cring.style.width='56px';cring.style.height='56px';cring.style.borderColor='rgba(201,168,76,.85)';}
+function curNorm(){cur.style.width='10px';cur.style.height='10px';cring.style.width='38px';cring.style.height='38px';cring.style.borderColor='rgba(201,168,76,.4)';}
+document.querySelectorAll('a,button,.mc,.cta-btn,.dl-btn,.reset-btn').forEach(el=>{el.addEventListener('mouseenter',curBig);el.addEventListener('mouseleave',curNorm);});
 
-        // Generate QR Code
-        const qrContainer = document.getElementById('cardQR');
-        qrContainer.innerHTML = "";
-        const cardLink = `https://saurav-pandey999.github.io/worldofvisions/card.html?code=${code}`;
-        QRCode.toCanvas(document.createElement('canvas'), cardLink, {width:70}, function (err, canvas) {
-            if(err) console.error(err);
-            qrContainer.appendChild(canvas);
-        });
-    } else {
-        alert("Invalid membership code!");
-    }
-}
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
 
-// Listen for button click
-showCardBtn.addEventListener('click', showCard);
+/* ── REVEAL ── */
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// Listen for Enter key
-codeInput.addEventListener('keydown', function(e) {
-    if(e.key === "Enter") {
-        showCard();
-    }
+/* ── PARTICLES ── */
+const canvas=document.getElementById('pc'),ctx=canvas.getContext('2d');
+let W,H;
+function rsz(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+const GOLD=[201,168,76],CYAN=[0,212,200];
+const pts=Array.from({length:55},()=>{
+  const col=Math.random()<.55?GOLD:CYAN;
+  return{x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.8+.3,vx:(Math.random()-.5)*.18,vy:-(Math.random()*.25+.05),col,alpha:Math.random()*.55+.15,life:Math.random(),speed:Math.random()*.008+.003};
+});
+(function dp(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.life+=p.speed;if(p.life>1)p.life=0;
+    const a=p.alpha*Math.sin(p.life*Math.PI);
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.col},${a})`;ctx.fill();
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.y<-10)p.y=H+10;
+    if(p.x<-10)p.x=W+10;
+    if(p.x>W+10)p.x=-10;
+  });
+  requestAnimationFrame(dp);
+})();
+
+/* ── CARD TILT ── */
+document.getElementById('cardStage').addEventListener('mousemove',e=>{
+  const mc=document.getElementById('mc');
+  const r=e.currentTarget.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const dx=(e.clientX-cx)/r.width*2,dy=(e.clientY-cy)/r.height*2;
+  mc.style.animation='none';
+  mc.style.transform=`rotateY(${dx*14}deg) rotateX(${-dy*10}deg) scale(1.02)`;
+});
+document.getElementById('cardStage').addEventListener('mouseleave',()=>{
+  const mc=document.getElementById('mc');
+  mc.style.transform='';
+  mc.style.animation='cardFloat 6s ease-in-out infinite';
 });
 
-</script>
+/* ── SHOW CARD ── */
+function showCard(){
+  const code=document.getElementById('codeInput').value.trim().toUpperCase();
+  const errMsg=document.getElementById('errMsg');
+  if(!members[code]){
+    errMsg.classList.add('show');
+    document.getElementById('codeInput').style.borderColor='rgba(255,77,77,.5)';
+    setTimeout(()=>{errMsg.classList.remove('show');document.getElementById('codeInput').style.borderColor='';},3000);
+    return;
+  }
+  const m=members[code];
+  const mc=document.getElementById('mc');
 
+  /* Remove old level class */
+  mc.className='mc';
+  mc.classList.add('cl-'+m.level);
+
+  /* Populate */
+  document.getElementById('mcRank').textContent=m.rank.toUpperCase();
+  document.getElementById('mcNumber').textContent=m.number;
+  document.getElementById('mcName').textContent=m.name.toUpperCase();
+  document.getElementById('mcRole').textContent=m.role.toUpperCase();
+  document.getElementById('mcValid').textContent=m.date;
+
+  /* Stats */
+  document.getElementById('statName').textContent=m.name;
+  document.getElementById('statLevel').textContent=m.rank.split(' ')[0];
+  document.getElementById('statValid').textContent=m.date;
+
+  /* QR */
+  const qr=document.getElementById('mcQR');
+  qr.innerHTML='';
+  const link=`https://saurav-pandey999.github.io/worldofvisions/card.html?code=${code}`;
+  QRCode.toCanvas(document.createElement('canvas'),link,{width:62,margin:0},function(err,c){
+    if(!err){qr.appendChild(c);}
+  });
+
+  /* Show section */
+  const cs=document.getElementById('cardSection');
+  cs.classList.add('show');
+  cs.scrollIntoView({behavior:'smooth',block:'center'});
+
+  /* Small confetti burst */
+  confetti();
+}
+
+/* ── CONFETTI ── */
+function confetti(){
+  const colors=['#c9a84c','#00d4c8','#ffffff','#e8c97a','#00a89e'];
+  for(let i=0;i<60;i++){
+    const d=document.createElement('div');
+    const sz=Math.random()*8+4;
+    Object.assign(d.style,{
+      position:'fixed',left:Math.random()*100+'%',top:'-20px',
+      width:sz+'px',height:sz+'px',
+      background:colors[Math.floor(Math.random()*colors.length)],
+      borderRadius:Math.random()>.5?'50%':'2px',
+      zIndex:'99999',pointerEvents:'none',
+      animation:`cf ${Math.random()*2+1.2}s ease ${Math.random()*.6}s forwards`,
+      transform:`rotate(${Math.random()*360}deg)`,
+    });
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),3500);
+  }
+  if(!document.getElementById('cfst')){
+    const s=document.createElement('style');s.id='cfst';
+    s.textContent=`@keyframes cf{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(${innerHeight+80}px) rotate(720deg);opacity:0}}`;
+    document.head.appendChild(s);
+  }
+}
+
+/* ── DOWNLOAD ── */
+document.getElementById('dlBtn').addEventListener('click',()=>{
+  const mc=document.getElementById('mc');
+  /* Simple screenshot via html2canvas CDN — fallback: alert instructions */
+  const script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+  script.onload=()=>{
+    html2canvas(mc,{backgroundColor:null,scale:2,useCORS:true}).then(c=>{
+      const a=document.createElement('a');
+      a.download='visions-membership-card.png';
+      a.href=c.toDataURL('image/png');
+      a.click();
+    });
+  };
+  document.head.appendChild(script);
+});
+
+/* ── RESET ── */
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.getElementById('cardSection').classList.remove('show');
+  document.getElementById('codeInput').value='';
+  document.querySelector('.code-section').scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>document.getElementById('cardSection').style.display='none',500);
+  setTimeout(()=>{document.getElementById('cardSection').style.display='';},600);
+});
+
+/* ── EVENT LISTENERS ── */
+document.getElementById('showCardBtn').addEventListener('click',showCard);
+document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')showCard();});
+
+/* ── URL CODE AUTO-FILL ── */
+const urlCode=new URLSearchParams(location.search).get('code');
+if(urlCode){document.getElementById('codeInput').value=urlCode;setTimeout(showCard,2800);}
+</script>
 </body>
 </html>
-
 
 
 
