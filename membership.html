@@ -918,22 +918,83 @@ function buildReview(){
 }
 
 /* FORM SUBMIT */
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbz17tIBwe-xydZ_-Pqb-6-HkvhnhQeZnp1ubnBKBGaiWKL3iuH4gl2rsZ0U8i09B_kd/exec';
+
 document.getElementById('mainForm').addEventListener('submit',async e=>{
   e.preventDefault();
   if(!validateStep(4))return;
   const btn=document.getElementById('submitBtn');btn.classList.add('loading');
-  const data=new FormData(e.target);
+
+  /* collect all form data into a plain object */
+  const fd=new FormData(e.target);
+  const get=id=>{const el=document.getElementById(id);return el?el.value.trim():'';}
+  const role=document.querySelector('input[name="role"]:checked');
+  const gender=document.querySelector('input[name="gender"]:checked');
+
+  const payload={
+    timestamp:       new Date().toLocaleString('en-GB',{timeZone:'Asia/Kathmandu'}),
+    first_name:      get('firstName'),
+    middle_name:     fd.get('middle_name')||'',
+    last_name:       get('lastName'),
+    father_name:     get('fatherName'),
+    mother_name:     get('motherName'),
+    dob:             get('dob'),
+    gender:          gender?gender.value:'',
+    nationality:     get('nationality'),
+    school_college:  get('school'),
+    instagram:       fd.get('instagram')||'',
+    linkedin:        fd.get('linkedin')||'',
+    tiktok:          fd.get('tiktok')||'',
+    phone:           get('phone'),
+    email:           get('email'),
+    temp_address:    get('tempAddress'),
+    perm_address:    get('permAddress'),
+    role:            role?role.value:'',
+    skills:          document.getElementById('skillsHidden').value||'',
+    three_words:     document.getElementById('wordsHidden').value||'',
+    biggest_strength:get('biggestStrength'),
+    why_join:        get('whyJoin'),
+    why_select:      get('whySelect'),
+  };
+
+  let sheetsOk=false, w3Ok=false;
+
+  /* ── 1. GOOGLE SHEETS (primary) ── */
   try{
-    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data});
+    const res=await fetch(SHEETS_URL,{
+      method:'POST',
+      mode:'no-cors',                  /* Apps Script needs no-cors */
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+    });
+    sheetsOk=true;                     /* no-cors always resolves — treat as success */
+  }catch(err){
+    console.warn('Sheets error:',err);
+  }
+
+  /* ── 2. WEB3FORMS (email notification backup) ── */
+  try{
+    const w3data=new FormData(e.target);
+    /* inject all custom fields Web3Forms might not pick up */
+    Object.entries(payload).forEach(([k,v])=>w3data.set(k,v));
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:w3data});
     const json=await res.json();
-    if(json.success){
-      document.getElementById('mainForm').style.display='none';
-      document.getElementById('stepBar').style.display='none';
-      document.getElementById('successScreen').classList.add('show');
-      launchConfetti();
-    }else{alert('Something went wrong. Please try again.');}
-  }catch(err){alert('Network error. Please check your connection.');}
-  finally{btn.classList.remove('loading');}
+    if(json.success)w3Ok=true;
+  }catch(err){
+    console.warn('Web3Forms error:',err);
+  }
+
+  btn.classList.remove('loading');
+
+  /* show success if at least one succeeded */
+  if(sheetsOk||w3Ok){
+    document.getElementById('mainForm').style.display='none';
+    document.getElementById('stepBar').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+    launchConfetti();
+  }else{
+    alert('Something went wrong. Please check your connection and try again.');
+  }
 });
 
 /* CONFETTI */
