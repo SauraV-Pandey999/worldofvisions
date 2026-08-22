@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI CEE Exam Simulator</title>
-    
+
     <!-- Tailwind CSS CDN for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts (Inter) -->
+
+    <!-- Google Fonts: Fraunces (display/serif), Inter (body), JetBrains Mono (numerals/timer) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Phosphor Icons for UI elements -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
@@ -25,28 +25,65 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" xintegrity="sha384-43gviWU0YVjaDtb/Gf1J+D/jV88FfG4zoSGe0YiOdCstrPWPcyqcMfqE+4eCBYC/." crossorigin="anonymous"></script>
 
     <style>
-        /* --- Root Variables for a consistent dark theme --- */
+        /* =========================================================
+           DESIGN TOKENS — "Hall Ticket" theme
+           A CEE candidate's admit card is the one artifact that gates
+           entry to the real exam; the access screen borrows that
+           object's language (ticket stub, wax seal, perforation),
+           while the exam itself reads like ink on a well-made paper —
+           deep ink-navy panels, a brass/gold seal accent for primacy,
+           and a cool teal for informational/secondary emphasis.
+           ========================================================= */
         :root {
-            --bg-dark: #0F172A; /* slate-900 */
-            --bg-medium: #1E293B; /* slate-800 */
-            --bg-light: #334155; /* slate-700 */
-            --text-primary: #F8FAFC; /* slate-50 */
-            --text-secondary: #94A3B8; /* slate-400 */
-            --neon-blue: #0ea5e9; /* sky-500 */
-            --neon-pink: #ec4899; /* pink-500 */
-            --neon-green: #22c55e; /* green-500 */
-            --neon-red: #ef4444; /* red-500 */
-            --neon-yellow: #eab308; /* yellow-500 */
+            --bg-void: #0A0E1A;          /* page background */
+            --bg-panel: #121826;         /* cards / panels */
+            --bg-panel-light: #1B2436;   /* hovered / raised panels */
+            --bg-panel-lighter: #232E45; /* inputs, skeletons */
+            --border-subtle: #202A40;
+            --border-strong: #34405C;
+            --text-primary: #EDF0F5;
+            --text-secondary: #8C96AC;
+            --text-muted: #5B6478;
+
+            --accent-gold: #D4A657;      /* primary / seal / current */
+            --accent-gold-dim: #B8863E;
+            --accent-gold-soft: rgba(212, 166, 87, 0.14);
+            --accent-teal: #4FD1C5;      /* secondary / informational */
+            --accent-teal-soft: rgba(79, 209, 197, 0.14);
+            --accent-coral: #F2545B;     /* flag */
+            --accent-amber: #FBBF24;     /* mark for review */
+
+            --success: #34D399;
+            --success-soft: rgba(52, 211, 153, 0.14);
+            --danger: #F87171;
+            --danger-soft: rgba(248, 113, 113, 0.14);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-void);
             color: var(--text-primary);
             height: 100vh;
             overflow: hidden; /* Control the main scrollbar */
+            position: relative;
         }
-        
+
+        /* Ambient vignette instead of neon glow washes */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(circle at 15% 0%, rgba(212, 166, 87, 0.07), transparent 45%),
+                radial-gradient(circle at 85% 100%, rgba(79, 209, 197, 0.06), transparent 45%);
+        }
+        #app-container { position: relative; z-index: 1; }
+
+        .font-display { font-family: 'Fraunces', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
         /* KaTeX Font Fix: Ensures math is slightly larger for readability */
         .katex {
             font-size: 1.2rem;
@@ -55,116 +92,211 @@
 
         /* --- Scrollbar Styling --- */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-medium); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: var(--bg-light); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: var(--bg-panel); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #46557a; }
 
         /* --- Animations --- */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes score-up { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
+        @keyframes shake {
+            10%, 90% { transform: translateX(-2px); }
+            20%, 80% { transform: translateX(4px); }
+            30%, 50%, 70% { transform: translateX(-8px); }
+            40%, 60% { transform: translateX(8px); }
+        }
+
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        .spinner { width: 48px; height: 48px; border: 4px solid var(--bg-light); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        .skeleton { background-color: var(--bg-light); border-radius: 0.5rem; animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .spinner { width: 48px; height: 48px; border: 4px solid var(--border-strong); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .skeleton { background-color: var(--bg-panel-lighter); border-radius: 0.5rem; animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .shake-anim { animation: shake 0.4s ease; }
+
+        /* =========================================================
+           GATE VIEW — Admit-card styled access screen
+           ========================================================= */
+        .ticket-card {
+            position: relative;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1.25rem;
+            padding: 3.25rem 2.5rem 2.5rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+        }
+        .ticket-seal {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--accent-gold), var(--accent-gold-dim));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; color: #1A1206;
+            box-shadow: 0 8px 22px rgba(212, 166, 87, 0.35), inset 0 1px 1px rgba(255,255,255,0.45);
+        }
+        .ticket-divider {
+            position: relative;
+            border-top: 2px dashed var(--border-strong);
+            margin: 1.75rem 0;
+        }
+        .ticket-divider::before,
+        .ticket-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: var(--bg-void);
+            border: 1px solid var(--border-subtle);
+        }
+        .ticket-divider::before { left: -2.6rem; }
+        .ticket-divider::after { right: -2.6rem; }
+
+        .gate-input {
+            width: 100%;
+            background: var(--bg-void);
+            border: 1px solid var(--border-strong);
+            border-radius: 0.75rem;
+            padding: 0.95rem 1rem;
+            text-align: center;
+            font-size: 1.15rem;
+            letter-spacing: 0.35em;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .gate-input::placeholder { color: var(--text-muted); letter-spacing: 0.35em; }
+        .gate-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px var(--accent-gold-soft); }
 
         /* --- Mode Selection Cards --- */
         .mode-card {
-            background-color: var(--bg-medium);
-            border: 2px solid var(--bg-light);
-            transition: all 0.3s ease;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1rem;
+            transition: all 0.25s ease;
             cursor: pointer;
         }
         .mode-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 0 15px var(--neon-blue);
-            border-color: var(--neon-blue);
+            transform: translateY(-4px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--accent-gold-soft);
         }
 
         /* --- Question Navigation Grid --- */
-        #question-nav-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); 
-            gap: 0.5rem; 
+        #question-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 0.5rem;
         }
-        .nav-item { 
-            display: flex; align-items: center; justify-content: center; 
-            width: 40px; height: 40px; border-radius: 0.5rem; 
-            background-color: var(--bg-medium); color: var(--text-secondary); 
-            font-weight: 600; cursor: pointer; transition: all 0.2s ease; 
-            position: relative; border: 1px solid var(--bg-light); 
+        .nav-item {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 0.5rem;
+            background-color: var(--bg-panel); color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.15s ease;
+            position: relative; border: 1px solid var(--border-subtle);
         }
-        .nav-item:hover { transform: scale(1.05); box-shadow: 0 0 10px rgba(14, 165, 233, 0.5); color: var(--text-primary); border-color: var(--neon-blue); }
-        .nav-item.current { background-color: var(--neon-blue); color: white; border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
-        .nav-item.visited { background-color: #334155; color: var(--text-primary); }
-        .nav-item.answered { background-color: var(--neon-green); color: white; border-color: var(--neon-green); }
+        .nav-item:hover { transform: scale(1.06); border-color: var(--accent-teal); color: var(--text-primary); }
+        .nav-item.current { background-color: var(--accent-gold); color: #1A1206; border-color: var(--accent-gold); box-shadow: 0 0 0 3px var(--accent-gold-soft); }
+        .nav-item.visited { background-color: var(--bg-panel-light); color: var(--text-primary); }
+        .nav-item.answered { background-color: var(--success); color: #08221A; border-color: var(--success); }
+        .nav-item.current.answered { background-color: var(--accent-gold); color: #1A1206; border-color: var(--accent-gold); }
         .nav-item .icon-status { position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .nav-item .icon-status i { font-size: 10px; color: white; }
-        .nav-item .icon-flag { background-color: var(--neon-pink); }
-        .nav-item .icon-mark { background-color: var(--neon-yellow); }
+        .nav-item .icon-status i { font-size: 10px; color: #1A1206; }
+        .nav-item .icon-flag { background-color: var(--accent-coral); }
+        .nav-item .icon-mark { background-color: var(--accent-amber); }
 
         /* --- Option Cards --- */
-        .option-card { border: 2px solid var(--bg-light); transition: all 0.2s ease; }
-        .option-card:hover:not(.selected):not(.correct):not(.incorrect) { border-color: var(--neon-blue); background-color: rgba(14, 165, 233, 0.1); }
-        .option-card.selected { border-color: var(--neon-blue); background-color: rgba(14, 165, 233, 0.2); box-shadow: 0 0 10px var(--neon-blue); }
-        .option-card.correct { border-color: var(--neon-green); background-color: rgba(34, 197, 94, 0.15); }
-        .option-card.incorrect { border-color: var(--neon-red); background-color: rgba(239, 68, 68, 0.15); }
-        
+        .option-card { border: 1px solid var(--border-subtle); border-radius: 0.75rem; background-color: var(--bg-panel); transition: all 0.15s ease; }
+        .option-card:hover:not(.selected):not(.correct):not(.incorrect) { border-color: var(--accent-teal); background-color: var(--accent-teal-soft); }
+        .option-card.selected { border-color: var(--accent-gold); background-color: var(--accent-gold-soft); }
+        .option-card.correct { border-color: var(--success); background-color: var(--success-soft); }
+        .option-card.incorrect { border-color: var(--danger); background-color: var(--danger-soft); }
+
         /* --- Explanation Box (Hidden until submitted) --- */
         .explanation-box { max-height: 0; overflow: hidden; transition: max-height 0.6s ease-out; }
-        .explanation-box.visible { max-height: 1000px; /* Large enough to accommodate typical content */ }
-        
+        .explanation-box.visible { max-height: 1000px; }
+
         /* --- Buttons --- */
-        .btn { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; border: 2px solid transparent; }
-        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .btn { padding: 0.6rem 1.2rem; border-radius: 0.6rem; font-weight: 600; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid transparent; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-primary { background-image: linear-gradient(to right, var(--neon-blue), var(--neon-pink)); color: white; }
-        .btn-primary:hover:not(:disabled) { box-shadow: 0 0 20px rgba(14, 165, 233, 0.6), 0 0 20px rgba(236, 72, 153, 0.6); }
-        .btn-secondary { background-color: var(--bg-light); color: var(--text-primary); border-color: var(--bg-light); }
-        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
-        .btn-flag.active { background-color: var(--neon-pink); color: white; border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
-        .btn-mark.active { background-color: var(--neon-yellow); color: #1e293b; border-color: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dim)); color: #1A1206; }
+        .btn-primary:hover:not(:disabled) { box-shadow: 0 8px 22px rgba(212, 166, 87, 0.35); }
+        .btn-secondary { background-color: var(--bg-panel-light); color: var(--text-primary); border-color: var(--border-strong); }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--bg-panel-lighter); border-color: var(--accent-teal); }
+        .btn-flag.active { background-color: var(--accent-coral); color: white; border-color: var(--accent-coral); }
+        .btn-mark.active { background-color: var(--accent-amber); color: #1A1206; border-color: var(--accent-amber); }
 
         /* --- Result View Styling --- */
-        #result-score { font-size: 6rem; font-weight: 800; animation: score-up 0.8s ease-out; background: linear-gradient(to right, var(--neon-blue), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .chart-bar-bg { background-color: var(--bg-light); border-radius: 0.25rem; overflow: hidden; }
-        .chart-bar { height: 1.5rem; border-radius: 0.25rem; background-image: linear-gradient(to right, var(--neon-blue), var(--neon-green)); transition: width 0.5s ease; }
-        
+        #result-score { font-family: 'Fraunces', serif; font-size: 6rem; font-weight: 600; animation: score-up 0.8s ease-out; background: linear-gradient(to right, var(--accent-gold), var(--accent-teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .chart-bar-bg { background-color: var(--bg-panel-lighter); border-radius: 0.25rem; overflow: hidden; }
+        .chart-bar { height: 1.5rem; border-radius: 0.25rem; background-image: linear-gradient(to right, var(--accent-gold), var(--accent-teal)); transition: width 0.5s ease; }
+
+        /* --- Toasts --- */
+        #toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; display: flex; flex-direction: column; gap: 0.6rem; }
+        .toast { padding: 0.85rem 1.25rem; border-radius: 0.6rem; background: var(--bg-panel-light); border: 1px solid var(--border-strong); color: var(--text-primary); font-size: 0.9rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4); opacity: 1; transition: opacity 0.3s ease, transform 0.3s ease; max-width: 320px; }
+        .toast.fading-out { opacity: 0; transform: translateY(6px); }
+        .toast.error { border-color: var(--danger); }
+        .toast.warning { border-color: var(--accent-amber); }
+        .toast.info { border-color: var(--accent-teal); }
     </style>
 </head>
 
-<body class="bg-slate-900 text-slate-50 h-screen">
+<body class="h-screen">
 
     <!-- ===== Main App Container ===== -->
     <div id="app-container" class="h-full">
 
+        <!-- ===== 0. Access Gate View (Hall Ticket) ===== -->
+        <div id="gate-view" class="h-full flex items-center justify-center p-6">
+            <div class="ticket-card w-full max-w-md fade-in">
+                <div class="ticket-seal"><i class="ph-fill ph-seal-check"></i></div>
+                <p class="font-mono text-center text-xs uppercase tracking-[0.3em]" style="color: var(--text-muted);">Admit One &middot; CEE Simulator</p>
+                <h1 class="font-display text-4xl text-center mt-2 mb-1" style="color: var(--text-primary);">Access Required</h1>
+                <p class="text-center text-sm" style="color: var(--text-secondary);">Enter your access code to begin the mock exam.</p>
+
+                <div class="ticket-divider"></div>
+
+                <div>
+                    <input id="gate-code-input" type="password" autocomplete="off" placeholder="• • • • • • • •" class="gate-input font-mono" />
+                    <p id="gate-error" class="text-center text-sm mt-3 hidden" style="color: var(--danger);">Incorrect code. Please try again.</p>
+                    <button id="gate-submit-btn" class="btn btn-primary w-full justify-center mt-6">
+                        <i class="ph-fill ph-lock-key-open"></i>
+                        <span>Unlock Exam</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== 1. Mode Selection View ===== -->
-        <div id="mode-select-view" class="h-full flex flex-col items-center justify-center p-6 text-center">
+        <div id="mode-select-view" class="h-full flex-col items-center justify-center p-6 text-center hidden">
             <div class="max-w-4xl">
-                <h1 class="text-6xl font-extrabold mb-4 bg-gradient-to-r from-sky-400 to-pink-500 text-transparent bg-clip-text">AI CEE Exam Simulator</h1>
-                <p class="text-xl text-slate-400 mb-12">Select an exam mode to begin your 3-hour practice test.</p>
+                <p class="font-mono text-xs uppercase tracking-[0.3em] mb-3" style="color: var(--accent-teal);">Three Hour Mock &middot; 200 Questions</p>
+                <h1 class="font-display italic text-6xl font-medium mb-4" style="color: var(--text-primary);">AI CEE Exam Simulator</h1>
+                <p class="text-xl mb-12" style="color: var(--text-secondary);">Select an exam mode to begin your 3-hour practice test.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Probable Mode -->
-                    <div class="mode-card p-8 rounded-xl" data-mode="probable">
-                        <i class="ph-fill ph-target-shooter text-5xl text-sky-400 mb-4"></i>
-                        <h3 class="text-3xl font-bold mb-2">Probable Topics</h3>
-                        <p class="text-slate-400 text-sm">High-yield questions focusing on anticipated and highly frequent topics from the syllabus.</p>
+                    <div class="mode-card p-8" data-mode="probable">
+                        <i class="ph-fill ph-target-shooter text-5xl mb-4" style="color: var(--accent-teal);"></i>
+                        <h3 class="font-display text-3xl font-semibold mb-2">Probable Topics</h3>
+                        <p class="text-sm" style="color: var(--text-secondary);">High-yield questions focusing on anticipated and highly frequent topics from the syllabus.</p>
                     </div>
 
                     <!-- Past Year Mode -->
-                    <div class="mode-card p-8 rounded-xl" data-mode="past-year">
-                        <i class="ph-fill ph-scroll text-5xl text-pink-400 mb-4"></i>
-                        <h3 class="text-3xl font-bold mb-2">Past Year Pattern</h3>
-                        <p class="text-slate-400 text-sm">Questions that strictly mimic the difficulty and distribution of previous CEE exam papers.</p>
+                    <div class="mode-card p-8" data-mode="past-year">
+                        <i class="ph-fill ph-scroll text-5xl mb-4" style="color: var(--accent-gold);"></i>
+                        <h3 class="font-display text-3xl font-semibold mb-2">Past Year Pattern</h3>
+                        <p class="text-sm" style="color: var(--text-secondary);">Questions that strictly mimic the difficulty and distribution of previous CEE exam papers.</p>
                     </div>
 
                     <!-- Mixed Mode -->
-                    <div class="mode-card p-8 rounded-xl" data-mode="mixed">
-                        <i class="ph-fill ph-shuffle text-5xl text-green-400 mb-4"></i>
-                        <h3 class="text-3xl font-bold mb-2">Mixed Mock Exam</h3>
-                        <p class="text-slate-400 text-sm">A balanced general test covering the entire syllabus with varied difficulty, simulating a general mock.</p>
+                    <div class="mode-card p-8" data-mode="mixed">
+                        <i class="ph-fill ph-shuffle text-5xl mb-4" style="color: var(--accent-coral);"></i>
+                        <h3 class="font-display text-3xl font-semibold mb-2">Mixed Mock Exam</h3>
+                        <p class="text-sm" style="color: var(--text-secondary);">A balanced general test covering the entire syllabus with varied difficulty, simulating a general mock.</p>
                     </div>
                 </div>
             </div>
@@ -173,35 +305,35 @@
         <!-- ===== 2. Loading View ===== -->
         <div id="loading-view" class="h-full flex flex-col items-center justify-center gap-8 hidden">
             <div class="spinner"></div>
-            <h2 class="text-3xl font-semibold text-slate-300">Preparing Your Exam...</h2>
-            <p class="text-slate-400" id="loading-message">Fetching the first batch of 200 questions from AI. Please wait.</p>
+            <h2 class="font-display text-3xl font-semibold" style="color: var(--text-primary);">Preparing Your Exam...</h2>
+            <p style="color: var(--text-secondary);" id="loading-message">Fetching the first batch of 200 questions from AI. Please wait.</p>
         </div>
 
         <!-- ===== 3. Exam View (The Main Test Interface) ===== -->
         <div id="exam-view" class="h-full flex flex-col hidden">
-            
+
             <!-- Header/Controls -->
-            <header class="flex-shrink-0 bg-slate-800 border-b border-slate-700 shadow-xl">
+            <header class="flex-shrink-0 border-b" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
                 <div class="container mx-auto px-4 py-4 flex items-center justify-between">
                     <!-- Left: Exam Mode & Title -->
                     <div class="flex items-center gap-4">
-                        <span class="text-2xl font-bold bg-gradient-to-r from-sky-500 to-pink-500 text-transparent bg-clip-text">CEE Simulator</span>
-                        <span id="exam-mode-badge" class="px-3 py-1 bg-sky-600 text-white text-sm font-semibold rounded-full uppercase tracking-wider"></span>
+                        <span class="font-display italic text-2xl font-medium" style="color: var(--text-primary);">CEE Simulator</span>
+                        <span id="exam-mode-badge" class="px-3 py-1 text-xs font-semibold rounded-full uppercase tracking-wider border" style="color: var(--accent-gold); border-color: var(--accent-gold); background-color: var(--accent-gold-soft);"></span>
                     </div>
-                    
+
                     <!-- Middle: Progress Bar (Hidden on small screens) -->
                     <div class="w-1/2 hidden md:block">
-                        <div class="w-full bg-slate-700 rounded-full h-3">
-                            <div id="progress-bar" class="bg-gradient-to-r from-sky-500 to-pink-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        <div class="w-full rounded-full h-2.5" style="background-color: var(--bg-panel-lighter);">
+                            <div id="progress-bar" class="h-2.5 rounded-full transition-all duration-300" style="width: 0%; background: linear-gradient(to right, var(--accent-gold), var(--accent-teal));"></div>
                         </div>
-                        <div id="progress-text" class="text-center text-sm text-slate-400 mt-1">0 / 200 Answered</div>
+                        <div id="progress-text" class="text-center text-sm mt-1 font-mono" style="color: var(--text-secondary);">0 / 200 Answered</div>
                     </div>
-                    
+
                     <!-- Right: Timer and Submit -->
                     <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 text-sky-400">
+                        <div class="flex items-center gap-2" style="color: var(--accent-teal);">
                             <i class="ph-fill ph-timer text-2xl"></i>
-                            <span id="timer-display" class="text-2xl font-bold tabular-nums">03:00:00</span>
+                            <span id="timer-display" class="font-mono text-2xl font-bold tabular-nums">03:00:00</span>
                         </div>
                         <button id="submit-btn" class="btn btn-primary">
                             <i class="ph-fill ph-check-circle"></i>
@@ -214,10 +346,10 @@
 
             <!-- Main Content (Nav + Question) -->
             <main class="flex-1 flex overflow-hidden">
-                
+
                 <!-- Left Panel: Question Navigation (Fixed Width) -->
-                <aside id="question-nav-panel" class="w-1/5 max-w-xs h-full bg-slate-800 border-r border-slate-700 p-6 overflow-y-auto hidden lg:block">
-                    <h3 class="text-lg font-semibold mb-4 text-slate-200">Question Navigation (200 Total)</h3>
+                <aside id="question-nav-panel" class="w-1/5 max-w-xs h-full border-r p-6 overflow-y-auto hidden lg:block" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
+                    <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Question Navigation (200 Total)</h3>
                     <div id="question-nav-grid">
                         <!-- Nav items are injected here -->
                     </div>
@@ -226,7 +358,7 @@
                 <!-- Right Panel: Question Card -->
                 <section id="question-panel" class="flex-1 h-full p-6 md:p-10 overflow-y-auto">
                     <div id="question-card-container" class="max-w-4xl mx-auto">
-                        
+
                         <!-- Skeleton Loader for smooth question loading -->
                         <div id="question-skeleton" class="hidden space-y-8">
                             <div class="skeleton h-10 w-3/4"></div>
@@ -237,16 +369,16 @@
                                 <div class="skeleton h-16 w-full"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Actual Question Content -->
                         <div id="question-content">
                             <!-- Question Header (Number, Subject, Action buttons) -->
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 class="text-3xl font-bold">
-                                        <span id="question-number" class="text-sky-400">Q. 1</span>
+                                    <h2 class="text-3xl font-bold font-mono">
+                                        <span id="question-number" style="color: var(--accent-gold);">Q. 1</span>
                                     </h2>
-                                    <span id="question-subject" class="mt-1 inline-block px-4 py-1 bg-slate-700 text-sky-300 text-base font-medium rounded-full"></span>
+                                    <span id="question-subject" class="mt-1 inline-block px-4 py-1 text-base font-medium rounded-full" style="background-color: var(--accent-teal-soft); color: var(--accent-teal);"></span>
                                 </div>
                                 <div class="flex gap-3">
                                     <button id="flag-btn" class="btn btn-secondary btn-flag">
@@ -261,7 +393,7 @@
                             </div>
 
                             <!-- Question Text container (where KaTeX magic happens) -->
-                            <p id="question-text" class="text-xl text-slate-200 leading-relaxed mb-8" style="white-space: pre-wrap;"></p>
+                            <p id="question-text" class="text-xl leading-relaxed mb-8" style="white-space: pre-wrap; color: var(--text-primary);"></p>
 
                             <!-- Options Container -->
                             <div id="options-container" class="space-y-4 mb-10">
@@ -270,15 +402,15 @@
 
                             <!-- Explanation (Visible ONLY after submission) -->
                             <div id="explanation-container" class="explanation-box">
-                                <h4 class="text-xl font-semibold text-green-400 mb-3 border-b border-green-800 pb-1">Detailed Explanation</h4>
-                                <div class="p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-inner">
-                                    <p id="explanation-text" class="text-slate-300 leading-relaxed" style="white-space: pre-wrap;"></p>
+                                <h4 class="text-xl font-semibold mb-3 border-b pb-1" style="color: var(--accent-teal); border-color: var(--border-strong);">Detailed Explanation</h4>
+                                <div class="p-4 rounded-lg shadow-inner border" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
+                                    <p id="explanation-text" class="leading-relaxed" style="white-space: pre-wrap; color: var(--text-secondary);"></p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Footer Navigation -->
-                        <footer class="mt-12 pt-6 border-t border-slate-700 flex justify-between items-center">
+                        <footer class="mt-12 pt-6 border-t flex justify-between items-center" style="border-color: var(--border-subtle);">
                             <button id="prev-btn" class="btn btn-secondary">
                                 <i class="ph-fill ph-arrow-left"></i>
                                 <span>Previous</span>
@@ -296,19 +428,19 @@
         <!-- ===== 4. Result View (Full Review after Submission) ===== -->
         <div id="result-view" class="h-full p-6 md:p-12 overflow-y-auto hidden">
             <div class="max-w-6xl mx-auto">
-                <h1 class="text-5xl font-bold text-center mb-4 text-sky-400">Exam Results & Review</h1>
-                <p class="text-xl text-center text-slate-400 mb-12">Congratulations on completing the ${state.examMode} mock exam!</p>
-                
+                <h1 class="font-display italic text-5xl font-medium text-center mb-4" style="color: var(--accent-gold);">Exam Results &amp; Review</h1>
+                <p class="text-xl text-center mb-12" style="color: var(--text-secondary);">Congratulations on completing the ${state.examMode} mock exam!</p>
+
                 <!-- Score Summary -->
-                <div class="text-center mb-12 bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
-                    <p class="text-2xl text-slate-400 mb-4 font-medium">Your Final Score</p>
-                    <div id="result-score" class="tabular-nums">0</div>
-                    <p id="result-summary-text" class="text-xl text-slate-300 mt-4"></p>
+                <div class="text-center mb-12 p-8 rounded-xl shadow-2xl border" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
+                    <p class="text-2xl mb-4 font-medium" style="color: var(--text-secondary);">Your Final Score</p>
+                    <div id="result-score" class="tabular-nums font-mono">0</div>
+                    <p id="result-summary-text" class="text-xl mt-4" style="color: var(--text-primary);"></p>
                 </div>
 
                 <!-- Subject-wise Analysis -->
-                <div class="bg-slate-800 p-6 rounded-lg shadow-xl mb-12 border border-slate-700">
-                    <h3 class="text-3xl font-semibold mb-6 text-pink-400">Subject-wise Performance Breakdown</h3>
+                <div class="p-6 rounded-lg shadow-xl mb-12 border" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
+                    <h3 class="font-display text-3xl font-semibold mb-6" style="color: var(--accent-teal);">Subject-wise Performance Breakdown</h3>
                     <div id="subject-charts" class="space-y-6">
                         <!-- Charts injected by JS -->
                     </div>
@@ -316,7 +448,7 @@
 
                 <!-- Full Question Review Section -->
                 <div>
-                    <h3 class="text-3xl font-semibold mb-6 text-green-400">Detailed Review (All 200 Questions)</h3>
+                    <h3 class="font-display text-3xl font-semibold mb-6" style="color: var(--success);">Detailed Review (All 200 Questions)</h3>
                     <div id="review-container" class="space-y-10">
                         <!-- Review questions injected by JS -->
                     </div>
@@ -324,28 +456,34 @@
             </div>
         </div>
     </div>
-    
+
     <!-- ===== Toast Container for non-intrusive notifications ===== -->
     <div id="toast-container"></div>
-    
+
     <!-- ===== Comprehensive JavaScript Logic (Uncompromised) ===== -->
     <script type="module">
         // =================================================================================
         // Configuration and Setup
         // =================================================================================
-        const WORKER_URL = 'https://rapid-truth-3395.visionsyt99.workers.dev/'; 
-        
+        const WORKER_URL = 'https://rapid-truth-3395.visionsyt99.workers.dev/';
+
         // --- CONFIGURATION CONSTANTS ---
         const TOTAL_QUESTIONS = 200;
         const EXAM_DURATION_SECONDS = 3 * 60 * 60; // 3 hours in seconds
         const QUESTIONS_PER_BATCH = 10; // Batch size for fetching from AI
         const PREFETCH_BUFFER_INDEX = 5; // Start fetching the next batch when we reach this index in the current batch
-        
+
+        // --- ACCESS GATE ---
+        // Change this to whatever code you want to hand out to students.
+        // NOTE: this is a client-side check only (there's no server auth here),
+        // so treat it as a soft door, not real security.
+        const ACCESS_CODE = 'CEE2026';
+
         // --- APPLICATION STATE ---
         const state = {
-            currentView: 'mode-select',
+            currentView: 'gate',
             currentQuestionIndex: 0,
-            examMode: null, 
+            examMode: null,
             questions: new Array(TOTAL_QUESTIONS).fill(null), // Stores question data (200 slots)
             userAnswers: new Array(TOTAL_QUESTIONS).fill(null), // Stores user's selected option index (0-3)
             questionStates: new Array(TOTAL_QUESTIONS).fill(0).map(() => ({ // Tracks flags, marks, and visit status
@@ -363,6 +501,10 @@
         // --- DOM Elements Selector ---
         const $ = (selector) => document.querySelector(selector);
         const dom = {
+            gateView: $('#gate-view'),
+            gateCodeInput: $('#gate-code-input'),
+            gateSubmitBtn: $('#gate-submit-btn'),
+            gateError: $('#gate-error'),
             modeSelectView: $('#mode-select-view'),
             loadingView: $('#loading-view'),
             examView: $('#exam-view'),
@@ -373,6 +515,7 @@
             progressText: $('#progress-text'),
             timerDisplay: $('#timer-display'),
             submitBtn: $('#submit-btn'),
+            questionNavPanel: $('#question-nav-panel'),
             questionNavGrid: $('#question-nav-grid'),
             questionPanel: $('#question-panel'),
             questionCardContainer: $('#question-card-container'),
@@ -419,7 +562,38 @@
                 console.warn("KaTeX library not fully loaded. Math rendering skipped.");
             }
         }
-        
+
+        // =================================================================================
+        // Access Gate Logic
+        // =================================================================================
+
+        /**
+         * Wires up the hall-ticket access gate. On success, reveals mode selection.
+         */
+        function initGate() {
+            const attemptUnlock = () => {
+                const entered = dom.gateCodeInput.value.trim();
+                if (entered.length > 0 && entered.toUpperCase() === ACCESS_CODE.toUpperCase()) {
+                    dom.gateError.classList.add('hidden');
+                    updateView('mode-select');
+                } else {
+                    dom.gateError.classList.remove('hidden');
+                    const card = dom.gateView.querySelector('.ticket-card');
+                    card.classList.remove('shake-anim');
+                    void card.offsetWidth; // restart animation
+                    card.classList.add('shake-anim');
+                    dom.gateCodeInput.value = '';
+                    dom.gateCodeInput.focus();
+                }
+            };
+
+            dom.gateSubmitBtn.addEventListener('click', attemptUnlock);
+            dom.gateCodeInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') attemptUnlock();
+            });
+            dom.gateCodeInput.focus();
+        }
+
         // =================================================================================
         // Application Flow and Initialization
         // =================================================================================
@@ -430,6 +604,9 @@
         function init() {
             console.log('Initializing AI CEE Exam Platform...');
             document.addEventListener('keydown', handleKeyDown);
+
+            // 0. Setup the access gate
+            initGate();
 
             // 1. Setup mode selection listeners
             document.querySelectorAll('.mode-card').forEach(card => {
@@ -442,8 +619,8 @@
             dom.nextBtn.addEventListener('click', () => navigateQuestion('next'));
             dom.flagBtn.addEventListener('click', toggleFlag);
             dom.markBtn.addEventListener('click', toggleMark);
-            
-            updateView('mode-select');
+
+            updateView('gate');
         }
 
         /**
@@ -468,14 +645,14 @@
                 renderQuestion(0);
                 startTimer();
                 // Immediately pre-fetch the next batch while the user answers Q1
-                fetchQuestionBatch(QUESTIONS_PER_BATCH); 
+                fetchQuestionBatch(QUESTIONS_PER_BATCH);
             } else {
                 // Handle failure to load initial batch gracefully
                 updateView('loading');
                 dom.loadingView.innerHTML = `
-                    <i class="ph-fill ph-wifi-slash text-6xl text-red-500 mb-4"></i>
-                    <h2 class="text-3xl font-bold text-red-400">Failed to Load Exam</h2>
-                    <p class="text-slate-400 text-center max-w-md mt-2">The server could not generate the questions. Please check the network or retry.</p>
+                    <i class="ph-fill ph-wifi-slash text-6xl mb-4" style="color: var(--danger);"></i>
+                    <h2 class="font-display text-3xl font-bold" style="color: var(--danger);">Failed to Load Exam</h2>
+                    <p class="text-center max-w-md mt-2" style="color: var(--text-secondary);">The server could not generate the questions. Please check the network or retry.</p>
                     <button class="btn btn-primary mt-6" onclick="window.location.reload()">Retry Mode Selection</button>
                 `;
                 showToast('Initial question fetch failed. Check worker status.', 'error');
@@ -496,18 +673,18 @@
             if (startIndex >= TOTAL_QUESTIONS || state.fetchedBatchMarkers.has(startIndex)) {
                 return; // Already requested or index out of bounds
             }
-            
+
             console.log(`Requesting batch starting at index ${startIndex} for mode: ${state.examMode}`);
             state.fetchedBatchMarkers.add(startIndex); // Mark as requested
 
             try {
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
-                    cache: 'no-store', 
+                    cache: 'no-store',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         requestType: 'getQuestions',
-                        mode: state.examMode, 
+                        mode: state.examMode,
                         startIndex: startIndex,
                         count: QUESTIONS_PER_BATCH,
                     }),
@@ -534,10 +711,10 @@
                 });
 
                 console.log(`Successfully received and stored batch starting at index ${startIndex}`);
-                
+
                 // If the user is currently waiting on a question that just loaded, re-render it
                 if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
-                    renderQuestion(state.currentQuestionIndex, true); 
+                    renderQuestion(state.currentQuestionIndex, true);
                 }
 
             } catch (error) {
@@ -559,7 +736,7 @@
             if (index === state.currentQuestionIndex && !force) return;
 
             dom.questionCardContainer.classList.add('opacity-0'); // Smooth transition
-            
+
             setTimeout(() => {
                 state.currentQuestionIndex = index;
                 const questionData = state.questions[index];
@@ -576,18 +753,18 @@
                     // Options Rendering
                     dom.optionsContainer.innerHTML = '';
                     const userAnswerIndex = state.userAnswers[index];
-                    
+
                     questionData.options.forEach((option, i) => {
                         const optionEl = document.createElement('div');
                         optionEl.className = 'option-card p-4 rounded-lg cursor-pointer flex items-start gap-4';
                         optionEl.innerHTML = `
-                            <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center border-2 border-slate-500 rounded-full font-semibold text-slate-300">${String.fromCharCode(65 + i)}</span>
-                            <span class="flex-1 text-lg text-slate-200 option-text">${option}</span>
+                            <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center border-2 rounded-full font-semibold font-mono" style="border-color: var(--border-strong); color: var(--text-secondary);">${String.fromCharCode(65 + i)}</span>
+                            <span class="flex-1 text-lg option-text" style="color: var(--text-primary);">${option}</span>
                         `;
-                        
+
                         // Attach selection handler
                         optionEl.addEventListener('click', () => handleOptionSelect(index, i));
-                        
+
                         // Apply 'selected' class if answered
                         if (i === userAnswerIndex) {
                             optionEl.classList.add('selected');
@@ -620,11 +797,11 @@
                     const nextBatchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH + QUESTIONS_PER_BATCH;
                     fetchQuestionBatch(nextBatchStartIndex);
                 }
-                
+
                 // Final visual updates
                 dom.questionCardContainer.classList.remove('opacity-0');
                 dom.questionPanel.scrollTop = 0;
-                
+
                 // RENDER MATH FOR NEW CONTENT
                 try {
                     renderMath();
@@ -641,7 +818,7 @@
          * @param {number} optionIndex - Index of the selected option.
          */
         function handleOptionSelect(questionIndex, optionIndex) {
-            if (state.isSubmitted) return; 
+            if (state.isSubmitted) return;
             if (state.userAnswers[questionIndex] === optionIndex) {
                 // If clicking the same option, de-select it
                 state.userAnswers[questionIndex] = null;
@@ -653,7 +830,7 @@
             }
 
             // Re-render to show the selection/deselection visually
-            renderQuestion(questionIndex, true); 
+            renderQuestion(questionIndex, true);
         }
 
         /**
@@ -671,7 +848,7 @@
                 renderQuestion(newIndex);
             }
         }
-        
+
         /**
          * Handles keyboard shortcuts for quick exam interaction.
          */
@@ -704,18 +881,25 @@
         // =================================================================================
 
         /**
-         * Switches the active view (Mode Select, Loading, Exam, Result).
-         * @param {string} viewName 
+         * Switches the active view (Gate, Mode Select, Loading, Exam, Result).
+         * @param {string} viewName
          */
         function updateView(viewName) {
             state.currentView = viewName;
+            dom.gateView.classList.add('hidden');
             dom.modeSelectView.classList.add('hidden');
+            dom.modeSelectView.classList.remove('flex');
             dom.loadingView.classList.add('hidden');
             dom.examView.classList.add('hidden');
             dom.resultView.classList.add('hidden');
 
-            if (viewName === 'mode-select') dom.modeSelectView.classList.remove('hidden');
-            else if (viewName === 'loading') dom.loadingView.classList.remove('hidden');
+            if (viewName === 'gate') {
+                dom.gateView.classList.remove('hidden');
+                dom.gateCodeInput.focus();
+            } else if (viewName === 'mode-select') {
+                dom.modeSelectView.classList.remove('hidden');
+                dom.modeSelectView.classList.add('flex');
+            } else if (viewName === 'loading') dom.loadingView.classList.remove('hidden');
             else if (viewName === 'exam') dom.examView.classList.remove('hidden');
             else if (viewName === 'result') dom.resultView.classList.remove('hidden');
         }
@@ -737,7 +921,7 @@
             });
             updateQuestionNav();
         }
-        
+
         /**
          * Updates the visual state of the question navigation grid items.
          */
@@ -745,14 +929,14 @@
             dom.questionNavGrid.querySelectorAll('.nav-item').forEach((item, i) => {
                 const qState = state.questionStates[i];
                 // Reset classes
-                item.className = 'nav-item'; 
-                
+                item.className = 'nav-item';
+
                 // Apply status classes
                 if (qState.answered) item.classList.add('answered');
                 else if (qState.visited) item.classList.add('visited');
 
                 if (i === state.currentQuestionIndex) item.classList.add('current');
-                
+
                 // Handle status icons (Flagged/Marked)
                 let iconHtml = '';
                 if (qState.flagged) iconHtml += `<span class="icon-status icon-flag"><i class="ph-fill ph-flag"></i></span>`;
@@ -770,14 +954,14 @@
             dom.progressBar.style.width = `${percentage}%`;
             dom.progressText.textContent = `${answeredCount} / ${TOTAL_QUESTIONS} Answered`;
         }
-        
+
         /**
          * Toggles the state of navigation buttons and action buttons (Flag/Mark).
          */
         function updateButtonStates() {
             dom.prevBtn.disabled = state.currentQuestionIndex === 0 || state.isSubmitted;
             dom.nextBtn.disabled = state.currentQuestionIndex === TOTAL_QUESTIONS - 1 || state.isSubmitted;
-            
+
             const qState = state.questionStates[state.currentQuestionIndex];
             dom.flagBtn.classList.toggle('active', qState.flagged);
             dom.markBtn.classList.toggle('active', qState.marked);
@@ -825,7 +1009,7 @@
             state.timerHandle = setInterval(() => {
                 state.secondsRemaining--;
                 dom.timerDisplay.textContent = formatTime(state.secondsRemaining);
-                
+
                 // Timer Warnings
                 if (state.secondsRemaining === 300) {
                     showToast('5 minutes remaining! Complete your answers.', 'warning');
@@ -835,7 +1019,7 @@
                     dom.timerDisplay.classList.remove('text-yellow-400');
                     dom.timerDisplay.classList.add('text-red-500', 'animate-pulse');
                 }
-                
+
                 if (state.secondsRemaining <= 0) {
                     clearInterval(state.timerHandle);
                     dom.timerDisplay.textContent = '00:00:00';
@@ -865,11 +1049,11 @@
         function confirmSubmit() {
             if (state.isSubmitted) return;
             showToast('Click "Submit Exam" again to confirm and end the test.', 'warning');
-            
+
             // Temporarily replace the listener with the final submit function
             dom.submitBtn.removeEventListener('click', confirmSubmit);
             dom.submitBtn.addEventListener('click', () => submitExam(false));
-            
+
             // Revert after 5 seconds if not submitted
             setTimeout(() => {
                 if (!state.isSubmitted) {
@@ -887,7 +1071,7 @@
             state.isSubmitted = true;
             console.log('Final exam submission...');
             clearInterval(state.timerHandle);
-            
+
             // Ensure all UI elements are disabled
             dom.submitBtn.disabled = true;
             updateButtonStates();
@@ -899,17 +1083,17 @@
 
             state.questions.forEach((q, i) => {
                 // Only process questions that successfully loaded
-                if (!q) return; 
-                
+                if (!q) return;
+
                 const userAnswer = state.userAnswers[i];
-                const subject = q.subject || 'GK'; 
-                
+                const subject = q.subject || 'GK';
+
                 // Safety check for subject initialization
                 if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0 };
-                
+
                 subjectStats[subject].total++;
 
-                if (state.questionStates[i].answered) { 
+                if (state.questionStates[i].answered) {
                     attempted++;
                     // Check correctness
                     if (userAnswer === q.correct) {
@@ -952,8 +1136,8 @@
                 const chartEl = document.createElement('div');
                 chartEl.innerHTML = `
                     <div class="flex justify-between items-center mb-1">
-                        <span class="font-semibold text-xl">${subject}</span>
-                        <span class="text-slate-300 text-lg">${stats.correct} / ${stats.total} (${percentage.toFixed(1)}%)</span>
+                        <span class="font-semibold text-xl" style="color: var(--text-primary);">${subject}</span>
+                        <span class="text-lg font-mono" style="color: var(--text-secondary);">${stats.correct} / ${stats.total} (${percentage.toFixed(1)}%)</span>
                     </div>
                     <div class="chart-bar-bg">
                         <div class="chart-bar" style="width: ${percentage}%"></div>
@@ -966,42 +1150,46 @@
             dom.reviewContainer.innerHTML = '';
             state.questions.forEach((q, i) => {
                 // Skip if question data failed to load
-                if (!q) return; 
+                if (!q) return;
 
                 const userAnswer = state.userAnswers[i];
                 const isCorrect = userAnswer === q.correct;
                 const isAttempted = state.questionStates[i].answered;
                 const reviewEl = document.createElement('div');
-                reviewEl.className = 'p-6 bg-slate-800 rounded-lg shadow-lg border border-slate-700';
-                
-                let statusText = isAttempted 
-                    ? (isCorrect ? '<span class="text-green-400 font-bold"><i class="ph-fill ph-check"></i> CORRECT</span>' : '<span class="text-red-400 font-bold"><i class="ph-fill ph-x"></i> INCORRECT</span>')
-                    : '<span class="text-yellow-400 font-bold"><i class="ph-fill ph-warning-circle"></i> NOT ATTEMPTED</span>';
+                reviewEl.className = 'p-6 rounded-lg shadow-lg border';
+                reviewEl.style.backgroundColor = 'var(--bg-panel)';
+                reviewEl.style.borderColor = 'var(--border-subtle)';
+
+                let statusText = isAttempted
+                    ? (isCorrect
+                        ? `<span style="color: var(--success);" class="font-bold"><i class="ph-fill ph-check"></i> CORRECT</span>`
+                        : `<span style="color: var(--danger);" class="font-bold"><i class="ph-fill ph-x"></i> INCORRECT</span>`)
+                    : `<span style="color: var(--accent-amber);" class="font-bold"><i class="ph-fill ph-warning-circle"></i> NOT ATTEMPTED</span>`;
 
                 let optionHtml = '';
                 q.options.forEach((opt, j) => {
-                    let classes = 'p-3 rounded border text-lg';
-                    if (j === q.correct) classes += ' bg-green-900 border-green-700 text-white font-semibold';
-                    else if (j === userAnswer && !isCorrect) classes += ' bg-red-900 border-red-700 text-white font-semibold';
-                    else classes += ' bg-slate-700 border-slate-600 text-slate-300';
-                    
-                    optionHtml += `<li class="${classes}">${String.fromCharCode(65 + j)}. ${opt}</li>`;
+                    let style = 'padding: 0.75rem; border-radius: 0.5rem; border-width: 1px; font-size: 1.125rem;';
+                    if (j === q.correct) style += `background-color: var(--success-soft); border-color: var(--success); color: var(--text-primary); font-weight:600;`;
+                    else if (j === userAnswer && !isCorrect) style += `background-color: var(--danger-soft); border-color: var(--danger); color: var(--text-primary); font-weight:600;`;
+                    else style += `background-color: var(--bg-panel-light); border-color: var(--border-subtle); color: var(--text-secondary);`;
+
+                    optionHtml += `<li style="${style}">${String.fromCharCode(65 + j)}. ${opt}</li>`;
                 });
-                
+
                 // Construct the full review card HTML
                 reviewEl.innerHTML = `
                     <h4 class="text-2xl font-bold mb-4 flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="text-sky-400">Q.${i + 1}</span> 
-                            <span class="text-slate-400 text-lg">(${q.subject})</span>
+                            <span class="font-mono" style="color: var(--accent-gold);">Q.${i + 1}</span>
+                            <span class="text-lg" style="color: var(--text-secondary);">(${q.subject})</span>
                         </div>
                         ${statusText}
                     </h4>
-                    <p class="text-xl text-slate-200 mb-6" style="white-space: pre-wrap;">${q.question}</p>
+                    <p class="text-xl mb-6" style="white-space: pre-wrap; color: var(--text-primary);">${q.question}</p>
                     <ul class="space-y-3 mb-6">${optionHtml}</ul>
-                    <div class="mt-4 pt-4 border-t border-slate-700">
-                        <h5 class="font-bold text-xl text-green-400 mb-2">Detailed Solution:</h5>
-                        <p class="text-slate-300 leading-relaxed" style="white-space: pre-wrap;">${q.explanation}</p>
+                    <div class="mt-4 pt-4 border-t" style="border-color: var(--border-subtle);">
+                        <h5 class="font-bold text-xl mb-2" style="color: var(--accent-teal);">Detailed Solution:</h5>
+                        <p class="leading-relaxed" style="white-space: pre-wrap; color: var(--text-secondary);">${q.explanation}</p>
                     </div>
                 `;
                 dom.reviewContainer.appendChild(reviewEl);
@@ -1010,7 +1198,7 @@
                 renderMath(reviewEl);
             });
         }
-        
+
         // =================================================================================
         // Toast Notification System
         // =================================================================================
@@ -1023,7 +1211,7 @@
             toast.className = `toast ${type}`;
             toast.textContent = message;
             dom.toastContainer.appendChild(toast);
-            
+
             // Fade out after 3 seconds
             setTimeout(() => {
                 toast.classList.add('fading-out');
@@ -1033,7 +1221,7 @@
 
         // === INITIALIZATION ENTRY POINT ===
         document.addEventListener('DOMContentLoaded', init);
-        
+
     </script>
 </body>
 </html>
