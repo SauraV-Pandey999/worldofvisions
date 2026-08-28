@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World of Vision S — Who is Vision S?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #07080c;
+    --bg-rgb: 7,8,12;
+    --bg-panel: #0d1016;
+    --bg-panel-2: #10141c;
+    --line: rgba(255,255,255,0.08);
+    --magenta: #ff2fd6;
+    --cyan: #2af1ff;
+    --green: #3ddc97;
+    --amber: #ffb020;
+    --text: #e9ebf3;
+    --text-dim: #838a9c;
+    --text-faint: #4c5262;
+    --font-display: 'Chakra Petch', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="light"]{
+    --bg: #f7f2e7;
+    --bg-rgb: 247,242,231;
+    --bg-panel: #fffdf7;
+    --bg-panel-2: #eee5d1;
+    --line: rgba(42,35,24,0.14);
+    --magenta: #ad1a7d;
+    --cyan: #0f7788;
+    --green: #2f7d4f;
+    --amber: #a8660a;
+    --text: #2a2318;
+    --text-dim: #6b6252;
+    --text-faint: #a39a86;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    overflow-x: hidden;
+    position: relative;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  [data-theme="light"] body::before{ opacity: 0.5; mix-blend-mode: multiply; }
+  [data-theme="light"] .avatar-fallback,
+  [data-theme="light"] .hero h1 .who{ color: var(--text); }
+  [data-theme="light"] ::selection{ color: #fffcf5; }
+
+  /* ambient scanlines + grain over whole page */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.018) 0px,
+      rgba(255,255,255,0.018) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events:none;
+    z-index: 500;
+    mix-blend-mode: overlay;
+  }
+
+  ::selection{ background: var(--magenta); color: #07080c; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .noise-vignette{
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 499;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+    transition: opacity .35s ease;
+  }
+  [data-theme="light"] .noise-vignette{
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(60,50,30,0.10) 100%);
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position: sticky; top:0; z-index: 600;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, rgba(var(--bg-rgb),0.95), rgba(var(--bg-rgb),0.75));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand{
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 15px;
+  }
+  .navlinks{
+    display:flex; gap: 34px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+  .navlinks a{ position:relative; transition: color .2s; }
+  .navlinks a:hover{ color: var(--text); }
+  .navlinks a.active{ color: var(--green); }
+  .navlinks a.active::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:-6px;
+    height:1px; background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+  @media (max-width: 760px){ .navlinks{ display:none; } }
+
+  .theme-toggle{
+    display:flex; align-items:center; gap:8px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 7px 14px 7px 7px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 1.5px;
+    color: var(--text-dim);
+    transition: border-color .2s, color .2s;
+  }
+  .theme-toggle:hover{ border-color: var(--cyan); color: var(--text); }
+  .theme-toggle .knob{
+    width: 16px; height:16px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    transition: background .25s, box-shadow .25s;
+    flex-shrink:0;
+  }
+  [data-theme="light"] .theme-toggle .knob{
+    background: var(--amber); box-shadow: 0 0 8px var(--amber);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position: relative;
+    min-height: 92vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding: 60px 24px;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 20%, rgba(255,47,214,0.10), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(42,241,255,0.08), transparent 60%),
+      var(--bg);
+  }
+
+  [data-theme="light"] .hero{
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 20%, rgba(173,26,125,0.05), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(15,119,136,0.05), transparent 60%),
+      var(--bg);
+  }
+
+  .boot-line{
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--green);
+    margin-bottom: 28px;
+    min-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid var(--green);
+    display:inline-block;
+  }
+
+  .eyebrow{
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--text-faint);
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+
+  .hero h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(48px, 9vw, 108px);
+    line-height: 0.98;
+    letter-spacing: -1px;
+  }
+  .hero h1 .who{ color: var(--text); }
+  .hero h1 .vs{
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--magenta);
+    text-shadow: 0 0 30px rgba(255,47,214,0.35);
+  }
+
+  .hero-sub{
+    margin-top: 26px;
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+  .hero-sub .quote-mark{ color: var(--cyan); font-style: normal; }
+
+  .scroll-cue{
+    margin-top: 64px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-faint);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  .scroll-cue .bar{
+    width:1px; height: 34px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    animation: scrollpulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollpulse{
+    0%,100%{ opacity:0.2; transform: scaleY(0.6); transform-origin: top;}
+    50%{ opacity:1; transform: scaleY(1); transform-origin: top;}
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding: 120px 40px; max-width: 1180px; margin: 0 auto; position: relative; }
+  .tag{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size: 11px; letter-spacing: 3px; color: var(--text-faint);
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .tag::before{
+    content:""; width:16px; height:1px; background: var(--magenta);
+  }
+  .section-title{
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600;
+    max-width: 720px;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  /* ---------- OPERATOR CARD ---------- */
+  .operator{
+    display:grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    align-items: center;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .operator::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+  }
+  .avatar-frame{
+    position: relative;
+    width: 160px; height: 160px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-panel-2);
+    justify-self: center;
+  }
+  .avatar-frame img{
+    width:100%; height:100%; object-fit: cover;
+    filter: grayscale(0.3) contrast(1.05);
+  }
+  .avatar-fallback{
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-size: 46px; font-weight:700;
+    color: var(--magenta);
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,47,214,0.18), transparent 55%),
+      radial-gradient(circle at 70% 80%, rgba(42,241,255,0.14), transparent 55%);
+  }
+  .avatar-frame .scan{
+    position:absolute; left:0; right:0; height:2px;
+    background: linear-gradient(to right, transparent, var(--cyan), transparent);
+    animation: scan 3.2s linear infinite;
+    opacity: 0.7;
+  }
+  @keyframes scan{ 0%{ top:0; } 100%{ top:100%; } }
+
+  .operator-info .status{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size: 11px; letter-spacing: 2px; color: var(--green);
+    margin-bottom: 14px;
+  }
+  .operator-info .status .pip{
+    width:7px; height:7px; border-radius:50%; background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  .operator-info h3{
+    font-family: var(--font-display);
+    font-size: 30px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
+  }
+  .operator-info .role{
+    font-size: 12px; color: var(--text-faint); letter-spacing: 1.5px; margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .operator-info p{
+    font-size: 13.5px; color: var(--text-dim); line-height: 1.8; max-width: 560px; margin-bottom: 20px;
+  }
+  .operator-tags{ display:flex; gap:10px; flex-wrap:wrap; }
+  .operator-tags span{
+    font-size: 10.5px; letter-spacing: 1px; color: var(--text-dim);
+    border: 1px solid var(--line); padding: 6px 12px; border-radius: 3px;
+  }
+  @media (max-width: 640px){
+    .operator{ grid-template-columns: 1fr; text-align:center; }
+    .operator-tags{ justify-content:center; }
+  }
+
+  /* ---------- STACK / TERMINAL LS ---------- */
+  .stack-window{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .stack-body{
+    padding: 28px 30px 34px;
+    font-size: 13.5px; line-height: 2;
+  }
+  .stack-prompt{ color: var(--text-dim); margin-bottom: 18px; }
+  .stack-prompt .path{ color: var(--cyan); }
+  .stack-prompt .cmd{ color: var(--text); }
+
+  .stack-group{ margin-bottom: 22px; }
+  .stack-group:last-of-type{ margin-bottom: 0; }
+  .stack-label{
+    font-size: 11px; letter-spacing: 2px; color: var(--text-faint);
+    margin-bottom: 10px; text-transform: uppercase;
+  }
+  .stack-items{ display:flex; flex-wrap:wrap; gap: 10px 22px; }
+  .stack-items span{
+    display:inline-flex; align-items:center; gap:8px;
+    color: var(--text-dim); font-size: 13px;
+  }
+  .stack-items span::before{ content:"›"; color: var(--text-faint); }
+  .stack-items.lang span{ color: var(--magenta); }
+  .stack-items.frame span{ color: var(--cyan); }
+  .stack-items.tool span{ color: var(--green); }
+
+  .stack-tail{ margin-top: 20px; color: var(--text-dim); }
+  .stack-tail .cursor-blink{ margin-left: 2px; }
+
+  /* ---------- ORIGIN LOG ---------- */
+  .log-wrap{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .log-titlebar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px;
+    background: var(--bg-panel-2);
+    border-bottom: 1px solid var(--line);
+    font-size: 11px; color: var(--text-faint); letter-spacing: 1px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; }
+  .dot.r{ background:#ff5f56; } .dot.y{ background:#ffbd2e; } .dot.g{ background:#27c93f; }
+  .log-file{ margin-left: 10px; }
+
+  .log-body{ padding: 34px 30px 40px; font-size: 14.5px; line-height: 1.9; color: var(--text-dim); }
+  .log-entry{ margin-bottom: 26px; }
+  .log-entry:last-child{ margin-bottom:0; }
+  .log-time{ color: var(--cyan); font-size: 12px; margin-right: 10px; }
+  .log-body strong{ color: var(--text); font-weight: 600; }
+  .cursor-blink{
+    display:inline-block; width:8px; height:16px; background: var(--green);
+    vertical-align: middle; margin-left: 4px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- THE LAB / MONITOR WALL ---------- */
+  .lab-intro{ display:flex; justify-content:space-between; align-items:flex-end; gap: 20px; flex-wrap:wrap; margin-bottom: 54px; }
+  .lab-hint{ font-size: 12px; color: var(--text-faint); letter-spacing: 0.5px; max-width: 260px; }
+
+  .wall{
+    perspective: 1400px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+  }
+  @media (min-width: 860px){
+    .grid{ grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .monitor{
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px 18px;
+    cursor: pointer;
+    transition: border-color .25s, transform .25s, box-shadow .25s;
+    min-height: 210px;
+    display:flex; flex-direction:column;
+    transform: translateZ(0);
+  }
+  .monitor::after{
+    content:"";
+    position:absolute; inset:0; border-radius:8px;
+    background: repeating-linear-gradient( to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+  }
+  .monitor:hover{
+    transform: translateZ(30px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .monitor[data-c="magenta"]:hover{ border-color: var(--magenta); box-shadow: 0 20px 50px rgba(255,47,214,0.15); }
+  .monitor[data-c="cyan"]:hover{ border-color: var(--cyan); box-shadow: 0 20px 50px rgba(42,241,255,0.15); }
+  .monitor[data-c="green"]:hover{ border-color: var(--green); box-shadow: 0 20px 50px rgba(61,220,151,0.15); }
+  .monitor[data-c="amber"]:hover{ border-color: var(--amber); box-shadow: 0 20px 50px rgba(255,176,32,0.15); }
+
+  .monitor .idx{ font-size: 10px; color: var(--text-faint); letter-spacing: 2px; margin-bottom: 14px; }
+  .monitor h3{
+    font-family: var(--font-display);
+    font-size: 19px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.3px;
+  }
+  .monitor[data-c="magenta"] h3{ color: var(--magenta); }
+  .monitor[data-c="cyan"] h3{ color: var(--cyan); }
+  .monitor[data-c="green"] h3{ color: var(--green); }
+  .monitor[data-c="amber"] h3{ color: var(--amber); }
+
+  .monitor p{ font-size: 12.5px; line-height: 1.7; color: var(--text-dim); flex-grow:1; }
+  .monitor .expand{
+    margin-top: 16px; font-size: 10px; letter-spacing: 2px; color: var(--text-faint);
+    display:flex; align-items:center; gap: 6px;
+  }
+  .monitor .expand::after{ content:"›"; transition: transform .2s; }
+  .monitor.open .expand::after{ transform: rotate(90deg); }
+
+  .monitor .more{
+    max-height:0; overflow:hidden; transition: max-height .35s ease;
+    font-size: 12.5px; color: var(--text-dim); line-height: 1.7;
+  }
+  .monitor.open .more{ max-height: 200px; margin-top: 12px; }
+
+  /* ---------- TIMELINE STRIP ---------- */
+  .strip{
+    display:flex; overflow-x:auto; gap: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar{ display:none; }
+  .strip-item{
+    flex: 0 0 260px;
+    padding: 28px 26px;
+    border-right: 1px solid var(--line);
+  }
+  .strip-item:last-child{ border-right:none; }
+  .strip-time{ font-size: 11px; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 10px; }
+  .strip-item h4{ font-family: var(--font-display); font-size: 16px; margin-bottom: 8px; }
+  .strip-item p{ font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    text-align:center;
+    padding: 140px 40px 160px;
+    background: radial-gradient(ellipse 60% 60% at 50% 30%, rgba(61,220,151,0.08), transparent 65%);
+  }
+  .cta h2{
+    font-family: var(--font-display);
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .cta p{ color: var(--text-dim); font-size: 14px; margin-bottom: 40px; }
+  .cta-buttons{ display:flex; gap: 18px; justify-content:center; flex-wrap:wrap; }
+  .btn{
+    padding: 15px 34px;
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 2px; font-weight: 600;
+    border-radius: 3px;
+    transition: all .2s;
+    display:inline-block;
+  }
+  .btn-primary{
+    background: var(--text); color: var(--bg);
+  }
+  .btn-primary:hover{ background: var(--green); }
+  .btn-outline{
+    border: 1px solid var(--line); color: var(--text);
+  }
+  .btn-outline:hover{ border-color: var(--cyan); color: var(--cyan); }
+
+  footer{
+    padding: 34px 40px;
+    border-top: 1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size: 11px; color: var(--text-faint); letter-spacing: 1px;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  @media (max-width: 640px){
+    section{ padding: 80px 22px; }
+    .log-body{ padding: 26px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise-vignette"></div>
+
+<nav>
+  <div class="brand">WORLD OF VISION S</div>
+  <div class="navlinks">
+    <a href="#">HOME</a>
+    <a href="#">BLOGS</a>
+    <a href="#">SERVICES</a>
+    <a href="#">FAQS</a>
+    <a href="#">MEMBERS</a>
+    <a href="#" class="active">ABOUT</a>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme">
+    <span class="knob"></span><span id="themeLabel">DARK</span>
+  </button>
+</nav>
+
+<header class="hero">
+  <div class="boot-line" id="bootLine"></div>
+  <div class="eyebrow">System file // profile.dat</div>
+  <h1><span class="who">WHO IS</span><br><span class="vs">VISION&nbsp;S?</span></h1>
+  <p class="hero-sub"><span class="quote-mark">"</span>A vision inspired by saurav<span class="quote-mark">"</span></p>
+  <div class="scroll-cue"><div class="bar"></div>SCROLL</div>
+</header>
+
+<section id="operator">
+  <div class="tag">Operator File</div>
+  <div class="operator">
+    <div class="avatar-frame">
+      <!-- Swap this fallback block for <img src="your-photo.jpg" alt="saurav"> when ready -->
+      <div class="avatar-fallback">S</div>
+      <div class="scan"></div>
+    </div>
+    <div class="operator-info">
+      <div class="status"><span class="pip"></span>STATUS: ONLINE</div>
+      <h3>Saurav</h3>
+      <div class="role">Founder &amp; Operator — World of Vision S</div>
+      <p>Builds first, explains after. Spends most nights between old hardware and new code, and writes up whatever comes out of it — the parts that worked and the parts that didn't.</p>
+      <div class="operator-tags">
+        <span>BUILDER</span>
+        <span>EXPLORER</span>
+        <span>WRITER</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="origin">
+  <div class="tag">Log Entry // Origin</div>
+  <h2 class="section-title">Every workshop starts with one machine and too many ideas.</h2>
+
+  <div class="log-wrap">
+    <div class="log-titlebar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="log-file">origin.log</span>
+    </div>
+    <div class="log-body">
+      <div class="log-entry">
+        <span class="log-time">[00:01]</span>
+        <strong>World of Vision S</strong> began as a single desk, a stack of second-hand monitors, and a habit of taking things apart to see how they actually worked.
+      </div>
+      <div class="log-entry">
+        <span class="log-time">[00:02]</span>
+        What you're looking at now is that same desk, scaled up — a place to publish what gets built, tested, and learned along the way.
+      </div>
+      <div class="log-entry">
+        <span class="log-time">[00:03]</span>
+        No polished mission statement, no corporate gloss. Just documented exploration — in public, as it happens.
+      </div>
+      <div class="log-entry">
+        <span class="log-time">[00:04]</span>
+        This page exists so anyone landing here for the first time knows exactly what they've walked into.<span class="cursor-blink"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="lab-intro">
+    <div>
+      <div class="tag">The Lab</div>
+      <h2 class="section-title" style="margin-bottom:0;">Four screens. One desk. Click any of them.</h2>
+    </div>
+    <div class="lab-hint">Tap a panel to expand it. Move your cursor across the wall on desktop.</div>
+  </div>
+
+  <div class="wall">
+    <div class="grid" id="monitorGrid">
+
+      <div class="monitor" data-c="magenta" onclick="this.classList.toggle('open')">
+        <div class="idx">PANEL_01</div>
+        <h3>Mission</h3>
+        <p>Build things that are actually used, write down what breaks, and share the fix.</p>
+        <div class="expand">EXPAND</div>
+        <div class="more">Fewer announcements, more shipped work. If it's on this site, it's something that got built, run, and kept — not a placeholder.</div>
+      </div>
+
+      <div class="monitor" data-c="cyan" onclick="this.classList.toggle('open')">
+        <div class="idx">PANEL_02</div>
+        <h3>Tools</h3>
+        <p>Old hardware, new code. Whatever gets the job done without getting precious about it.</p>
+        <div class="expand">EXPAND</div>
+        <div class="more">The setup leans on repurposed machines and lightweight software — not because it's aesthetic, but because constraints force better decisions.</div>
+      </div>
+
+      <div class="monitor" data-c="green" onclick="this.classList.toggle('open')">
+        <div class="idx">PANEL_03</div>
+        <h3>Philosophy</h3>
+        <p>Explore first, explain later. Curiosity is the only prerequisite here.</p>
+        <div class="expand">EXPAND</div>
+        <div class="more">This isn't a tutorial factory. It's a running log of questions being chased down, including the ones that led nowhere.</div>
+      </div>
+
+      <div class="monitor" data-c="amber" onclick="this.classList.toggle('open')">
+        <div class="idx">PANEL_04</div>
+        <h3>Community</h3>
+        <p>Members aren't an audience — they're collaborators reading over the shoulder.</p>
+        <div class="expand">EXPAND</div>
+        <div class="more">Comments, corrections, and better ideas than the original are always welcome. This is a workshop with the door open.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="tag">Directory Listing</div>
+  <h2 class="section-title">What's actually running this place.</h2>
+
+  <div class="stack-window">
+    <div class="log-titlebar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="log-file">stack.sh</span>
+    </div>
+    <div class="stack-body">
+      <div class="stack-prompt"><span class="path">visions@lab</span>:<span class="cmd">~$</span> ls -la ./stack</div>
+
+      <div class="stack-group">
+        <div class="stack-label">Languages</div>
+        <div class="stack-items lang">
+          <span>JavaScript</span><span>Python</span><span>HTML / CSS</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <div class="stack-label">Frameworks &amp; Platforms</div>
+        <div class="stack-items frame">
+          <span>Node.js</span><span>React</span><span>Firebase</span>
+        </div>
+      </div>
+
+      <div class="stack-group">
+        <div class="stack-label">Tools</div>
+        <div class="stack-items tool">
+          <span>Git</span><span>VS Code</span><span>Figma</span>
+        </div>
+      </div>
+
+      <div class="stack-tail">visions@lab:~$<span class="cursor-blink"></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline" style="padding-top:0;">
+  <div class="tag">Signal Trace</div>
+  <h2 class="section-title">How it's moved so far.</h2>
+  <div class="strip">
+    <div class="strip-item">
+      <div class="strip-time">PHASE 00</div>
+      <h4>First build</h4>
+      <p>One machine, one idea, no audience yet. Everything since started here.</p>
+    </div>
+    <div class="strip-item">
+      <div class="strip-time">PHASE 01</div>
+      <h4>First write-up</h4>
+      <p>Turning working notes into something someone else could actually follow.</p>
+    </div>
+    <div class="strip-item">
+      <div class="strip-time">PHASE 02</div>
+      <h4>First reader</h4>
+      <p>The moment this stopped being a private log and became a public one.</p>
+    </div>
+    <div class="strip-item">
+      <div class="strip-time">PHASE 03</div>
+      <h4>Now</h4>
+      <p>Still exploring, still documenting — this page gets rewritten as the work changes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="tag" style="justify-content:center;">Next</div>
+  <h2>See what's actually been built.</h2>
+  <p>Read the write-ups, or see what services come out of this workshop.</p>
+  <div class="cta-buttons">
+    <a href="#" class="btn btn-primary">EXPLORE BLOGS</a>
+    <a href="#" class="btn btn-outline">VIEW SERVICES</a>
+  </div>
+</section>
+
+<footer>
+  <div>WORLD OF VISION S © 2026</div>
+  <div>A VISION INSPIRED BY SAURAV</div>
+</footer>
+
+<script>
+  // theme toggle — remembers choice per browser
+  const root = document.getElementById('htmlRoot');
+  const toggleBtn = document.getElementById('themeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+
+  function applyTheme(theme){
+    if(theme === 'light'){
+      root.setAttribute('data-theme', 'light');
+      themeLabel.textContent = 'LIGHT';
+    } else {
+      root.removeAttribute('data-theme');
+      themeLabel.textContent = 'DARK';
+    }
+  }
+
+  let savedTheme = 'dark';
+  try{ savedTheme = localStorage.getItem('vision-s-theme') || 'dark'; }catch(e){}
+  applyTheme(savedTheme);
+
+  toggleBtn.addEventListener('click', ()=>{
+    const isLight = root.getAttribute('data-theme') === 'light';
+    const next = isLight ? 'dark' : 'light';
+    applyTheme(next);
+    try{ localStorage.setItem('vision-s-theme', next); }catch(e){}
+  });
+
+  // boot line typing effect
+  const bootText = "> INITIALIZING VISION_S.PROFILE...";
+  const bootEl = document.getElementById('bootLine');
+  let i = 0;
+  function typeBoot(){
+    if(i <= bootText.length){
+      bootEl.textContent = bootText.slice(0, i);
+      i++;
+      setTimeout(typeBoot, 32);
+    } else {
+      setTimeout(()=>{ bootEl.style.borderRight = 'none'; }, 600);
+    }
+  }
+  typeBoot();
+
+  // subtle 3D tilt on the monitor wall following the cursor (desktop only)
+  const grid = document.getElementById('monitorGrid');
+  const wall = document.querySelector('.wall');
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    wall.addEventListener('mousemove', (e)=>{
+      const rect = wall.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      grid.style.transform = `rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+    });
+    wall.addEventListener('mouseleave', ()=>{
+      grid.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+  }
+</script>
+
+</body>
+</html>
