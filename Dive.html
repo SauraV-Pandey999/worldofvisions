@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World of Vision S — What is Vision S?</title>
+<title>World of Vision S — Who is Vision S?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -121,6 +121,67 @@
     box-shadow: 0 0 8px var(--green);
   }
   @media (max-width: 760px){ .navlinks{ display:none; } }
+
+  .nav-right{ display:flex; align-items:center; gap:14px; }
+
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:38px; height:38px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor:pointer;
+    padding:0;
+  }
+  .menu-toggle span{
+    display:block; width:18px; height:1.5px; margin:0 auto;
+    background: var(--text); transition: transform .3s ease, opacity .3s ease;
+  }
+  .menu-toggle[aria-expanded="true"] span:nth-child(1){ transform: translateY(6.5px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3){ transform: translateY(-6.5px) rotate(-45deg); }
+
+  .menu-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background: rgba(0,0,0,0.55);
+    z-index: 580;
+  }
+  .menu-overlay.show{ display:block; }
+
+  @media (max-width: 760px){
+    .menu-toggle{ display:flex; }
+
+    .navlinks{
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+      gap:4px;
+      position:fixed;
+      top:0; right:0;
+      height:100dvh;
+      width:72vw;
+      max-width:300px;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--line);
+      padding: 90px 20px 30px;
+      transform: translateX(110%);
+      transition: transform .32s cubic-bezier(0.4,0,0.2,1);
+      z-index: 590;
+      overflow-y:auto;
+    }
+    .navlinks.open{ transform: translateX(0); }
+    .navlinks a{
+      font-size: 15px;
+      padding: 14px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .navlinks a:hover, .navlinks a.active{ background: var(--bg-panel-2); }
+  }
 
   .theme-toggle{
     display:flex; align-items:center; gap:8px;
@@ -321,6 +382,33 @@
     font-size: 10.5px; letter-spacing: 1px; color: var(--text-dim);
     border: 1px solid var(--line); padding: 6px 12px; border-radius: 3px;
   }
+  .dive-btn{
+    margin-top: 22px;
+    display:inline-flex; align-items:center; gap:10px;
+    font-size: 11px; letter-spacing: 1.5px; font-weight: 600;
+    color: var(--text);
+    border: 1px solid var(--magenta);
+    padding: 11px 20px;
+    border-radius: 3px;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .dive-btn::before{
+    content:"";
+    position:absolute; inset:0;
+    background: var(--magenta);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s cubic-bezier(0.4,0,0.2,1);
+    z-index:0;
+  }
+  .dive-btn span{ position:relative; z-index:1; }
+  .dive-btn .dive-arrow{ transition: transform .25s; }
+  .dive-btn:hover{ color: var(--bg); box-shadow: 0 8px 24px rgba(255,47,214,0.2); }
+  .dive-btn:hover::before{ transform: scaleX(1); }
+  .dive-btn:hover .dive-arrow{ transform: translateX(4px); }
+  @media (max-width: 640px){ .dive-btn{ margin-left:auto; margin-right:auto; } }
   @media (max-width: 640px){
     .operator{ grid-template-columns: 1fr; text-align:center; }
     .operator-tags{ justify-content:center; }
@@ -528,18 +616,25 @@
 
 <nav>
   <div class="brand">WORLD OF VISION S</div>
-  <div class="navlinks">
-    <a href="#">HOME</a>
-    <a href="#">BLOGS</a>
-    <a href="#">SERVICES</a>
-    <a href="#">FAQS</a>
-    <a href="#">MEMBERS</a>
-    <a href="#" class="active">ABOUT</a>
+  <div class="navlinks" id="mainMenu">
+    <a href="ab1.html">HOME</a>
+    <a href="g1.html">BLOGS</a>
+    <a href="services.html">SERVICES</a>
+    <a href="faq.html">FAQS</a>
+    <a href="memcard.html">MEMBERS</a>
+    <a href="about1.html" class="active">ABOUT</a>
+    <a href="contact.html">CONTACT</a>
   </div>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme">
-    <span class="knob"></span><span id="themeLabel">DARK</span>
-  </button>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme">
+      <span class="knob"></span><span id="themeLabel">DARK</span>
+    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
+<div class="menu-overlay" id="menuOverlay"></div>
 
 <header class="hero">
   <div class="boot-line" id="bootLine"></div>
@@ -567,6 +662,10 @@
         <span>EXPLORER</span>
         <span>WRITER</span>
       </div>
+      <a href="portfolio.html" class="dive-btn">
+        <span>Dive Deeper — Meet the Founder</span>
+        <span class="dive-arrow">→</span>
+      </a>
     </div>
   </div>
 </section>
@@ -719,8 +818,8 @@
   <h2>See what's actually been built.</h2>
   <p>Read the write-ups, or see what services come out of this workshop.</p>
   <div class="cta-buttons">
-    <a href="#" class="btn btn-primary">EXPLORE BLOGS</a>
-    <a href="#" class="btn btn-outline">VIEW SERVICES</a>
+    <a href="g1.html" class="btn btn-primary">EXPLORE BLOGS</a>
+    <a href="services.html" class="btn btn-outline">VIEW SERVICES</a>
   </div>
 </section>
 
@@ -730,6 +829,31 @@
 </footer>
 
 <script>
+  // mobile hamburger menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mainMenu = document.getElementById('mainMenu');
+  const menuOverlay = document.getElementById('menuOverlay');
+
+  function openMenu(){
+    mainMenu.classList.add('open');
+    menuOverlay.classList.add('show');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu(){
+    mainMenu.classList.remove('open');
+    menuOverlay.classList.remove('show');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  menuToggle.addEventListener('click', ()=>{
+    mainMenu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  menuOverlay.addEventListener('click', closeMenu);
+  mainMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', ()=>{ if(window.innerWidth > 760) closeMenu(); });
+
   // theme toggle — remembers choice per browser
   const root = document.getElementById('htmlRoot');
   const toggleBtn = document.getElementById('themeToggle');
