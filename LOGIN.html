@@ -574,7 +574,7 @@
     try {
       const auth = await getAuthInstance();
       await popupFn(auth, new googleProviderCtor());
-      window.location.assign("/dashboard.html");
+      window.location.assign("dashboard.html");
     } catch (error) {
       setMessage(friendlyError(error));
     } finally {
