@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112">
+  <defs>
+    <linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff9df"/><stop offset=".3" stop-color="#fff"/><stop offset=".6" stop-color="#d7b876"/><stop offset="1" stop-color="#7b3cff"/></linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fff6c8"/><stop offset=".35" stop-color="#f4b84f"/><stop offset=".72" stop-color="#ad582f"/><stop offset="1" stop-color="#7f36ff"/></linearGradient>
+    <linearGradient id="v" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4c661"/><stop offset=".48" stop-color="#9b56ff"/><stop offset="1" stop-color="#5630cc"/></linearGradient>
+  </defs>
+  <path d="M7 10 17 7l31 69-6 15z" fill="url(#g)"/><path d="M20 6 29 4l23 57-6 14z" fill="url(#p)"/><path d="m28 20 8-3 18 31-5 13z" fill="url(#v)"/>
+  <path d="M89 10 79 7 48 76l6 15z" fill="url(#g)"/><path d="M76 6 67 4 44 61l6 14z" fill="url(#p)"/><path d="m68 20-8-3-18 31 5 13z" fill="url(#v)"/><path d="m42 89 6 17 6-17-6-13z" fill="url(#p)"/>
+</svg>
