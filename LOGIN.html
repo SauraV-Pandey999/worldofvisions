@@ -369,16 +369,19 @@
   // mode: it validates input and shows a friendly confirmation
   // instead of calling Firebase.
   // ---------------------------------------------------------------
+  /* ✅ Firebase Config (unchanged) */
   const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
+    apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
     authDomain: "login-6e215.firebaseapp.com",
     projectId: "login-6e215",
     storageBucket: "login-6e215.firebasestorage.app",
     messagingSenderId: "503897234336",
     appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
+    measurementId: "G-6D44B4444K"
   };
 
-  const isDemoMode = !firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_FIREBASE_API_KEY";
+
+  const isDemoMode = !firebaseConfig.apiKey;
 
   let firebaseAuth = null;
   let googleProviderCtor = null;
