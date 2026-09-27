@@ -1,229 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>LOGIN PAGE</title>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'><link rel="stylesheet" href="LOGIN.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign In | VISION_S</title>
+<meta name="description" content="Sign in or create your VISION_S account and begin the journey." />
+<link rel="icon" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Syncopate:wght@400;700&family=Allura&display=swap" />
+<style>
+  :root {
+    --radius: 0.42rem;
+    --background: oklch(0.07 0.018 295);
+    --foreground: oklch(0.94 0.012 92);
+    --primary: oklch(0.73 0.14 72);
+    --primary-foreground: oklch(0.98 0.01 90);
+    --secondary: oklch(0.56 0.2 304);
+    --muted-foreground: oklch(0.68 0.036 286);
+    --border: oklch(0.57 0.14 303 / 48%);
+    --input: oklch(0.48 0.08 286 / 45%);
+    --auth-button: linear-gradient(105deg, oklch(0.48 0.16 352), oklch(0.54 0.15 56) 52%, oklch(0.46 0.24 298));
+    --shadow-panel: 0 0 0 1px oklch(0.85 0.11 75 / 10%), 0 0 34px oklch(0.5 0.24 303 / 20%), -12px 0 38px oklch(0.65 0.14 72 / 8%);
+    --shadow-button: inset 0 1px 0 oklch(0.98 0.03 92 / 38%), 0 0 18px oklch(0.57 0.22 304 / 30%);
+    --shadow-button-hover: inset 0 1px 0 oklch(0.98 0.03 92 / 45%), 0 0 26px oklch(0.65 0.23 304 / 48%);
+    --font-sans: "Manrope", sans-serif;
+    --font-display: "Syncopate", sans-serif;
+    --font-script: "Allura", cursive;
+  }
 
+  * { box-sizing: border-box; border-color: var(--border); }
+  html { background: var(--background); }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  .auth-shell {
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--background);
+    animation: shell-fade-in 700ms ease both;
+  }
+
+  .auth-backdrop, .auth-shade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .auth-backdrop {
+    z-index: -3;
+    object-fit: cover;
+    object-position: center;
+    animation: cinematic-drift 18s ease-in-out infinite alternate;
+  }
+
+  .auth-shade {
+    z-index: -2;
+    background:
+      linear-gradient(90deg, oklch(0.03 0.01 290 / 68%) 0%, transparent 37%, transparent 65%, oklch(0.02 0.01 290 / 45%) 100%),
+      linear-gradient(0deg, oklch(0.02 0.01 290 / 62%) 0%, transparent 35%, oklch(0.02 0.01 290 / 18%) 100%);
+  }
+
+  .brand-block { position: absolute; top: clamp(2rem, 7vh, 5.5rem); left: clamp(2rem, 6.5vw, 7rem); }
+  .brand-block p { margin: 0.7rem 0 0 4.5rem; color: var(--primary); font-family: var(--font-script); font-size: clamp(1.25rem, 1.8vw, 1.8rem); }
+
+  .vision-mark-row { display: flex; align-items: center; gap: 1rem; }
+  .vision-mark { display: block; width: 3.8rem; height: 4.4rem; object-fit: contain; }
+  .vision-mark--small { width: 3rem; height: 3.5rem; }
+  .vision-word { font-family: var(--font-display); font-size: clamp(1.35rem, 2.15vw, 2.2rem); letter-spacing: 0.4em; white-space: nowrap; }
+  .vision-word--small { font-size: clamp(1.1rem, 1.5vw, 1.55rem); }
+
+  .virtues {
+    position: absolute; top: 3.9rem; right: clamp(2rem, 6vw, 6.5rem);
+    display: flex; align-items: center; gap: 1rem;
+    color: oklch(0.76 0.08 300); font-family: var(--font-display);
+    font-size: 0.5rem; letter-spacing: 0.35em; text-transform: uppercase;
+  }
+  .virtues i { color: var(--primary); font-style: normal; }
+
+  .manifesto { position: absolute; left: clamp(2rem, 6.5vw, 7rem); top: 47%; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.38em; }
+  .manifesto p { margin: 0; font-size: clamp(0.72rem, 1vw, 1rem); line-height: 2; }
+  .manifesto strong { color: var(--primary); font-size: clamp(0.7rem, 0.95vw, 0.95rem); }
+
+  .auth-panel {
+    position: absolute;
+    top: clamp(6.5rem, 15vh, 9rem);
+    bottom: clamp(3.5rem, 11vh, 6rem);
+    right: clamp(2rem, 6.5vw, 7rem);
+    width: min(25.5rem, calc(100vw - 3rem));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 2px);
+    background: linear-gradient(145deg, oklch(0.08 0.02 290 / 93%), oklch(0.045 0.012 288 / 96%));
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(18px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--input) transparent;
+    transition: box-shadow 400ms ease;
+    animation: panel-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 120ms;
+  }
+  .auth-panel::-webkit-scrollbar { width: 6px; }
+  .auth-panel::-webkit-scrollbar-thumb { background: var(--input); border-radius: 4px; }
+  .auth-panel:hover { box-shadow: var(--shadow-panel), 0 0 46px oklch(0.6 0.2 304 / 14%); }
+  /* On short viewports the panel's content can be taller than the space
+     available between the top ribbon and the footer signature. When that
+     happens we switch from centering to top-alignment (with a scrollbar)
+     so nothing ever renders clipped above the visible box. See the
+     ResizeObserver in the script below. */
+  .auth-panel.is-compact { justify-content: flex-start; overflow-y: auto; }
+
+  .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; padding: 1rem 2.5rem 0; flex-shrink: 0; }
+  .auth-tabs button {
+    position: relative; height: 3.2rem; border: 0; border-bottom: 1px solid var(--input);
+    background: transparent; color: var(--muted-foreground); font-size: 0.95rem;
+    transition: color 220ms ease;
+  }
+  .auth-tabs button::after {
+    content: ""; position: absolute; right: 0; bottom: -1px; left: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+    box-shadow: 0 0 10px var(--secondary);
+    opacity: 0;
+    transform: scaleX(0.3);
+    transform-origin: center;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease;
+  }
+  .auth-tabs button.is-active { color: var(--primary-foreground); }
+  .auth-tabs button.is-active::after { opacity: 1; transform: scaleX(1); }
+
+  .auth-content { padding: 2rem 2.5rem 1.8rem; transition: opacity 260ms ease, transform 260ms ease; }
+  .auth-content.is-entering { opacity: 0; transform: translateY(10px); }
+  .panel-brand { display: flex; flex-direction: column; align-items: center; }
+  .panel-brand p { margin: 0.7rem 0 1.5rem; color: var(--muted-foreground); font-size: 0.76rem; transition: opacity 200ms ease; }
+  .auth-content form { display: grid; gap: 0.7rem; }
+
+  .collapsible {
+    overflow: hidden;
+    max-height: 4.5rem;
+    opacity: 1;
+    transform: translateY(0);
+    transition: max-height 360ms cubic-bezier(0.16, 1, 0.3, 1), opacity 240ms ease, transform 300ms ease, margin 360ms ease;
+  }
+  .collapsible.hidden-field {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    margin: 0 !important;
+    pointer-events: none;
+  }
+
+  .field-wrap {
+    display: flex; height: 2.8rem; align-items: center; gap: 0.8rem;
+    border: 1px solid var(--input); border-radius: var(--radius); padding: 0 0.85rem;
+    color: oklch(0.72 0.08 286); background: oklch(0.04 0.014 290 / 56%);
+    transition: border-color 180ms, box-shadow 180ms;
+  }
+  .field-wrap { transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease; }
+  .field-wrap:focus-within { border-color: var(--secondary); box-shadow: 0 0 0 3px oklch(0.55 0.2 304 / 14%); background: oklch(0.06 0.02 290 / 66%); }
+  .field-wrap input:not([type="checkbox"]) {
+    min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--foreground); font-size: 0.74rem;
+  }
+  .field-wrap input::placeholder { color: var(--muted-foreground); }
+  .field-wrap svg { flex-shrink: 0; }
+  .password-toggle {
+    position: relative; display: grid; place-items: center; width: 1.7rem; height: 1.7rem;
+    border: 0; padding: 0.2rem; background: none; color: inherit; border-radius: 50%;
+    transition: background-color 200ms ease;
+  }
+  .password-toggle:hover { background: oklch(0.55 0.2 304 / 14%); }
+  .password-toggle svg { position: absolute; inset: 0; margin: auto; transition: opacity 200ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .password-toggle svg.icon-hidden { opacity: 0; transform: scale(0.6) rotate(-15deg); }
+  .password-toggle svg.icon-visible { opacity: 1; transform: scale(1) rotate(0deg); }
+  .hidden-field { display: none; }
+
+  .form-options { display: flex; align-items: center; justify-content: space-between; margin: -0.05rem 0 0.55rem; font-size: 0.64rem; }
+  .form-options label { display: flex; align-items: center; gap: 0.42rem; color: var(--muted-foreground); }
+  .form-options input { width: 0.82rem; height: 0.82rem; accent-color: var(--secondary); }
+  .form-options a { color: var(--foreground); text-decoration: none; }
+  .form-options a:hover, .mode-prompt button:hover { color: var(--primary); }
+  .auth-error { margin: 0 0 0.1rem; color: oklch(0.79 0.14 27); font-size: 0.67rem; line-height: 1.4; }
+
+  .btn {
+    position: relative;
+    display: inline-flex; height: 3rem; width: 100%; align-items: center; justify-content: center;
+    gap: 0.5rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 500;
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, background-color 220ms ease, border-color 220ms ease;
+    border: 0; overflow: hidden;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: scale(0.98) translateY(0); }
+  .btn:disabled { opacity: 0.6; pointer-events: none; transform: none; }
+  .btn svg { transition: transform 220ms ease; }
+  .btn:hover svg { transform: translateX(3px); }
+  .btn-cosmic { border: 1px solid oklch(0.73 0.14 72 / 70%); background: var(--auth-button); background-size: 160% 160%; color: var(--primary-foreground); box-shadow: var(--shadow-button); }
+  .btn-cosmic:hover { box-shadow: var(--shadow-button-hover); background-position: 100% 0; }
+  .btn-outline { border: 1px solid oklch(0.57 0.14 303 / 80%); background: oklch(0.07 0.018 295 / 20%); color: var(--foreground); }
+  .btn-outline:hover { border-color: oklch(0.73 0.14 72 / 70%); background: oklch(0.3 0.14 304 / 40%); }
+
+  .auth-divider { display: flex; align-items: center; gap: 0.75rem; margin: 1rem 0; color: var(--muted-foreground); font-size: 0.58rem; text-transform: uppercase; }
+  .auth-divider::before, .auth-divider::after { content: ""; height: 1px; flex: 1; background: var(--input); }
+  .google-mark { font-family: Arial, sans-serif; font-size: 1.25rem; font-weight: 700; color: oklch(0.72 0.19 48); text-shadow: 1px 1px var(--secondary); }
+  .mode-prompt { margin: 1.45rem 0 0; text-align: center; color: var(--muted-foreground); font-size: 0.65rem; }
+  .mode-prompt button { border: 0; background: none; color: var(--primary); font-size: inherit; }
+
+  .pillars { position: absolute; bottom: clamp(2rem, 7vh, 4.8rem); left: clamp(2rem, 5vw, 5.5rem); display: flex; align-items: stretch; }
+  .pillars div { display: grid; min-width: 6.2rem; place-items: center; gap: 0.55rem; color: var(--primary); }
+  .pillars div + div { border-left: 1px solid var(--input); }
+  .pillars span { color: var(--foreground); font-family: var(--font-display); font-size: 0.5rem; letter-spacing: 0.28em; text-transform: uppercase; }
+
+  .signature { position: absolute; right: clamp(2rem, 6vw, 6.5rem); bottom: 2rem; text-align: right; }
+  .signature span { font-family: var(--font-display); font-size: 0.44rem; letter-spacing: 0.3em; text-transform: uppercase; }
+  .signature i { display: block; width: 4rem; height: 1px; margin: 0.8rem 0 0 auto; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+
+  @keyframes cinematic-drift { from { transform: scale(1.01); } to { transform: scale(1.045) translate3d(-0.35%, -0.2%, 0); } }
+  @keyframes shell-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes panel-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 900px) {
+    .auth-shell { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 7rem 1rem 5rem; }
+    .auth-backdrop { object-position: 35% center; }
+    .auth-shade { background: oklch(0.025 0.012 290 / 64%); }
+    .brand-block { top: 1.5rem; left: 1.5rem; }
+    .brand-block p { display: none; }
+    .brand-block .vision-word { font-size: 1rem; }
+    .brand-block .vision-mark { width: 2.7rem; height: 3.1rem; margin-right: -0.3rem; }
+    .virtues, .manifesto, .signature { display: none; }
+    .auth-panel { position: relative; top: auto; bottom: auto; right: auto; max-height: none; width: min(27rem, 100%); }
+    .pillars { left: 50%; bottom: 1.1rem; transform: translateX(-50%); width: min(24rem, calc(100% - 2rem)); justify-content: center; }
+    .pillars div { min-width: 0; flex: 1; }
+    .pillars span { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .auth-content { padding: 1.45rem 1.25rem 1.3rem; }
+    .auth-tabs { padding: 0.65rem 1.25rem 0; }
+    .panel-brand p { margin-bottom: 1.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auth-backdrop, .auth-content { animation: none; }
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+  }
+</style>
 </head>
-
 <body>
-  <h2>LET'S BEGIN THE JOURNEY</h2>
-  <div class="container" id="container">
+<main class="auth-shell">
+  <img src="vision-cosmic-bg.jpg" alt="Earth glowing beyond a futuristic portal" width="1920" height="1280" class="auth-backdrop" />
+  <div class="auth-shade"></div>
 
-    <!-- SIGN UP FORM -->
-    <div class="form-container sign-up-container">
-      <form action="#" id="signupForm">
-        <h1>Create Account</h1>
-        <div class="social-container">
-          <a href="#" class="social" id="facebook-signup"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social" id="google-signup"><i class="fab fa-google-plus-g"></i></a>
-          <a href="#" class="social" id="linkedin-signup"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-        <span>or use your email for registration</span>
-        <input type="text" placeholder="Name" id="signupName"/>
-        <input type="email" placeholder="Email" id="signupEmail"/>
-        <input type="password" placeholder="Password" id="signupPassword"/>
-        <button id="signupBtn">Sign Up</button>
-      </form>
+  <header class="brand-block">
+    <div class="vision-mark-row" aria-label="VISION_S">
+      <img src="vision-logo.svg" alt="" class="vision-mark" aria-hidden="true" />
+      <span class="vision-word">VISION_S</span>
     </div>
+    <p>A Vision Inspired by Saurav.</p>
+  </header>
+    
 
-    <!-- LOGIN FORM -->
-    <div class="form-container sign-in-container">
-      <form action="#" id="loginForm">
-        <h1>Sign in</h1>
-        <div class="social-container">
-          <a href="#" class="social" id="facebook-login"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social" id="google-login"><i class="fab fa-google-plus-g"></i></a>
-          <a href="#" class="social" id="linkedin-login"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-        <span>or use your account</span>
-        <input type="email" placeholder="Email" id="loginEmail"/>
-        <input type="password" placeholder="Password" id="loginPassword"/>
-        <a href="#">Forgot your password?</a>
-        <button id="loginBtn">Sign In</button>
-      </form>
-    </div>
-
-    <div class="overlay-container">
-      <div class="overlay">
-        <div class="overlay-panel overlay-left">
-          <h1>Welcome Back!</h1>
-          <p>To keep connected with us please login with your personal info</p>
-          <button class="ghost" id="signIn">Sign In</button>
-        </div>
-        <div class="overlay-panel overlay-right">
-          <h1>Hello, Friend!</h1>
-          <p>Enter your personal details and start journey with us</p>
-          <button class="ghost" id="signUp">Sign Up</button>
-        </div>
-      </div>
-    </div>
+  <div class="virtues" aria-label="Our values">
+    <span>Intelligence</span><i>/</i><span>Agility</span><i>/</i><span>Geniusness</span><i>/</i><span>Moral Values</span>
   </div>
 
-  <footer>
-    <p>
-      Created with <i class="fa fa-heart"></i> by VISION_S
+  <section class="manifesto" aria-label="Our purpose">
+    <p>More than<br />just a platform.</p>
+    <strong>It's a movement.</strong>
+  </section>
+
+  <section class="auth-panel" aria-label="Account access">
+    <div class="auth-tabs" role="tablist" aria-label="Account mode">
+      <button type="button" id="tab-signin" role="tab" aria-selected="true" class="is-active">Sign In</button>
+      <button type="button" id="tab-signup" role="tab" aria-selected="false">Sign Up</button>
+    </div>
+
+     <div class="auth-content">
+      <div class="panel-brand">
+        <div class="vision-mark-row" aria-label="VISION_S">
+          <img src="vision-logo.svg" alt="" class="vision-mark vision-mark--small" aria-hidden="true" />
+          <span class="vision-word vision-word--small">VISION_S</span>
+        </div>
+        <p id="panel-tagline">Welcome back, change the world.</p>
+      </div>
+
+      <form id="auth-form" novalidate>
+        <label class="field-wrap collapsible hidden-field" id="name-field">
+          <span class="sr-only">Name</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          <input name="name" type="text" autocomplete="name" placeholder="Your name" />
+        </label>
+
+        <label class="field-wrap">
+          <span class="sr-only">Email address</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <input name="email" type="email" autocomplete="email" placeholder="Email address" required />
+        </label>
+
+        <label class="field-wrap">
+          <span class="sr-only">Password</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+          <input id="password-input" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required />
+          <button type="button" class="password-toggle" id="password-toggle" aria-label="Show password">
+            <svg id="eye-open" class="icon-visible" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eye-off" class="icon-hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
+          </button>
+        </label>
+
+        <div class="form-options collapsible" id="signin-options">
+          <label><input type="checkbox" name="remember" /> <span>Remember me</span></label>
+          <a href="#forgot-password">Forgot password?</a>
+        </div>
+
+        <p class="auth-error collapsible hidden-field" id="auth-message" role="alert"></p>
+
+        <button type="submit" class="btn btn-cosmic" id="submit-btn">
+          <span id="submit-label">Sign In</span>
+          <svg id="submit-arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <div class="auth-divider"><span>or</span></div>
+
+      <button type="button" class="btn btn-outline" id="google-btn">
+        <span class="google-mark">G</span> Continue with Google
+      </button>
+
+      <p class="mode-prompt">
+        <span id="mode-prompt-text">Don't have an account?</span>
+        <button type="button" id="mode-switch">Create one</button>
       </p>
+    </div>
+  </section>
+
+  <nav class="pillars" aria-label="VISION_S pillars">
+    <div><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg><span>Learn</span></div>
+    <div><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg><span>Build</span></div>
+    <div><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg><span>Create</span></div>
+    <div><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg><span>Grow</span></div>
+    <div><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Together</span></div>
+  </nav>
+
+  <footer class="signature">
+    <span>A Vision Inspired by Saurav.</span>
+    <i></i>
   </footer>
+</main>
 
-  <!-- ORIGINAL JS UNTOUCHED -->
-  <script>
-  const signUpButton = document.getElementById('signUp');
-  const signInButton = document.getElementById('signIn');
-  const container = document.getElementById('container');
-
-  signUpButton.addEventListener('click', () => {
-    container.classList.add("right-panel-active");
-  });
-
-  signInButton.addEventListener('click', () => {
-    container.classList.remove("right-panel-active");
-  });
-  </script>
-
-<!-- ✅ FIREBASE AUTH - ONLY GOOGLE + EMAIL/PASSWORD -->
 <script type="module">
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    GoogleAuthProvider,
-    signInWithPopup
-  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-
-  /* ✅ Firebase Config (unchanged) */
+  // ---------------------------------------------------------------
+  // Firebase config (from the original project). The apiKey below
+  // is a placeholder — paste your real Firebase Web API key in to
+  // enable live authentication. Until then the form runs in demo
+  // mode: it validates input and shows a friendly confirmation
+  // instead of calling Firebase.
+  // ---------------------------------------------------------------
   const firebaseConfig = {
-    apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
+    apiKey: "YOUR_FIREBASE_API_KEY",
     authDomain: "login-6e215.firebaseapp.com",
     projectId: "login-6e215",
     storageBucket: "login-6e215.firebasestorage.app",
     messagingSenderId: "503897234336",
     appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
-    measurementId: "G-6D44B4444K"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const isDemoMode = !firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_FIREBASE_API_KEY";
 
-  /* ✅ DOM ELEMENTS */
-  const signupBtn = document.getElementById("signupBtn");
-  const loginBtn = document.getElementById("loginBtn");
-  const googleSignupBtn = document.getElementById("google-signup");
-  const googleLoginBtn = document.getElementById("google-login");
+  let firebaseAuth = null;
+  let googleProviderCtor = null;
+  let signInFn = null;
+  let signUpFn = null;
+  let popupFn = null;
 
-  /* ✅ SIGN UP WITH EMAIL/PASSWORD */
-  signupBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+  async function getAuthInstance() {
+    if (isDemoMode) return null;
+    if (firebaseAuth) return firebaseAuth;
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    const authModule = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    const app = initializeApp(firebaseConfig);
+    firebaseAuth = authModule.getAuth(app);
+    googleProviderCtor = authModule.GoogleAuthProvider;
+    signInFn = authModule.signInWithEmailAndPassword;
+    signUpFn = authModule.createUserWithEmailAndPassword;
+    popupFn = authModule.signInWithPopup;
+    return firebaseAuth;
+  }
 
-    createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value)
-      .then(() => {
-        window.location.href = "dashboard.html";
-      })
-      .catch(err => alert(err.message));
+  function friendlyError(error) {
+    if (!error || !error.message) return "Something went wrong. Please try again.";
+    return String(error.message)
+      .replace(/^Firebase:\s*/i, "")
+      .replace(/\s*\(auth\/[\w-]+\)\.?$/i, "")
+      .replace(/^Error\s*/i, "");
+  }
+
+  // ----- Elements -----
+  const tabSignin = document.getElementById("tab-signin");
+  const tabSignup = document.getElementById("tab-signup");
+  const nameField = document.getElementById("name-field");
+  const nameInput = nameField.querySelector("input");
+  const signinOptions = document.getElementById("signin-options");
+  const panelTagline = document.getElementById("panel-tagline");
+  const submitLabel = document.getElementById("submit-label");
+  const submitArrow = document.getElementById("submit-arrow");
+  const modePromptText = document.getElementById("mode-prompt-text");
+  const modeSwitch = document.getElementById("mode-switch");
+  const authForm = document.getElementById("auth-form");
+  const authMessage = document.getElementById("auth-message");
+  const passwordInput = document.getElementById("password-input");
+  const passwordToggle = document.getElementById("password-toggle");
+  const eyeOpen = document.getElementById("eye-open");
+  const eyeOff = document.getElementById("eye-off");
+  const submitBtn = document.getElementById("submit-btn");
+  const googleBtn = document.getElementById("google-btn");
+  const authPanel = document.querySelector(".auth-panel");
+  const authContent = document.querySelector(".auth-content");
+
+  // Keeps the panel centered when everything fits, but switches to
+  // top-aligned + scrollable the moment its content (e.g. the extra
+  // Sign Up name field) would be taller than the space available on a
+  // short screen — this is what prevents the tabs from ever rendering
+  // above the panel's visible top edge.
+  function adjustPanelFit() {
+    const overflowing = authPanel.scrollHeight > authPanel.clientHeight + 1;
+    authPanel.classList.toggle("is-compact", overflowing);
+  }
+  if (typeof ResizeObserver !== "undefined") {
+    const observer = new ResizeObserver(() => adjustPanelFit());
+    observer.observe(authPanel);
+    observer.observe(authContent);
+  } else {
+    window.addEventListener("resize", adjustPanelFit);
+  }
+
+  let mode = "signin";
+
+  function setMessage(text) {
+    authMessage.textContent = text || "";
+    authMessage.classList.toggle("hidden-field", !text);
+  }
+
+  function setPasswordIconState(showing) {
+    // showing = password currently visible as text
+    eyeOpen.classList.toggle("icon-visible", !showing);
+    eyeOpen.classList.toggle("icon-hidden", showing);
+    eyeOff.classList.toggle("icon-visible", showing);
+    eyeOff.classList.toggle("icon-hidden", !showing);
+    passwordToggle.setAttribute("aria-label", showing ? "Hide password" : "Show password");
+  }
+
+  // Replays the panel's entrance animation each time the mode changes,
+  // so switching Sign In <-> Sign Up gets a small, smooth refresh instead
+  // of content just snapping into place.
+  function replayEntrance() {
+    authContent.classList.add("is-entering");
+    // Force a reflow so the browser registers the "is-entering" state
+    // before we remove it, guaranteeing the transition actually plays.
+    void authContent.offsetWidth;
+    authContent.classList.remove("is-entering");
+  }
+
+  function applyMode() {
+    const isSignup = mode === "signup";
+    tabSignin.classList.toggle("is-active", !isSignup);
+    tabSignin.setAttribute("aria-selected", String(!isSignup));
+    tabSignup.classList.toggle("is-active", isSignup);
+    tabSignup.setAttribute("aria-selected", String(isSignup));
+
+    nameField.classList.toggle("hidden-field", !isSignup);
+    nameInput.required = isSignup;
+    signinOptions.classList.toggle("hidden-field", isSignup);
+
+    panelTagline.textContent = isSignup
+      ? "Create boldly, shape what comes next."
+      : "Welcome back, change the world.";
+    submitLabel.textContent = isSignup ? "Create Account" : "Sign In";
+    modePromptText.textContent = isSignup ? "Already part of the movement?" : "Don't have an account?";
+    modeSwitch.textContent = isSignup ? "Sign in" : "Create one";
+    passwordInput.autocomplete = isSignup ? "new-password" : "current-password";
+
+    setMessage("");
+    passwordInput.type = "password";
+    setPasswordIconState(false);
+    replayEntrance();
+  }
+
+  function switchMode(next) {
+    if (next === mode) return;
+    mode = next;
+    applyMode();
+  }
+
+  tabSignin.addEventListener("click", () => switchMode("signin"));
+  tabSignup.addEventListener("click", () => switchMode("signup"));
+  modeSwitch.addEventListener("click", () => switchMode(mode === "signin" ? "signup" : "signin"));
+
+  passwordToggle.addEventListener("click", () => {
+    const showing = passwordInput.type === "text";
+    passwordInput.type = showing ? "password" : "text";
+    setPasswordIconState(!showing);
   });
 
-  /* ✅ LOGIN WITH EMAIL/PASSWORD */
-  loginBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+  function setPending(isPending) {
+    submitBtn.disabled = isPending;
+    googleBtn.disabled = isPending;
+    submitLabel.textContent = isPending ? "Please wait…" : (mode === "signin" ? "Sign In" : "Create Account");
+    submitArrow.style.display = isPending ? "none" : "";
+  }
 
-    signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
-      .then(() => {
-        window.location.href = "dashboard.html";
-      })
-      .catch(err => alert(err.message));
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(authForm);
+    const email = String(form.get("email") || "");
+    const password = String(form.get("password") || "");
+
+    setPending(true);
+    setMessage("");
+
+    if (isDemoMode) {
+      await new Promise((r) => setTimeout(r, 600));
+      setPending(false);
+      setMessage(
+        mode === "signup"
+          ? `Demo mode: account for ${email} would be created here. Add your Firebase API key to go live.`
+          : `Demo mode: ${email} would be signed in here. Add your Firebase API key to go live.`
+      );
+      return;
+    }
+
+    try {
+      const auth = await getAuthInstance();
+      if (mode === "signup") {
+        await signUpFn(auth, email, password);
+      } else {
+        await signInFn(auth, email, password);
+      }
+      window.location.assign("/dashboard.html");
+    } catch (error) {
+      setMessage(friendlyError(error));
+    } finally {
+      setPending(false);
+    }
   });
 
-  /* ✅ GOOGLE AUTH (SIGN UP + LOGIN) */
-  const googleProvider = new GoogleAuthProvider();
+  googleBtn.addEventListener("click", async () => {
+    setPending(true);
+    setMessage("");
 
-  googleSignupBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    signInWithPopup(auth, googleProvider)
-      .then(() => window.location.href = "dashboard.html")
-      .catch(err => alert(err.message));
+    if (isDemoMode) {
+      await new Promise((r) => setTimeout(r, 600));
+      setPending(false);
+      setMessage("Demo mode: Google sign-in would open here. Add your Firebase API key to go live.");
+      return;
+    }
+
+    try {
+      const auth = await getAuthInstance();
+      await popupFn(auth, new googleProviderCtor());
+      window.location.assign("/dashboard.html");
+    } catch (error) {
+      setMessage(friendlyError(error));
+    } finally {
+      setPending(false);
+    }
   });
 
-  googleLoginBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    signInWithPopup(auth, googleProvider)
-      .then(() => window.location.href = "dashboard.html")
-      .catch(err => alert(err.message));
-  });
-
+  applyMode();
 </script>
-
-
-<style>
-/* 🔥 YOUR ORIGINAL CSS PASTED EXACTLY — UNTOUCHED */
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-* { box-sizing: border-box; }
-body {
-    background: linear-gradient(130deg, #1e1f20, #3a3bff, #9b00ff, #ff0080, #00ffd5);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
-    height: 100vh;
-    margin: -20px 0 50px;
-}
-
-/* 🔥 Smooth movement of gradient */
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-h1 { font-weight: bold; margin: 0; }
-h2 { text-align: center; }
-p { font-size: 14px; font-weight: 100; line-height: 20px; letter-spacing: 0.5px; margin: 20px 0 30px; }
-span { font-size: 12px; }
-a { color: #333; font-size: 14px; text-decoration: none; margin: 15px 0; }
-button { border-radius: 20px; border: 1px solid #FF4B2B; background-color: #FF4B2B; color: #FFFFFF; font-size: 12px; font-weight: bold; padding: 12px 45px; letter-spacing: 1px; text-transform: uppercase; transition: transform 80ms ease-in; }
-button:active { transform: scale(0.95); }
-button:focus { outline: none; }
-button.ghost { background-color: transparent; border-color: #FFFFFF; }
-form { background-color: #ffffff; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 50px; height: 100%; text-align: center; }
-input { background-color: #eee; border: none; padding: 12px 15px; margin: 8px 0; width: 100%; }
-.container { background-color: #fff; border-radius: 10px; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); position: relative; overflow: hidden; width: 768px; max-width: 100%; min-height: 480px; }
-.form-container { position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out; }
-.sign-in-container { left: 0; width: 50%; z-index: 2; }
-.container.right-panel-active .sign-in-container { transform: translateX(100%); }
-.sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; }
-.container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
-@keyframes show { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
-.overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
-.container.right-panel-active .overlay-container{ transform: translateX(-100%); }
-.overlay { background: #FF416C; background: linear-gradient(to right, #FF4B2B, #FF416C); background-repeat: no-repeat; background-size: cover; background-position: 0 0; color: #FFFFFF; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out;background-size: 200% 200%;
-animation: shineEffect 6s infinite linear;
- }
-.container.right-panel-active .overlay { transform: translateX(50%); }
-.overlay-panel { position: absolute; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 40px; text-align: center; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
-.overlay-left { transform: translateX(-20%); }
-.container.right-panel-active .overlay-left { transform: translateX(0); }
-.overlay-right { right: 0; transform: translateX(0); }
-.container.right-panel-active .overlay-right { transform: translateX(20%); }
-.social-container { margin: 20px 0; }
-.social-container a { border: 1px solid #DDDDDD; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin: 0 5px; height: 40px; width: 40px; }
-footer { background-color: #222; color: #fff; font-size: 14px; bottom: 0; position: fixed; left: 0; right: 0; text-align: center; z-index: 999; }
-footer p { margin: 10px 0; }
-footer i { color: red; }
-footer a { color: #3c97bf; text-decoration: none; }
-@keyframes shineEffect {
-    0% { background-position: 0 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0 50%; }
-}
-
-</style>
-
 </body>
 </html>
-
