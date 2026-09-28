@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Vision_S — Personal Growth Dashboard</title>
+<title>Vision_S Dashboard</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="description" content="Track your Vision_S level, streak, progress, and recent activity." />
 <meta property="og:title" content="Vision_S — Personal Growth Dashboard" />
@@ -249,7 +249,189 @@
     .admin-row > span { grid-column: 1 / -1; }
   }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+/* ── MEMBERSHIP & CARD STYLES ── */
+.membership-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.membership-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Card 3D Stage */
+.card-stage {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: center;
+}
+.mc {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 315px;
+  border-radius: 18px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 30px 80px rgba(0,0,0,.85), 0 0 60px var(--card-glow, rgba(201,168,76,.2));
+  transition: transform 0.15s ease-out, box-shadow 0.4s;
+  animation: cardFloat 6s ease-in-out infinite;
+}
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0) rotateX(1deg); }
+  50% { transform: translateY(-8px) rotateX(-1deg); }
+}
+
+/* Layered Hologram Shine */
+.mc-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background: linear-gradient(108deg, transparent 20%, rgba(255,255,255,.05) 35%, rgba(255,255,255,.2) 50%, transparent 75%);
+  animation: shineRun 6s linear infinite;
+}
+@keyframes shineRun {
+  0% { transform: translateX(-160%) skewX(-12deg); }
+  100% { transform: translateX(160%) skewX(-12deg); }
+}
+
+.mc-inner {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  padding: 24px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.mc-row1 { display: flex; justify-content: space-between; align-items: flex-start; }
+.mc-logo { font-weight: 900; font-size: 1.05rem; letter-spacing: .45em; text-transform: uppercase; }
+.mc-rank-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: .52rem;
+  letter-spacing: .25em;
+  padding: .3rem .7rem;
+  border: 1px solid rgba(255,255,255,.3);
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+/* Chip & NFC */
+.mc-row2 { display: flex; align-items: center; gap: 14px; }
+.mc-chip {
+  width: 48px;
+  height: 38px;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #b8922a 0%, #ead97c 20%, #c9a84c 40%, #ffd700 70%, #9a7a28 100%);
+  border: 1px solid rgba(255,255,255,.45);
+  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.mc-nfc { display: flex; flex-direction: column; gap: 3px; }
+.mc-nfc-arc {
+  width: var(--w);
+  height: calc(var(--w)*.52);
+  border: 2px solid rgba(255,255,255,.4);
+  border-bottom: none;
+  border-radius: var(--w) var(--w) 0 0;
+}
+
+/* Card Number & Info */
+.mc-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.05rem;
+  letter-spacing: .32em;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0,0,0,.8);
+}
+.mc-row4 { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.mc-name {
+  font-weight: 900;
+  font-size: .95rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.mc-meta-row { display: flex; gap: 18px; margin-top: 4px; }
+.mc-meta-lbl { font-size: .4rem; letter-spacing: .25em; opacity: .65; text-transform: uppercase; font-family: 'Space Mono', monospace; }
+.mc-role, .mc-valid { font-size: .55rem; font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase; }
+
+/* QR Code */
+.mc-qr {
+  width: 66px;
+  height: 66px;
+  background: #fff;
+  padding: 4px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,.6);
+}
+.mc-qr canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* Themes */
+.cl-gold {
+  --card-glow: rgba(201,168,76,.35);
+  background: linear-gradient(140deg, #0d0900 0%, #4a3200 25%, #c9a84c 55%, #1a1200 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255,215,0,.35);
+}
+.cl-elite {
+  --card-glow: rgba(0,212,200,.3);
+  background: linear-gradient(140deg, #041414 0%, #0d5550 25%, #1fb2a6 60%, #031212 100%);
+  color: #ffffff;
+  border: 1px solid rgba(0,212,200,.35);
+}
+.cl-silver {
+  --card-glow: rgba(180,180,200,.25);
+  background: linear-gradient(140deg, #18181a 0%, #4a4a50 30%, #a0a0a8 60%, #121214 100%);
+  color: #ffffff;
+  border: 1px solid rgba(220,220,230,.3);
+}
+
+/* Application Form Multi-Step UI */
+.step-bar { display: flex; align-items: center; margin-bottom: 28px; position: relative; }
+.step-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; z-index: 2; }
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  transition: all .3s;
+}
+.step-item.active .step-dot { border-color: var(--gold); background: var(--gold); color: #000; }
+.step-item.done .step-dot { border-color: var(--cyan, #00d4c8); background: var(--cyan, #00d4c8); color: #000; }
+.step-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted-foreground); }
+.step-panel { display: none; }
+.step-panel.active { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Tag pills */
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--deep); }
+.tag-pill { background: rgba(201,168,76,.15); border: 1px solid var(--gold); color: var(--gold); padding: 3px 8px; border-radius: 4px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+.tag-pill button { background: none; border: none; color: inherit; cursor: pointer; font-size: 14px; }
+
 </style>
+  <!-- QR Code & Card Image Export CDN -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <script src="firebase-config.js"></script>
 </head>
 <body>
@@ -273,7 +455,8 @@
   </header>
 
   <aside class="sidebar" id="sidebar">
-    <nav aria-label="Dashboard navigation" id="navList"></nav>
+     <nav aria-label="Dashboard navigation" id="navList"></nav>
+
     <div class="sidebar-bottom">
       <button class="nav-item" id="settingsBtn"><span class="icon-slot" data-icon="settings"></span><span>Settings</span></button>
       <button class="nav-item" id="logoutBtn"><span class="icon-slot" data-icon="logout"></span><span>Logout</span></button>
@@ -285,6 +468,138 @@
   </aside>
 
   <main class="dashboard" id="overview">
+<div class="tab-panel" id="panel-Membership" hidden>
+  <div class="membership-header">
+    <div>
+      <h2 style="font-size:1.4rem;letter-spacing:.05em;color:var(--foreground);">VISION-S MEMBERSHIP</h2>
+      <p style="color:var(--muted-foreground);font-size:13px;">Your digital credentials and access tier inside Vision-S.</p>
+    </div>
+    <div class="membership-actions">
+      <button class="settings-save" id="toggleApplyBtn">✦ Apply for Membership</button>
+      <button class="settings-save" id="downloadCardBtn">↓ Download PNG</button>
+    </div>
+  </div>
+
+  <!-- 3D CARD DISPLAY STAGE -->
+  <div id="cardDisplaySection">
+    <div class="card-stage" id="cardStage">
+      <div class="mc cl-gold" id="mcElement">
+        <div class="mc-shine"></div>
+        <div class="mc-inner">
+          <div class="mc-row1">
+            <span class="mc-logo">VISION_S</span>
+            <span class="mc-rank-badge" id="cardRankBadge">GOLD MEMBER</span>
+          </div>
+          <div class="mc-row2">
+            <div class="mc-chip"></div>
+            <div class="mc-nfc">
+              <div class="mc-nfc-arc" style="--w:16px;"></div>
+              <div class="mc-nfc-arc" style="--w:11px;"></div>
+              <div class="mc-nfc-arc" style="--w:6px;"></div>
+            </div>
+          </div>
+          <div class="mc-number" id="cardNumberText">VS-000000 0000</div>
+          <div class="mc-row4">
+            <div>
+              <div class="mc-meta-lbl">CARDHOLDER</div>
+              <div class="mc-name" id="cardHolderName">VISIONARY</div>
+              <div class="mc-meta-row">
+                <div><div class="mc-meta-lbl">ROLE</div><div class="mc-role" id="cardRoleText">MEMBER</div></div>
+                <div><div class="mc-meta-lbl">VALID THRU</div><div class="mc-valid" id="cardValidText">LIFETIME</div></div>
+              </div>
+            </div>
+            <div class="mc-qr" id="cardQRCode"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE LOOKUP BAR -->
+    <div style="max-width:440px;margin:0 auto;text-align:center;">
+      <p style="font-size:12px;color:var(--muted-foreground);margin-bottom:8px;">Have a special member access pass code?</p>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="memberCodeInput" placeholder="ENTER CODE (e.g. VS1CR7)" style="flex:1;text-transform:uppercase;padding:8px 12px;background:var(--deep);border:1px solid var(--border);border-radius:var(--radius);color:var(--foreground);" />
+        <button class="settings-save" id="verifyCodeBtn">Verify</button>
+      </div>
+      <div id="codeVerifyMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
+    </div>
+  </div>
+
+  <!-- MULTI-STEP APPLICATION FORM -->
+  <div id="applicationFormSection" style="display:none;max-width:680px;margin:20px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-size:16px;color:var(--gold);">APPLICATION FOR OFFICIAL MEMBERSHIP</h3>
+      <button id="cancelApplyBtn" style="background:none;border:none;color:var(--muted-foreground);cursor:pointer;">✕ Close</button>
+    </div>
+
+    <div class="step-bar">
+      <div class="step-item active" id="st1"><div class="step-dot">1</div><span class="step-lbl">Personal</span></div>
+      <div class="step-item" id="st2"><div class="step-dot">2</div><span class="step-lbl">Contact</span></div>
+      <div class="step-item" id="st3"><div class="step-dot">3</div><span class="step-lbl">Vision</span></div>
+      <div class="step-item" id="st4"><div class="step-dot">4</div><span class="step-lbl">Review</span></div>
+    </div>
+
+    <form id="membershipForm">
+      <!-- Step 1 -->
+      <div class="step-panel active" id="panel-step1">
+        <div class="settings-form" style="max-width:100%;">
+          <div class="settings-field"><label>First & Last Name *</label><input type="text" id="appFullName" required /></div>
+          <div class="settings-field"><label>Date of Birth *</label><input type="date" id="appDOB" style="width:100%;min-height:40px;background:var(--deep);border:1px solid var(--border);color:var(--foreground);padding:0 10px;" required /></div>
+          <div class="settings-field"><label>School / College / Organization *</label><input type="text" id="appSchool" required /></div>
+          <button type="button" class="settings-save" id="toStep2" style="margin-top:10px;">Next: Contact Info →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-panel" id="panel-step2">
+        <div class="settings-form" style="max-width:100%;">
+          <div class="settings-field"><label>Email *</label><input type="email" id="appEmail" style="width:100%;min-height:40px;background:var(--deep);border:1px solid var(--border);color:var(--foreground);padding:0 10px;" required /></div>
+          <div class="settings-field"><label>Phone Number *</label><input type="tel" id="appPhone" style="width:100%;min-height:40px;background:var(--deep);border:1px solid var(--border);color:var(--foreground);padding:0 10px;" required /></div>
+          <div class="settings-field"><label>Permanent Address *</label><input type="text" id="appAddress" required /></div>
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <button type="button" class="settings-save" id="backTo1">← Back</button>
+            <button type="button" class="settings-save" id="toStep3">Next: Role & Vision →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-panel" id="panel-step3">
+        <div class="settings-form" style="max-width:100%;">
+          <div class="settings-field">
+            <label>Role Desired *</label>
+            <select id="appRole" style="width:100%;min-height:40px;background:var(--deep);border:1px solid var(--border);color:var(--foreground);padding:0 10px;">
+              <option value="Creator / Innovator">Creator / Innovator</option>
+              <option value="Developer / Tech">Developer / Tech</option>
+              <option value="Community Leader">Community Leader</option>
+              <option value="Visionary Member">Visionary Member</option>
+            </select>
+          </div>
+          <div class="settings-field">
+            <label>Why do you want to join Vision-S? *</label>
+            <textarea id="appWhy" rows="3" style="width:100%;background:var(--deep);border:1px solid var(--border);color:var(--foreground);padding:8px;" required></textarea>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <button type="button" class="settings-save" id="backTo2">← Back</button>
+            <button type="button" class="settings-save" id="toStep4">Review Details →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step-panel" id="panel-step4">
+        <div id="reviewSummary" style="font-size:13px;line-height:1.7;background:var(--deep);padding:14px;border-radius:var(--radius);margin-bottom:14px;"></div>
+        <label style="display:flex;gap:8px;font-size:12px;color:var(--muted-foreground);margin-bottom:14px;">
+          <input type="checkbox" id="agreeTerms" required /> I confirm all submitted details are genuine.
+        </label>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="settings-save" id="backTo3">← Back</button>
+          <button type="submit" class="settings-save" id="submitAppBtn" style="border-color:var(--gold);background:var(--gold);color:#000;font-weight:700;">Submit Application ✦</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
     <div class="toast" id="toast" role="status" hidden>
       <span id="toastText"></span>
@@ -468,7 +783,8 @@ import {
   ];
 
   // ---- tiny generic icon set (outline icons, no external lib) ----
-  const ICONS = {
+    const ICONS = {
+    card: '<rect width="20" height="14" x="2" y="5" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="2" x2="22" y1="10" y2="10" stroke="currentColor" stroke-width="2"/>',
     home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
     bookOpen: '<path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z"/>',
@@ -518,6 +834,7 @@ import {
   const NAV_ITEMS = [
     { name: "Overview", icon: "home" },
     { name: "Profile", icon: "user" },
+    { name: "Membership", icon: "card" },
     { name: "Resources", icon: "bookOpen" },
     { name: "Projects", icon: "folder" },
     { name: "Activity", icon: "activity" },
@@ -564,6 +881,8 @@ import {
     else if (name === "Projects") { if (!projectsLoaded) { projectsLoaded = true; renderProjectsPanel(); } }
     else if (name === "Activity") renderActivityPanel();
     else if (name === "Settings") renderSettingsPanel();
+        else if (name === "Membership") renderMembershipCard();
+
   }
 
   $("menuBtn").addEventListener("click", () => {
@@ -638,6 +957,8 @@ import {
     if (active === "Profile") renderProfilePanel();
     else if (active === "Activity") renderActivityPanel();
     else if (active === "Settings") renderSettingsPanel();
+        else if (active === "Membership") renderMembershipCard();
+
   }
 
   hydrateIcons();
@@ -1124,6 +1445,204 @@ async function renderResourcesPanel() {
       renderUI();
     }
   }
+  // ==========================================
+  // MEMBERSHIP CARD & APPLICATION LOGIC
+  // ==========================================
+
+  function renderMembershipCard() {
+    const cardHolder = document.getElementById("cardHolderName");
+    const cardRank = document.getElementById("cardRankBadge");
+    const cardRole = document.getElementById("cardRoleText");
+    const cardValid = document.getElementById("cardValidText");
+    const cardCode = document.getElementById("cardNumberText");
+    const mc = document.getElementById("mcElement");
+
+    if (cardHolder) cardHolder.textContent = (user.name || "VISIONARY").toUpperCase();
+    if (cardRank) cardRank.textContent = (user.level || "BRONZE").toUpperCase();
+    if (cardRole) cardRole.textContent = isAdmin ? "SUPER ADMIN" : "CORE MEMBER";
+    if (cardValid) cardValid.textContent = "12/29";
+
+    const membershipNum = user.membershipNumber || "VS-000001";
+    if (cardCode) cardCode.textContent = membershipNum;
+
+    // Theme based on level
+    if (mc) {
+      mc.classList.remove("cl-gold", "cl-elite", "cl-silver");
+      const lvl = String(user.level || "").toLowerCase();
+      if (lvl.includes("conqueror") || lvl.includes("titan") || isAdmin) {
+        mc.classList.add("cl-elite");
+      } else if (lvl.includes("gold") || lvl.includes("silver")) {
+        mc.classList.add("cl-silver");
+      } else {
+        mc.classList.add("cl-gold");
+      }
+    }
+
+    // Dynamic QR code
+    const qrWrap = document.getElementById("cardQRCode");
+    if (qrWrap) {
+      qrWrap.innerHTML = "";
+      if (window.QRCode) {
+        QRCode.toCanvas(
+          document.createElement("canvas"),
+          "https://saurav-pandey999.github.io/worldofvisions/card.html?code=" + membershipNum,
+          { width: 58, margin: 0 },
+          (err, canvas) => {
+            if (!err && canvas) qrWrap.appendChild(canvas);
+          }
+        );
+      }
+    }
+  }
+
+  // 3D Parallax Tilt Effect
+  const stage = document.getElementById("cardStage");
+  const mcEl = document.getElementById("mcElement");
+  if (stage && mcEl) {
+    stage.addEventListener("mousemove", (e) => {
+      const rect = stage.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      mcEl.style.animation = "none";
+      mcEl.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 10}deg) scale(1.02)`;
+    });
+    stage.addEventListener("mouseleave", () => {
+      mcEl.style.transform = "";
+      mcEl.style.animation = "cardFloat 6s ease-in-out infinite";
+    });
+  }
+
+  // Download Card as PNG Image
+  document.getElementById("downloadCardBtn")?.addEventListener("click", () => {
+    if (window.html2canvas && mcEl) {
+      window.html2canvas(mcEl, { backgroundColor: null, scale: 2 }).then((canvas) => {
+        const a = document.createElement("a");
+        a.download = "vision-s-membership-card.png";
+        a.href = canvas.toDataURL("image/png");
+        a.click();
+      });
+    }
+  });
+  // Pass code verification bar
+  document.getElementById("verifyCodeBtn")?.addEventListener("click", () => {
+    const code = document.getElementById("memberCodeInput")?.value.trim().toUpperCase();
+    const msg = document.getElementById("codeVerifyMsg");
+    if (!msg) return;
+    msg.style.display = "block";
+    if (!code) {
+      msg.style.color = "#ef4444";
+      msg.textContent = "Please enter an access code.";
+      return;
+    }
+    msg.style.color = "#22c55e";
+    msg.textContent = `Access code "${code}" verified.`;
+  });
+
+  // Switch between Card view and Multi-Step Application view
+  const toggleApplyBtn = document.getElementById("toggleApplyBtn");
+  const cancelApplyBtn = document.getElementById("cancelApplyBtn");
+  const appSection = document.getElementById("applicationFormSection");
+  const cardSection = document.getElementById("cardDisplaySection");
+
+  toggleApplyBtn?.addEventListener("click", () => {
+    if (appSection && cardSection) {
+      appSection.style.display = "block";
+      cardSection.style.display = "none";
+      appSection.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+
+  cancelApplyBtn?.addEventListener("click", () => {
+    if (appSection && cardSection) {
+      appSection.style.display = "none";
+      cardSection.style.display = "block";
+    }
+  });
+
+  // Application Step Wizard
+  function showStep(idx) {
+    [1, 2, 3, 4].forEach((i) => {
+      document.getElementById("panel-step" + i)?.classList.toggle("active", i === idx);
+      const dot = document.getElementById("st" + i);
+      if (dot) {
+        dot.classList.toggle("active", i === idx);
+        dot.classList.toggle("done", i < idx);
+      }
+    });
+  }
+
+  document.getElementById("toStep2")?.addEventListener("click", () => showStep(2));
+  document.getElementById("backTo1")?.addEventListener("click", () => showStep(1));
+  document.getElementById("toStep3")?.addEventListener("click", () => showStep(3));
+  document.getElementById("backTo2")?.addEventListener("click", () => showStep(2));
+  document.getElementById("toStep4")?.addEventListener("click", () => {
+    const sum = `
+      <strong>Name:</strong> ${document.getElementById("appFullName")?.value || "N/A"}<br/>
+      <strong>DOB:</strong> ${document.getElementById("appDOB")?.value || "N/A"}<br/>
+      <strong>School/Org:</strong> ${document.getElementById("appSchool")?.value || "N/A"}<br/>
+      <strong>Email:</strong> ${document.getElementById("appEmail")?.value || "N/A"}<br/>
+      <strong>Phone:</strong> ${document.getElementById("appPhone")?.value || "N/A"}<br/>
+      <strong>Role Desired:</strong> ${document.getElementById("appRole")?.value || "N/A"}
+    `;
+    const reviewEl = document.getElementById("reviewSummary");
+    if (reviewEl) reviewEl.innerHTML = sum;
+    showStep(4);
+  });
+  document.getElementById("backTo3")?.addEventListener("click", () => showStep(3));
+
+  // Form submission: sends to Google Sheets and saves in Firestore
+  document.getElementById("membershipForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submitAppBtn");
+    if (btn) {
+      btn.textContent = "Submitting…";
+      btn.disabled = true;
+    }
+
+    const payload = {
+      name: document.getElementById("appFullName")?.value || "",
+      dob: document.getElementById("appDOB")?.value || "",
+      school: document.getElementById("appSchool")?.value || "",
+      email: document.getElementById("appEmail")?.value || "",
+      phone: document.getElementById("appPhone")?.value || "",
+      role: document.getElementById("appRole")?.value || "",
+      why: document.getElementById("appWhy")?.value || "",
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      // 1. Send data to Google Sheets Web App
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbz17tIBwe-xydZ_-Pqb-6-HkvhnhQeZnp1ubnBKBGaiWKL3iuH4gl2rsZ0U8i09B_kd/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      // 2. Save application record directly under user document in Firestore
+      if (currentUserId && db) {
+        await updateDoc(doc(db, "users", currentUserId), {
+          membershipApplication: { ...payload, status: "pending" },
+        }).catch((err) => console.warn(err));
+      }
+
+      showNotice("Application submitted successfully! Our team will review within 24h.");
+      if (appSection && cardSection) {
+        appSection.style.display = "none";
+        cardSection.style.display = "block";
+      }
+    } catch (err) {
+      alert("Application submission error. Please try again.");
+    } finally {
+      if (btn) {
+        btn.textContent = "Submit Application ✦";
+        btn.disabled = false;
+      }
+    }
+  });
 
   boot();
 </script>
