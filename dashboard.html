@@ -671,7 +671,7 @@
 
   $("logoutBtn").addEventListener("click", async () => {
     if (auth) await signOut(auth);
-    window.location.href = "login.html";
+    window.location.href = "LOGIN.HTML";
   });
 
   // ---- Profile panel: everything about the account in one place, live from users/{uid} ----
@@ -960,7 +960,7 @@
 
       onAuthStateChanged(auth, async (account) => {
         if (!account) {
-          window.location.href = "login.html";
+          window.location.href = "LOGIN.HTML";
           return;
         }
         currentUserId = account.uid;
