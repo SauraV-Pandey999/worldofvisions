@@ -1,470 +1,1049 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Vision_S — Dashboard</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* =======================
-       Root variables
-    ======================== */
-    :root{
-      --bg-1:#0b1220;
-      --glass: rgba(255,255,255,0.06);
-      --glass-2: rgba(255,255,255,0.03);
-      --neon-1: #6ee7b7;
-      --neon-2: #60a5fa;
-      --neon-3: #a78bfa;
-      --accent: linear-gradient(90deg,var(--neon-1),var(--neon-2),var(--neon-3));
-      --card-w: 940px;
-      --max-level: 7;
-      --font-primary: 'Poppins', sans-serif;
-    }
-    *{box-sizing:border-box;font-family:var(--font-primary); color:#e8f2ff; margin:0; padding:0;}
-    html,body{height:100%; background: linear-gradient(120deg,#030417 0%,#0a0436 35%,#1a044b 100%); background-size:400% 400%; animation:bgMove 12s ease infinite;}
-    @keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
-    .card{width:100%;max-width:var(--card-w);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
-    
-    /* Header */
-    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-    .brand{display:flex;gap:14px;align-items:center;}
-    .logo{width:64px;height:64px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;box-shadow:0 10px 30px rgba(96,165,250,0.08);}
-    .title{font-size:20px;font-weight:700;}
-    .subtitle{font-size:13px;color:#bcd3ef;}
-    .controls{display:flex;gap:10px;align-items:center;}
-    .btn{padding:8px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.03);color:inherit;cursor:pointer;transition: all 0.2s;}
-    .btn:hover{transform:translateY(-3px); background:rgba(96,165,250,0.2);}
-    .tag{font-size:12px;color:#bcd3ef;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.02);}
-    
-    /* Main layout */
-    .main{display:flex;gap:22px;margin-top:20px;}
-    .left{width:340px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:18px;border-radius:12px;}
-    .right{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));}
-    
-    /* Profile & avatar */
-    .profile-row{display:flex;gap:12px;align-items:center;margin-bottom:18px;}
-    .avatar{width:72px;height:72px;border-radius:14px;background:linear-gradient(90deg,var(--neon-3),var(--neon-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#04102a;font-size:24px;overflow:hidden;}
-    .avatar img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
-    .user-meta{display:flex;flex-direction:column;}
-    .user-name{font-size:18px;font-weight:700;}
-    .user-email{font-size:13px;color:#b9d0ef;}
-    
-    /* Streak */
-    .streak{margin-top:14px;padding:12px;border-radius:10px;background:var(--glass-2);text-align:center;}
-    .streak h4{margin:6px 0 0;font-size:14px;}
-    .streak .count{font-weight:800;font-size:20px;margin-top:6px;}
-    .hint{margin-top:12px;font-size:13px;color:#bcd3ef;}
-    
-    /* Progress */
-    .progress-card{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
-    .level-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-    .level-badge{padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,#ffd47a,#d4af37);color:#241600;font-weight:800;}
-    .level-name{font-weight:800;font-size:16px;}
-    .progress-wrapper{margin-top:14px;}
-    .progress-bar{height:18px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;position:relative;}
-    .progress-fill{height:100%;width:0%;border-radius:999px;background:var(--accent);background-size:300% 100%;animation:fillGlow 4s linear infinite;}
-    @keyframes fillGlow{0%{background-position:0% 0%}50%{background-position:100% 0%}100%{background-position:0% 0%}}
-    .progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px;font-size:13px;color:#bcd3ef;}
-    
-    /* Right stats */
-    .greeting{font-size:22px;font-weight:700;}
-    .g-sub{color:#b7d4f8;margin-top:6px;}
-    .stat-grid{display:flex;gap:12px;margin-top:18px;}
-    .stat{flex:1;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center;}
-    .stat h5{font-size:12px;color:#bcd3ef;margin:0;}
-    .stat p{font-weight:800;font-size:18px;margin-top:8px;}
-    
-    .notice{margin-top:18px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:#cfe6ff;font-size:13px;}
-    .logout{margin-top:18px;padding:12px 18px;border-radius:10px;background:#ff5252;border:0;color:#fff;cursor:pointer;}
-    
-    /* Responsive */
-    @media (max-width:920px){.main{flex-direction:column}.left{width:100%}}
-    
-  </style>
+<meta charset="utf-8" />
+<title>Vision_S — Personal Growth Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Track your Vision_S level, streak, progress, and recent activity." />
+<meta property="og:title" content="Vision_S — Personal Growth Dashboard" />
+<meta property="og:description" content="Track your level, streak, and progress across your Vision_S journey." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --background: oklch(0.085 0.03 285);
+    --foreground: oklch(0.93 0.025 275);
+    --card: oklch(0.12 0.04 282 / 0.76);
+    --primary: oklch(0.67 0.24 291);
+    --primary-foreground: oklch(0.98 0.01 280);
+    --secondary: oklch(0.16 0.055 279);
+    --muted: oklch(0.16 0.035 278);
+    --muted-foreground: oklch(0.7 0.04 275);
+    --accent: oklch(0.61 0.25 295);
+    --border: oklch(0.5 0.18 290 / 0.62);
+    --gold: oklch(0.79 0.15 78);
+    --violet: oklch(0.68 0.27 296);
+    --cyan: oklch(0.76 0.15 224);
+    --success: oklch(0.79 0.2 143);
+    --deep: oklch(0.065 0.025 277);
+    --panel: oklch(0.105 0.04 282 / 0.9);
+    --line: oklch(0.63 0.24 297 / 0.7);
+    --radius: 7px;
+    --font-sans: "Rajdhani", sans-serif;
+    --font-display: "Orbitron", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--background); scroll-behavior: smooth; }
+  body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); letter-spacing: 0; }
+  button, a { font: inherit; }
+  button { color: inherit; }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+  .vision-shell { min-height: 100vh; background: radial-gradient(circle at 72% -15%, color-mix(in oklab, var(--violet) 17%, transparent), transparent 30%), var(--background); }
+  .topbar { height: 82px; position: fixed; inset: 0 0 auto; z-index: 30; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 30px; background: color-mix(in oklab, var(--deep) 92%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--gold) 38%, var(--violet)); backdrop-filter: blur(20px); }
+  .brand { display: flex; align-items: center; gap: 18px; color: var(--foreground); text-decoration: none; background: none; border: 0; cursor: pointer; padding: 0; }
+  .brand > span:last-child { display: flex; flex-direction: column; }
+  .brand strong { font-family: var(--font-display); font-size: 21px; font-weight: 500; letter-spacing: .34em; }
+  .brand small { margin-top: 4px; color: var(--muted-foreground); font-family: var(--font-display); font-size: 7px; letter-spacing: .28em; }
+  .vision-mark { display: grid; place-items: center; width: 47px; height: 47px; clip-path: polygon(4% 0, 50% 77%, 96% 0, 69% 100%, 50% 80%, 31% 100%); background: linear-gradient(100deg, var(--gold), var(--primary-foreground) 35%, var(--violet) 66%, var(--gold)); color: var(--deep); font-family: var(--font-display); font-size: 27px; font-weight: 800; filter: drop-shadow(0 0 10px color-mix(in oklab, var(--violet) 70%, transparent)); }
+  .vision-mark--small { width: 40px; height: 48px; font-size: 23px; }
+  .top-actions { display: flex; align-items: center; gap: 12px; }
+  .icon-button, .menu-button { display: grid; place-items: center; width: 42px; height: 42px; border: 0; background: transparent; cursor: pointer; }
+  .icon-button { color: var(--muted-foreground); }
+  .profile-button { height: 48px; display: flex; align-items: center; gap: 11px; padding: 4px 14px 4px 7px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklab, var(--card) 70%, transparent); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .avatar { width: 36px; height: 36px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--violet); border-radius: 50%; background: linear-gradient(145deg, var(--secondary), var(--violet)); font-family: var(--font-display); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .menu-button { display: none; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+
+  .sidebar { position: fixed; top: 82px; bottom: 0; left: 0; z-index: 20; width: 212px; display: flex; flex-direction: column; padding: 31px 16px 0; background: color-mix(in oklab, var(--deep) 95%, transparent); border-right: 1px solid color-mix(in oklab, var(--violet) 35%, transparent); overflow: hidden; }
+  .sidebar nav { display: grid; gap: 7px; }
+  .nav-item { width: 100%; min-height: 44px; display: flex; align-items: center; gap: 16px; padding: 0 18px; border: 1px solid transparent; border-radius: var(--radius); background: transparent; color: var(--muted-foreground); cursor: pointer; font-size: 14px; text-align: left; transition: 180ms ease; }
+  .nav-item:hover { color: var(--foreground); background: color-mix(in oklab, var(--violet) 10%, transparent); }
+  .nav-item--active { color: var(--foreground); border-color: var(--violet); background: linear-gradient(90deg, color-mix(in oklab, var(--violet) 35%, transparent), color-mix(in oklab, var(--violet) 8%, transparent)); box-shadow: inset 3px 0 0 var(--primary-foreground), 0 0 15px color-mix(in oklab, var(--violet) 35%, transparent); }
+  .sidebar-bottom { display: grid; gap: 6px; margin-top: 20px; padding-top: 18px; border-top: 1px solid color-mix(in oklab, var(--muted-foreground) 40%, transparent); }
+  .sidebar-art { position: absolute; inset: auto 0 0; height: 210px; }
+  .sidebar-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--deep), transparent 38%, color-mix(in oklab, var(--deep) 55%, transparent)); }
+  .sidebar-art img { width: 100%; height: 100%; object-fit: cover; }
+  .sidebar-art p { position: absolute; left: 26px; bottom: 16px; z-index: 1; font-family: var(--font-display); font-size: 8px; line-height: 2; letter-spacing: .28em; margin: 0; }
+
+  .dashboard { min-height: 100vh; margin-left: 212px; padding: 101px 24px 30px; }
+  .tab-panel[hidden] { display: none; }
+  .welcome-panel, .journey-panel, .metric-card, .activity-panel, .quote-panel, .admin-panel, .info-card { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); box-shadow: inset 0 0 30px color-mix(in oklab, var(--violet) 5%, transparent); }
+  .welcome-panel { height: 158px; }
+  .welcome-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--deep) 0%, color-mix(in oklab, var(--deep) 83%, transparent) 44%, transparent 78%, color-mix(in oklab, var(--deep) 65%, transparent)); }
+  .welcome-panel > img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 47%; opacity: .82; }
+  .welcome-copy { position: absolute; inset: 0 auto 0 28px; z-index: 2; display: flex; align-items: center; gap: 22px; }
+  .gold-rule { width: 2px; height: 67px; background: var(--gold); box-shadow: 0 0 9px var(--gold); }
+  .welcome-copy h1 { margin: 0; font-family: var(--font-display); font-size: clamp(18px, 2.2vw, 25px); font-weight: 500; letter-spacing: .12em; }
+  .welcome-copy h1 em { color: var(--gold); font-style: normal; }
+  .welcome-copy p { margin: 13px 0 0; color: var(--muted-foreground); font-size: 16px; }
+  .dream-words { position: absolute; right: 17px; top: 30px; z-index: 2; margin: 0; color: var(--muted-foreground); font-family: var(--font-display); font-size: 8px; line-height: 2.45; letter-spacing: .34em; }
+
+  .metric-grid { display: grid; grid-template-columns: 1fr 1fr 1.04fr; gap: 18px; margin-top: 18px; }
+  .metric-card { min-height: 124px; display: flex; align-items: center; gap: 22px; padding: 20px 24px; }
+  .metric-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 50%, color-mix(in oklab, var(--violet) 10%, transparent), transparent 42%); }
+  .level-card { border-color: color-mix(in oklab, var(--gold) 75%, transparent); }
+  .streak-card { border-color: color-mix(in oklab, var(--gold) 35%, var(--violet)); }
+  .level-emblem { position: relative; width: 70px; height: 70px; flex: 0 0 auto; display: grid; place-items: center; clip-path: polygon(50% 0, 91% 23%, 91% 76%, 50% 100%, 9% 76%, 9% 23%); background: linear-gradient(145deg, var(--gold), var(--secondary), var(--gold)); }
+  .level-emblem::before { content: ""; position: absolute; width: 58px; height: 58px; clip-path: inherit; background: var(--deep); }
+  .level-emblem .vision-mark { position: relative; z-index: 1; }
+  .metric-card > div:last-child { min-width: 0; flex: 1; position: relative; z-index: 1; }
+  .metric-label { display: block; color: var(--muted-foreground); font-family: var(--font-display); font-size: 11px; }
+  .level-card .metric-label { color: var(--gold); }
+  .metric-card strong { display: flex; align-items: center; gap: 7px; margin-top: 7px; color: var(--gold); font-family: var(--font-display); font-size: 20px; }
+  .mini-line { width: 100%; height: 2px; margin: 10px 0 7px; background: color-mix(in oklab, var(--muted-foreground) 25%, transparent); }
+  .mini-line i { display: block; height: 100%; background: linear-gradient(90deg, var(--violet), var(--cyan)); box-shadow: 0 0 7px var(--violet); }
+  .metric-card small { color: var(--muted-foreground); font-size: 11px; }
+  .flame-ring { width: 62px; height: 62px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); box-shadow: inset 0 0 16px color-mix(in oklab, var(--gold) 12%, transparent); }
+  .flame-ring svg { width: 31px; height: 31px; filter: drop-shadow(0 0 7px currentColor); }
+  .progress-ring { position: relative; width: 82px; height: 82px; flex: 0 0 auto; }
+  .progress-ring svg { width: 100%; transform: rotate(-90deg); overflow: visible; }
+  .progress-ring circle { fill: none; stroke: color-mix(in oklab, var(--violet) 18%, transparent); stroke-width: 6; }
+  .progress-ring__value { stroke: var(--violet) !important; stroke-linecap: round; filter: drop-shadow(0 0 5px var(--violet)); transition: stroke-dashoffset 700ms ease; }
+  .progress-ring strong { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--foreground); font-family: var(--font-display); font-size: 18px; }
+
+  .journey-panel { height: 142px; margin-top: 18px; padding: 18px 24px; }
+  .journey-panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .42; }
+  .journey-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--deep) 90%, transparent), color-mix(in oklab, var(--deep) 50%, transparent)); }
+  .section-heading { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; }
+  .section-heading h2 { display: flex; align-items: center; gap: 11px; margin: 0; font-family: var(--font-display); font-size: 14px; font-weight: 500; letter-spacing: .15em; }
+  .section-heading button { display: flex; align-items: center; gap: 8px; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; font-size: 12px; }
+  .journey-track { position: absolute; z-index: 2; left: 52px; right: 52px; bottom: 18px; display: grid; grid-template-columns: repeat(7, 1fr); }
+  .track-line { position: absolute; top: 11px; left: 7.1%; right: 7.1%; height: 2px; background: color-mix(in oklab, var(--muted-foreground) 28%, transparent); }
+  .track-line i { display: block; height: 100%; background: var(--gold); box-shadow: 0 0 7px var(--gold); }
+  .milestone { z-index: 1; display: grid; justify-items: center; gap: 8px; color: var(--muted-foreground); }
+  .milestone > span { width: 23px; height: 23px; display: grid; place-items: center; border: 2px solid color-mix(in oklab, var(--muted-foreground) 55%, transparent); border-radius: 50%; background: var(--deep); }
+  .milestone small { font-size: 10px; }
+  .milestone--reached > span { border-color: var(--gold); background: color-mix(in oklab, var(--gold) 68%, var(--deep)); box-shadow: 0 0 9px var(--gold); }
+  .milestone--current { color: var(--gold); }
+  .milestone--current > span { width: 27px; height: 27px; margin-top: -2px; background: var(--gold); box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 20%, transparent), 0 0 12px var(--gold); }
+
+  .bottom-grid { display: grid; grid-template-columns: 1.9fr 1fr; gap: 18px; margin-top: 18px; }
+  .activity-panel { min-height: 156px; padding: 16px 24px; }
+  .activity-panel .section-heading { padding-bottom: 9px; border-bottom: 1px solid color-mix(in oklab, var(--muted-foreground) 25%, transparent); }
+  .activity-row { position: relative; display: grid; grid-template-columns: 28px 1fr auto 18px; align-items: center; gap: 10px; min-height: 47px; border-bottom: 1px solid color-mix(in oklab, var(--muted-foreground) 18%, transparent); }
+  .activity-row > div { display: grid; }
+  .activity-row strong { font-size: 13px; font-weight: 500; }
+  .activity-row small { color: var(--muted-foreground); font-size: 10px; }
+  .activity-icon { display: grid; place-items: center; color: var(--violet); }
+  .activity-icon--green { color: var(--success); }
+  .activity-dot { position: absolute; top: 16px; left: 39px; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); }
+  .activity-dot--green { background: var(--success); }
+  .row-arrow { transform: rotate(-90deg); color: var(--muted-foreground); }
+  .refresh-button { position: absolute; right: 18px; bottom: 7px; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; font-size: 10px; }
+  .spin { animation: spin 700ms linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .quote-panel { min-height: 156px; padding: 27px 24px; }
+  .quote-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--deep), transparent 75%); }
+  .quote-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .quote-panel p, .quote-panel span { position: relative; z-index: 1; margin: 0; font-family: var(--font-display); font-size: 9px; line-height: 2.1; letter-spacing: .26em; }
+  .quote-panel span { display: block; margin-top: 10px; color: var(--gold); font-family: cursive; font-size: 15px; letter-spacing: 0; }
+  .toast { position: fixed; z-index: 50; top: 94px; right: 24px; max-width: min(390px, calc(100vw - 48px)); display: flex; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid var(--violet); border-radius: var(--radius); background: var(--panel); box-shadow: 0 12px 35px color-mix(in oklab, var(--deep) 70%, transparent); font-size: 13px; }
+  .toast[hidden] { display: none; }
+  .toast button { display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; }
+  .admin-panel { margin-top: 18px; padding: 20px 24px; }
+  .admin-panel[hidden] { display: none; }
+  .admin-panel h2 { margin: 0; color: var(--gold); font-family: var(--font-display); font-size: 14px; letter-spacing: .14em; }
+  .admin-panel p { color: var(--muted-foreground); }
+  .admin-panel button { padding: 9px 15px; border: 1px solid var(--gold); border-radius: var(--radius); background: transparent; color: var(--gold); cursor: pointer; }
+  .admin-list { display: grid; gap: 8px; margin-top: 14px; }
+  .admin-row { display: grid; grid-template-columns: minmax(180px, 1fr) 130px 72px auto; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid color-mix(in oklab, var(--muted-foreground) 18%, transparent); }
+  .admin-row > span { display: grid; }
+  .admin-row small { color: var(--muted-foreground); }
+  .admin-row select, .admin-row input { min-height: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--deep); color: var(--foreground); padding: 0 8px; }
+
+  /* ---- content sections for Profile / Resources / Projects / Activity / Settings ---- */
+  .info-card { margin-top: 0; padding: 20px 24px; }
+  .info-card + .info-card { margin-top: 18px; }
+  .info-card h2 { margin: 0 0 6px; color: var(--gold); font-family: var(--font-display); font-size: 14px; letter-spacing: .14em; }
+  .info-card p.card-sub { color: var(--muted-foreground); margin: 0 0 14px; font-size: 13px; }
+  .settings-msg { font-size: 12px; color: var(--muted-foreground); margin-top: 10px; }
+
+  .membership-bar { margin-top: 18px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .membership-bar strong { font-family: var(--font-display); color: var(--gold); letter-spacing: .1em; font-size: 16px; }
+  .profile-toprow { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  .profile-toprow .resource-tag { font-family: var(--font-display); }
+  .ghost-button { padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--muted-foreground); cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+  .ghost-button:hover { color: var(--foreground); border-color: var(--violet); }
+  .progress-bar-lg { height: 16px; border-radius: 999px; margin: 14px 0 8px; background: color-mix(in oklab, var(--muted-foreground) 25%, transparent); overflow: hidden; }
+  .progress-bar-lg i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--violet), var(--cyan)); box-shadow: 0 0 7px var(--violet); }
+  .progress-meta-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted-foreground); }
+  .profile-quote { text-align: center; font-style: italic; color: var(--muted-foreground); margin: 0; padding: 6px 0; }
+
+  .profile-head { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .avatar-lg { width: 84px; height: 84px; border-radius: 50%; border: 1px solid var(--violet); background: linear-gradient(145deg, var(--secondary), var(--violet)); display: grid; place-items: center; font-family: var(--font-display); font-size: 30px; overflow: hidden; flex: 0 0 auto; }
+  .avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-name { font-family: var(--font-display); font-size: 18px; letter-spacing: .04em; }
+  .profile-email { color: var(--muted-foreground); font-size: 13px; margin-top: 4px; }
+  .profile-stats { display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+  .profile-stat { flex: 1; min-width: 120px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklab, var(--card) 60%, transparent); text-align: center; }
+  .profile-stat span { display: block; color: var(--muted-foreground); font-size: 11px; font-family: var(--font-display); }
+  .profile-stat strong { display: block; margin-top: 6px; color: var(--gold); font-family: var(--font-display); font-size: 16px; }
+
+  .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .resource-card { padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklab, var(--card) 60%, transparent); }
+  .resource-tag { display: inline-block; margin-bottom: 8px; padding: 3px 8px; border-radius: 999px; font-size: 10px; letter-spacing: .06em; color: var(--gold); border: 1px solid color-mix(in oklab, var(--gold) 50%, transparent); }
+  .resource-card h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 12px; letter-spacing: .05em; color: var(--foreground); }
+  .resource-card p { margin: 0 0 10px; color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
+  .resource-card a { color: var(--cyan); font-size: 12px; text-decoration: none; font-weight: 600; }
+  .resource-card a:hover { text-decoration: underline; }
+
+  .project-list { display: grid; gap: 12px; }
+  .project-card { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklab, var(--card) 60%, transparent); }
+  .project-info { flex: 1; min-width: 0; }
+  .project-info h3 { margin: 0; font-size: 14px; font-weight: 600; }
+  .project-status { flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-family: var(--font-display); border: 1px solid var(--border); color: var(--muted-foreground); letter-spacing: .04em; }
+  .project-status--active { color: var(--cyan); border-color: var(--cyan); }
+  .project-status--done { color: var(--success); border-color: var(--success); }
+  .project-status--planned { color: var(--muted-foreground); }
+
+  #activityFullList .activity-row:last-of-type { border-bottom: 0; }
+
+  .settings-form { display: grid; gap: 16px; max-width: 440px; }
+  .settings-field label { display: block; margin-bottom: 6px; font-size: 12px; color: var(--muted-foreground); letter-spacing: .05em; }
+  .settings-field input[type="text"], .settings-field input[type="url"] { width: 100%; min-height: 40px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--deep); color: var(--foreground); padding: 0 10px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid color-mix(in oklab, var(--muted-foreground) 18%, transparent); font-size: 13px; }
+  .toggle { position: relative; width: 44px; height: 24px; border-radius: 999px; background: var(--muted); border: 1px solid var(--border); cursor: pointer; flex: 0 0 auto; }
+  .toggle::after { content: ""; position: absolute; top: 1px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--foreground); transition: transform .2s ease; }
+  .toggle.on { background: color-mix(in oklab, var(--violet) 55%, var(--muted)); }
+  .toggle.on::after { transform: translateX(20px); }
+  .settings-save { justify-self: start; padding: 10px 18px; border: 1px solid var(--gold); border-radius: var(--radius); background: transparent; color: var(--gold); cursor: pointer; }
+  .settings-logout { border-color: #ff5252; color: #ff5252; }
+
+  @media (max-width: 980px) {
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .progress-card { grid-column: 1 / -1; }
+    .bottom-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .topbar { height: 68px; padding: 0 14px; }
+    .brand { gap: 10px; }
+    .brand strong { font-size: 15px; }
+    .brand small { display: none; }
+    .vision-mark { width: 36px; height: 36px; font-size: 20px; }
+    .icon-button, .profile-button > span:not(.avatar), .profile-button > svg { display: none; }
+    .profile-button { width: 43px; padding: 3px; border: 0; background: transparent; }
+    .menu-button { display: grid; }
+    .sidebar { top: 68px; width: min(290px, 82vw); transform: translateX(-105%); transition: transform 220ms ease; box-shadow: 20px 0 50px var(--deep); }
+    .sidebar--open { transform: translateX(0); }
+    .dashboard { margin-left: 0; padding: 82px 12px 22px; }
+    .welcome-panel { height: 220px; }
+    .welcome-panel > img { object-position: 62% center; }
+    .welcome-copy { left: 18px; right: 16px; align-items: flex-end; padding-bottom: 24px; }
+    .welcome-copy h1 { line-height: 1.5; }
+    .welcome-copy p { font-size: 13px; }
+    .dream-words { top: 17px; }
+    .metric-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+    .progress-card { grid-column: auto; }
+    .metric-card { min-height: 112px; }
+    .journey-panel { height: 180px; margin-top: 12px; padding-inline: 16px; overflow-x: auto; }
+    .journey-track { width: 640px; left: 24px; right: auto; }
+    .bottom-grid { gap: 12px; margin-top: 12px; }
+    .activity-panel { padding-inline: 15px; }
+    .section-heading h2 { font-size: 12px; }
+    .sidebar-art { display: none; }
+    .admin-row { grid-template-columns: 1fr 80px; }
+    .admin-row > span { grid-column: 1 / -1; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+</style>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="card">
-      
-      <!-- Header -->
-      <div class="header">
-        <div class="brand">
-          <div class="logo">VS</div>
-          <div>
-            <div class="title">Vision_S Dashboard</div>
-            <div class="subtitle">Member Area</div>
-          </div>
-        </div>
-        <div class="controls">
-          <div class="tag" id="levelTag">Level 0</div>
-          <button class="btn" id="refreshBtn">Refresh</button>
-        </div>
-      </div>
-      
-      <div class="main">
-        <!-- Left panel -->
-        <div class="left">
-          <div class="profile-row">
-            <div class="avatar" id="avatar">
-              <!-- Avatar image or first letter -->
-            </div>
-            <div class="user-meta">
-              <div class="user-name" id="displayName">User</div>
-              <div class="user-email" id="displayEmail">user@example.com</div>
-            </div>
-          </div>
-          
-          <!-- Streak -->
-          <div class="streak">
-            <div style="font-size:13px;color:#bcd3ef">Login Streak</div>
-            <div class="count" id="streakCount">0 🔥</div>
-            <div class="hint" id="streakHint">Login daily to maintain streak and increase level faster.</div>
-          </div>
-          
-          <!-- Progress -->
-          <div class="progress-card">
-            <div class="level-row">
-              <div>
-                <div class="level-name" id="levelName">Bronze</div>
-                <div style="font-size:12px;color:#bcd3ef">Progress towards next level</div>
-              </div>
-              <div class="level-badge" id="badge">Bronze</div>
-            </div>
-            
-            <div class="progress-wrapper">
-              <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width:0%"></div>
-              </div>
-            </div>
-            
-            <div class="progress-meta">
-              <div id="progressPercent">0%</div>
-              <div id="progressToNext">0 / 100</div>
-            </div>
-          </div>
-          
-        </div>
-        
-        <!-- Right panel -->
-        <div class="right">
-          <div class="greeting" id="greet">Welcome back!</div>
-          <div class="g-sub" id="gSub">Your membership dashboard</div>
-          
-          <div class="stat-grid">
-            <div class="stat">
-              <h5>Current Level</h5>
-              <p id="statLevel">Bronze</p>
-            </div>
-            <div class="stat">
-              <h5>Progress</h5>
-              <p id="statProgress">0%</p>
-            </div>
-            <div class="stat">
-              <h5>Next Reward</h5>
-              <p id="statNext">Unlock at 100%</p>
-            </div>
-          </div>
-          
-          <div class="notice" id="dailyQuote">
-            Daily motivational quote will appear here.
-          </div>
-          
-          <button class="logout" id="logoutBtn">Logout</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  
-<script type="module">
-  // ================================
-  // Part 1: Firebase Auth + User Dashboard
-  // ================================
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyBT8_Tvdq1WnwSvhFBCoGDn_VqGlYEVH6I",
-    authDomain: "login-6e215.firebaseapp.com",
-    projectId: "login-6e215",
-    storageBucket: "login-6e215.firebasestorage.app",
-    messagingSenderId: "503897234336",
-    appId: "1:503897234336:web:8c888a3e78d7cccac822c5",
-    measurementId: "G-6D44B4444K"
+<div class="vision-shell">
+
+  <header class="topbar">
+    <a href="#overview" class="brand" aria-label="Vision S dashboard home">
+      <span class="vision-mark">V</span>
+      <span><strong>VISION_S</strong><small>A Vision Inspired by Saurav</small></span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-button" id="bellBtn" aria-label="Notifications" title="Notifications"></button>
+      <button class="profile-button" id="profileBtn">
+        <span class="avatar" id="avatar">U</span>
+        <span id="firstNameLabel">USER</span>
+        <span id="chevronIcon"></span>
+      </button>
+      <button class="menu-button" id="menuBtn" aria-label="Open menu"></button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Dashboard navigation" id="navList"></nav>
+    <div class="sidebar-bottom">
+      <button class="nav-item" id="settingsBtn"><span class="icon-slot" data-icon="settings"></span><span>Settings</span></button>
+      <button class="nav-item" id="logoutBtn"><span class="icon-slot" data-icon="logout"></span><span>Logout</span></button>
+    </div>
+    <div class="sidebar-art">
+      <img src="assets/vision-journey.jpg" alt="A distant cosmic citadel" />
+      <p>BIGGER DREAMS.<br />BOLDER STEPS.<br />VISION_S.</p>
+    </div>
+  </aside>
+
+  <main class="dashboard" id="overview">
+
+    <div class="toast" id="toast" role="status" hidden>
+      <span id="toastText"></span>
+      <button id="toastDismiss" aria-label="Dismiss"><span class="icon-slot" data-icon="x" data-size="15"></span></button>
+    </div>
+
+    <div class="tab-panel" id="panel-Overview">
+      <section class="welcome-panel">
+        <img src="assets/vision-hero.jpg" alt="A visionary looking at Earth from a futuristic observatory" width="1536" height="512" />
+        <div class="welcome-copy">
+          <span class="gold-rule"></span>
+          <div>
+            <h1 id="welcomeHeading">GOOD MORNING, <em id="welcomeName">VISIONARY</em></h1>
+            <p>Welcome back to your Vision_S universe.</p>
+          </div>
+        </div>
+        <p class="dream-words">DREAM<br />BUILD<br />CREATE<br />GROW</p>
+      </section>
+
+      <section class="info-card membership-bar">
+        <span class="metric-label">MEMBERSHIP NUMBER</span>
+        <strong id="membershipNumberValue">VS-000000</strong>
+      </section>
+
+      <section class="metric-grid" aria-label="Journey summary">
+        <article class="metric-card level-card">
+          <div class="level-emblem"><span class="vision-mark vision-mark--small">V</span></div>
+          <div>
+            <span class="metric-label">LEVEL</span>
+            <strong id="levelValue">BRONZE</strong>
+            <div class="mini-line"><i id="levelMiniFill" style="width:0%"></i></div>
+            <small id="levelNextHint">Next level · 100%</small>
+          </div>
+        </article>
+        <article class="metric-card streak-card">
+          <span class="flame-ring"><span class="icon-slot" data-icon="flame" data-size="31"></span></span>
+          <div>
+            <span class="metric-label">STREAK</span>
+            <strong><span id="streakValue">0</span> <span class="icon-slot" data-icon="flame" data-size="18"></span></strong>
+            <div class="mini-line"><i id="streakMiniFill" style="width:0%"></i></div>
+            <small>Keep it going!</small>
+          </div>
+        </article>
+        <article class="metric-card progress-card">
+          <div class="progress-ring">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="44"></circle>
+              <circle class="progress-ring__value" id="progressRingValue" cx="50" cy="50" r="44"></circle>
+            </svg>
+            <strong id="progressRingLabel">0%</strong>
+          </div>
+          <div>
+            <span class="metric-label">PROGRESS</span>
+            <div class="mini-line"><i id="progressMiniFill" style="width:0%"></i></div>
+            <small>Your journey matters.</small>
+          </div>
+        </article>
+      </section>
+
+      <section class="journey-panel">
+        <img src="assets/vision-journey.jpg" alt="A cosmic landscape marking the Vision journey" width="1536" height="512" loading="lazy" />
+        <div class="section-heading">
+          <h2>YOUR VISION JOURNEY</h2>
+          <button id="journeyArrowBtn" aria-label="View full journey" title="View full journey"><span class="icon-slot" data-icon="arrowRight"></span></button>
+        </div>
+        <div class="journey-track" id="journeyTrack">
+          <span class="track-line"><i id="journeyTrackFill" style="width:0%"></i></span>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="activity-panel">
+          <div class="section-heading">
+            <h2><span class="icon-slot" data-icon="activity"></span> RECENT ACTIVITY</h2>
+            <button id="activityViewAllBtn">View all <span class="icon-slot" data-icon="arrowRight" data-size="16"></span></button>
+          </div>
+          <div class="activity-row">
+            <span class="activity-icon activity-icon--green"><span class="icon-slot" data-icon="logout" data-size="17"></span></span>
+            <div><strong>Logged in</strong><small id="loginTimeLabel">Today</small></div>
+            <span class="activity-dot activity-dot--green"></span>
+            <span class="row-arrow icon-slot" data-icon="chevronDown" data-size="18"></span>
+          </div>
+          <div class="activity-row">
+            <span class="activity-icon"><span class="icon-slot" data-icon="user" data-size="17"></span></span>
+            <div><strong>Profile updated</strong><small id="profileUpdatedLabel">—</small></div>
+            <span class="activity-dot"></span>
+            <span class="row-arrow icon-slot" data-icon="chevronDown" data-size="18"></span>
+          </div>
+          <button class="refresh-button" id="refreshBtn"><span class="icon-slot" data-icon="refreshCw" data-size="15"></span> Refresh data</button>
+        </article>
+        <article class="quote-panel">
+          <img src="assets/vision-planet.jpg" alt="A violet planet in deep space" width="992" height="672" loading="lazy" />
+          <p>THE FUTURE<br />IS BUILT BY THOSE<br />WHO DARE TO<br />CREATE IT.</p>
+          <span>— Vision_S</span>
+        </article>
+      </section>
+
+      <section class="admin-panel" id="adminPanel" hidden>
+        <h2>SUPER ADMIN</h2>
+        <p>Manage member levels and progress.</p>
+        <p role="status" id="adminMessage">Loading users…</p>
+        <div class="admin-list" id="adminList"></div>
+      </section>
+    </div>
+
+    <div class="tab-panel" id="panel-Profile" hidden></div>
+    <div class="tab-panel" id="panel-Resources" hidden></div>
+    <div class="tab-panel" id="panel-Projects" hidden></div>
+    <div class="tab-panel" id="panel-Activity" hidden></div>
+    <div class="tab-panel" id="panel-Settings" hidden></div>
+
+  </main>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signOut, getIdTokenResult,
+  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, serverTimestamp,
+    collection, getDocs, query, orderBy, limit, runTransaction,
+  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+  // ---- Firebase config: same project as the rest of Vision_S ----
+  const firebaseConfig = window.VISION_S_FIREBASE_CONFIG || {};
+  const requiredConfig = ["apiKey", "authDomain", "projectId", "appId"];
+  const hasFirebaseConfig = requiredConfig.every((key) => {
+    const value = firebaseConfig[key];
+    return typeof value === "string" && value.trim() && !value.includes("PASTE_");
+  });
+
+  const LEVELS = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "CROWN", "CONQUEROR"];
+  const ADMIN_EMAIL = "vsauravpandey99s@gmail.com";
+  const CIRCUMFERENCE = 2 * Math.PI * 44;
+
+  const DEFAULT_USER = {
+    name: "Visionary", email: "", level: "Bronze", progress: 0, streak: 0,
+    lastLogin: null, photoURL: null, membershipNumber: "VS-000001",
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  const LEVELS = ['Bronze','Silver','Gold','Platinum','Diamond','CROWN','CONQUEROR'];
-
-  // DOM elements
-  const displayNameEl = document.getElementById('displayName');
-  const displayEmailEl = document.getElementById('displayEmail');
-  const avatarEl = document.getElementById('avatar');
-  const streakCountEl = document.getElementById('streakCount');
-  const levelNameEl = document.getElementById('levelName');
-  const badgeEl = document.getElementById('badge');
-  const levelTag = document.getElementById('levelTag');
-  const progressFill = document.getElementById('progressFill');
-  const progressPercent = document.getElementById('progressPercent');
-  const progressToNext = document.getElementById('progressToNext');
-  const statLevel = document.getElementById('statLevel');
-  const statProgress = document.getElementById('statProgress');
-  const statNext = document.getElementById('statNext');
-  const greet = document.getElementById('greet');
-  const greetSub = document.getElementById('gSub');
-  const dailyQuoteEl = document.getElementById('dailyQuote');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const refreshBtn = document.getElementById('refreshBtn');
-
-  let currentUser = null;
-  let userRef = null;
-  let localUser = { level:'Bronze', progress:0, streak:0, lastLogin:null, name:'User', email:'' };
-
-  // Quotes
   const QUOTES = [
     "Push yourself, because no one else is going to do it for you.",
     "Consistency is what transforms average into excellence.",
     "Every day is a new opportunity to grow.",
     "Small progress is still progress.",
-    "Stay focused and never give up."
+    "Stay focused and never give up.",
   ];
 
-  // Utility functions
-  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
-  function toDateKey(ts){ const d=ts? (ts instanceof Date? ts: new Date(ts)) : new Date(); return `${d.getUTCFullYear()}-${(d.getUTCMonth()+1).toString().padStart(2,'0')}-${d.getUTCDate().toString().padStart(2,'0')}`;}
-
-  // Render dashboard
-  function renderUI(){
-    const name = localUser.name || (currentUser && currentUser.email.split('@')[0]) || 'User';
-    const email = localUser.email || (currentUser && currentUser.email) || '';
-    displayNameEl.textContent = name;
-    displayEmailEl.textContent = email;
-
-    // Avatar: Gmail photoURL if exists
-    if(localUser.photoURL){
-      avatarEl.innerHTML = `<img src="${localUser.photoURL}" alt="avatar"/>`;
-    } else {
-      avatarEl.textContent = (name[0]||'U').toUpperCase();
-    }
-
-    const levelName = localUser.level || 'Bronze';
-    levelNameEl.textContent = levelName;
-    badgeEl.textContent = levelName;
-    levelTag.textContent = `Level · ${levelName}`;
-    
-    const progress = clamp(localUser.progress,0,100);
-    progressFill.style.width = `${progress}%`;
-    progressPercent.textContent = `${progress}%`;
-    progressToNext.textContent = `${progress} / 100`;
-    statLevel.textContent = levelName;
-    statProgress.textContent = `${progress}%`;
-    statNext.textContent = 'Unlock at 100%';
-    streakCountEl.innerHTML = `${localUser.streak || 0} 🔥`;
-    greet.textContent = `Welcome back, ${name.split(' ')[0] || name}!`;
-    greetSub.textContent = `Login daily to maintain streak and level up faster.`;
-    
-    // Random daily quote
-    dailyQuoteEl.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  // Derive a stable membership number from the Firebase UID so every member has
+  // one even before a real "membershipNumber" field exists in Firestore.
+  function deriveMembershipNumber(uid) {
+    if (!uid) return "VS-000000";
+    const clean = uid.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    return "VS-" + (clean.slice(0, 6).padEnd(6, "0") || "000000");
   }
 
-  // Auth listener
-  onAuthStateChanged(auth, async (user)=>{
-    if(!user){
-      window.location.href = "login.html";
-      return;
-    }
-    currentUser = user;
-    userRef = doc(db,'users',user.uid);
-    const snap = await getDoc(userRef);
-    if(!snap.exists()){
-      // create user doc
-      await setDoc(userRef,{
-        name: user.displayName || user.email.split('@')[0],
-        email: user.email,
-        level: 'Bronze',
-        progress: 0,
-        streak: 0,
-        lastLogin: serverTimestamp(),
-        photoURL: user.photoURL || null
-      });
-      localUser = { name: user.displayName || user.email.split('@')[0], email:user.email, level:'Bronze', progress:0, streak:0, lastLogin:null, photoURL:user.photoURL||null };
-    } else {
-      const data = snap.data();
-      localUser = {
-        name: data.name || user.displayName || user.email.split('@')[0],
-        email: data.email || user.email,
-        level: data.level || 'Bronze',
-        progress: data.progress || 0,
-        streak: data.streak || 0,
-        lastLogin: data.lastLogin ? data.lastLogin.toDate? data.lastLogin.toDate():new Date(data.lastLogin): null,
-        photoURL: data.photoURL || user.photoURL || null
-      };
-    }
-
-    // TODO: handle daily login logic (+1% progress for 2-day streak, -1% for streak break) - implemented in Part 2
-    renderUI();
-  });
-
-  // Logout
-  logoutBtn.addEventListener('click', async ()=>{
-    await signOut(auth);
-    window.location.href="login.html";
-  });
-
-  refreshBtn.addEventListener('click', async ()=>{
-    const snap = await getDoc(userRef);
-    if(snap.exists()){
-      const data = snap.data();
-      localUser.progress = data.progress || 0;
-      localUser.level = data.level || 'Bronze';
-      localUser.streak = data.streak || 0;
-      renderUI();
-    }
-  });
-
-</script>
-  <script type="module">
-  import { collection, getDocs, query, orderBy, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-
-  const ADMIN_EMAIL = "vsauravpandey99s@gmail.com";
-  let isSuperAdmin = false;
-
-  // Check super admin
-  async function checkAdmin() {
-    if (!currentUser) return false;
-    if(currentUser.email === ADMIN_EMAIL){
-      isSuperAdmin = true;
-      addAdminPanel();
-    }
+  // The real level value on this account may not be one of the named LEVELS
+  // (e.g. it can be a plain number like "1"). Never silently overwrite it —
+  // just add it to the option list so admin edits don't clobber real data.
+  function buildLevelOptions(current) {
+    const opts = [...LEVELS];
+    if (current && !opts.includes(current)) opts.unshift(current);
+    return opts;
   }
 
-  // Add Super Admin panel dynamically
-  function addAdminPanel() {
-    const rightPanel = document.querySelector(".right");
-    const adminDiv = document.createElement("div");
-    adminDiv.id = "adminPanel";
-    adminDiv.style.marginTop = "20px";
-    adminDiv.style.padding = "16px";
-    adminDiv.style.borderRadius = "12px";
-    adminDiv.style.background = "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))";
+  const STATIC_RESOURCES = [
+    { category: "Getting Started", title: "Vision_S Orientation Guide", desc: "A quick primer on how levels, streaks, and progress work across Vision_S.", url: "#" },
+    { category: "Mindset & Growth", title: "Building Daily Discipline", desc: "Five small habits that compound quietly and keep your streak alive.", url: "#" },
+    { category: "Mindset & Growth", title: "Goal Setting Framework", desc: "A simple way to break a big vision into weekly, trackable steps.", url: "#" },
+    { category: "Tools & Templates", title: "Weekly Reflection Template", desc: "A short template to review wins, blockers, and next steps.", url: "#" },
+    { category: "Tools & Templates", title: "Progress Tracker Sheet", desc: "A lightweight sheet to log milestones outside the app.", url: "#" },
+    { category: "Community", title: "Share Your Journey", desc: "Ideas for documenting your Vision_S progress publicly for accountability.", url: "#" },
+  ];
 
-    adminDiv.innerHTML = `
-      <h3>Super Admin Panel</h3>
-      <p style="font-size:13px;color:#bcd3ef;margin-bottom:10px;">Manage all users</p>
-      <div id="userList" style="max-height:300px;overflow-y:auto;"></div>
-    `;
-    rightPanel.appendChild(adminDiv);
+  const STATIC_PROJECTS = [
+    { name: "Set your first 30-day goal", status: "planned", progress: 0 },
+    { name: "Build your daily check-in habit", status: "active", progress: 40 },
+    { name: "Reach the next level", status: "active", progress: 0 },
+  ];
 
-    loadAllUsers();
+  // ---- tiny generic icon set (outline icons, no external lib) ----
+  const ICONS = {
+    home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+    bookOpen: '<path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1z"/>',
+    folder: '<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/>',
+    activity: '<polyline points="3 12 8 12 10 6 14 18 16 12 21 12"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    menu: '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>',
+    x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+    chevronDown: '<polyline points="6 9 12 15 18 9"/>',
+    flame: '<path d="M12 2c1 3-3 4-3 8a3 3 0 0 0 6 0c0-1-1-2-1-3 2 1 3 3 3 5a5 5 0 0 1-10 0c0-4 3-6 5-10z"/>',
+    lockKeyhole: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    arrowRight: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    refreshCw: '<path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/>',
+  };
+  function iconSvg(name, size = 20) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ""}</svg>`;
+  }
+  function hydrateIcons(root = document) {
+    root.querySelectorAll(".icon-slot").forEach((el) => {
+      const name = el.dataset.icon;
+      const size = Number(el.dataset.size || 20);
+      el.innerHTML = iconSvg(name, size);
+      el.style.display = "inline-grid";
+    });
+  }
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  // Load all users from Firestore
-  async function loadAllUsers() {
-    const userListDiv = document.getElementById("userList");
-    userListDiv.innerHTML = "Loading users...";
+  const clamp = (v) => Math.max(0, Math.min(100, Number(v) || 0));
+  const dayKey = (d) => `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+
+  // ---- state ----
+  let user = { ...DEFAULT_USER };
+  let active = "Overview";
+  let mobileNavOpen = false;
+  let currentUserId = null;
+  let currentUserEmail = "";
+  let isAdmin = false;
+  let auth = null;
+  let db = null;
+  let resourcesLoaded = false;
+  let projectsLoaded = false;
+
+  const NAV_ITEMS = [
+    { name: "Overview", icon: "home" },
+    { name: "Profile", icon: "user" },
+    { name: "Resources", icon: "bookOpen" },
+    { name: "Projects", icon: "folder" },
+    { name: "Activity", icon: "activity" },
+  ];
+
+  // ---- DOM refs ----
+  const $ = (id) => document.getElementById(id);
+  const sidebar = $("sidebar");
+  const navList = $("navList");
+  const toast = $("toast");
+  const toastText = $("toastText");
+
+  function showNotice(text) {
+    toastText.textContent = text;
+    toast.hidden = false;
+  }
+  $("toastDismiss").addEventListener("click", () => { toast.hidden = true; });
+
+  function renderNav() {
+    navList.innerHTML = NAV_ITEMS.map(
+      (item) => `<button class="nav-item ${active === item.name ? "nav-item--active" : ""}" data-nav="${item.name}">
+        <span class="icon-slot" data-icon="${item.icon}"></span><span>${item.name}</span>
+      </button>`
+    ).join("");
+    hydrateIcons(navList);
+    navList.querySelectorAll("[data-nav]").forEach((btn) => {
+      btn.addEventListener("click", () => chooseSection(btn.dataset.nav));
+    });
+    $("settingsBtn").classList.toggle("nav-item--active", active === "Settings");
+  }
+
+  function chooseSection(name) {
+    active = name;
+    mobileNavOpen = false;
+    sidebar.classList.remove("sidebar--open");
+    renderNav();
+    showPanel(name);
+  }
+
+  function showPanel(name) {
+    document.querySelectorAll(".tab-panel").forEach((p) => { p.hidden = p.id !== `panel-${name}`; });
+    if (name === "Profile") renderProfilePanel();
+    else if (name === "Resources") { if (!resourcesLoaded) { resourcesLoaded = true; renderResourcesPanel(); } }
+    else if (name === "Projects") { if (!projectsLoaded) { projectsLoaded = true; renderProjectsPanel(); } }
+    else if (name === "Activity") renderActivityPanel();
+    else if (name === "Settings") renderSettingsPanel();
+  }
+
+  $("menuBtn").addEventListener("click", () => {
+    mobileNavOpen = !mobileNavOpen;
+    sidebar.classList.toggle("sidebar--open", mobileNavOpen);
+    $("menuBtn").innerHTML = iconSvg(mobileNavOpen ? "x" : "menu");
+  });
+  $("bellBtn").addEventListener("click", async () => {
+    if (!db || !currentUserId) { showNotice("Sign in to view notifications."); return; }
     try {
-      const q = query(collection(db, "users"), orderBy("name"));
-      const snap = await getDocs(q);
-      userListDiv.innerHTML = "";
-      snap.forEach(docSnap => {
-        const userData = docSnap.data();
-        const userId = docSnap.id;
-        const userItem = document.createElement("div");
-        userItem.style.padding = "10px";
-        userItem.style.borderBottom = "1px solid rgba(255,255,255,0.06)";
-        userItem.innerHTML = `
-          <strong>${userData.name}</strong> (${userData.email})<br>
-          Level: 
-          <select data-uid="${userId}" class="levelSelect">
-            ${LEVELS.map(l=>`<option value="${l}" ${l===userData.level?'selected':''}>${l}</option>`).join('')}
-          </select>
-          Progress: <input type="number" min="0" max="100" value="${userData.progress}" data-uid="${userId}" class="progressInput" style="width:50px;">
-          <button data-uid="${userId}" class="saveBtn" style="margin-left:8px;">Save</button>
-        `;
-        userListDiv.appendChild(userItem);
-      });
+      const snap = await getDocs(query(collection(db, "users", currentUserId, "notifications"), orderBy("createdAt", "desc"), limit(5)));
+      const items = []; snap.forEach((entry) => items.push({ id: entry.id, ...entry.data() }));
+      if (!items.length) { showNotice("You are all caught up."); return; }
+      const unread = items.filter((item) => item.read !== true);
+      showNotice(unread.length ? `${unread.length} unread · ${unread[0].title || "New notification"}` : items[0].title || "You are all caught up.");
+      await Promise.all(unread.map((item) => updateDoc(doc(db, "users", currentUserId, "notifications", item.id), { read: true })));
+    } catch (err) { console.error(err); showNotice("Notifications could not be loaded. Check Firestore rules."); }
+  });
+  $("profileBtn").addEventListener("click", () => chooseSection("Profile"));
+  $("settingsBtn").addEventListener("click", () => chooseSection("Settings"));
+  $("journeyArrowBtn").addEventListener("click", () => chooseSection("Activity"));
+  $("activityViewAllBtn").addEventListener("click", () => chooseSection("Activity"));
 
-      // Attach save listeners
-      const saveButtons = userListDiv.querySelectorAll(".saveBtn");
-      saveButtons.forEach(btn=>{
-        btn.addEventListener("click", async (e)=>{
-          const uid = btn.dataset.uid;
-          const sel = userListDiv.querySelector(`.levelSelect[data-uid="${uid}"]`);
-          const prog = userListDiv.querySelector(`.progressInput[data-uid="${uid}"]`);
-          if(sel && prog){
-            await updateDoc(doc(db,"users",uid),{
-              level: sel.value,
-              progress: clamp(Number(prog.value),0,100)
-            });
-            alert(`User ${uid} updated!`);
+  function renderJourneyTrack() {
+    const levelIndex = Math.max(0, LEVELS.indexOf(user.level));
+    const track = $("journeyTrack");
+    track.querySelectorAll(".milestone").forEach((n) => n.remove());
+    LEVELS.forEach((level, index) => {
+      const reached = index <= levelIndex;
+      const current = index === levelIndex;
+      const div = document.createElement("div");
+      div.className = `milestone ${reached ? "milestone--reached" : ""} ${current ? "milestone--current" : ""}`;
+      div.innerHTML = `<span>${index > levelIndex ? iconSvg("lockKeyhole", 13) : ""}</span><small>${level}</small>`;
+      track.appendChild(div);
+    });
+    $("journeyTrackFill").style.width = `${(levelIndex / (LEVELS.length - 1)) * 100}%`;
+  }
+
+  function renderUI() {
+    const firstName = (user.name || "Visionary").trim().split(" ")[0] || "Visionary";
+    $("firstNameLabel").textContent = firstName.toUpperCase();
+    $("welcomeName").textContent = firstName.toUpperCase();
+    const avatar = $("avatar");
+    if (user.photoURL) avatar.innerHTML = `<img src="${user.photoURL}" alt="" />`;
+    else avatar.textContent = firstName[0]?.toUpperCase() || "U";
+
+    $("levelValue").textContent = String(user.level).toUpperCase();
+    $("levelMiniFill").style.width = `${user.progress}%`;
+    $("levelNextHint").textContent = `Next level · ${100 - user.progress}%`;
+
+    $("streakValue").textContent = user.streak;
+    $("streakMiniFill").style.width = `${Math.min(user.streak * 6, 100)}%`;
+
+    $("progressMiniFill").style.width = `${user.progress}%`;
+    $("progressRingLabel").textContent = `${user.progress}%`;
+    const ring = $("progressRingValue");
+    ring.setAttribute("stroke-dasharray", CIRCUMFERENCE);
+    ring.setAttribute("stroke-dashoffset", CIRCUMFERENCE * (1 - user.progress / 100));
+
+    renderJourneyTrack();
+
+    $("membershipNumberValue").textContent = user.membershipNumber || "VS-000000";
+
+    const loginStr = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Today";
+    $("loginTimeLabel").textContent = loginStr;
+    $("profileUpdatedLabel").textContent = loginStr;
+
+    $("adminPanel").hidden = !isAdmin;
+    if (isAdmin) loadAdminUsers();
+
+    // keep whichever tab is open in sync with fresh data
+    if (active === "Profile") renderProfilePanel();
+    else if (active === "Activity") renderActivityPanel();
+    else if (active === "Settings") renderSettingsPanel();
+  }
+
+  hydrateIcons();
+  renderNav();
+  renderUI();
+  showPanel(active);
+
+  // ---- refresh / logout ----
+  async function refreshFromFirestore(spinnerBtnId) {
+    if (!db || !currentUserId) { showNotice("Dashboard preview refreshed."); return; }
+    const spinner = spinnerBtnId ? $(spinnerBtnId)?.querySelector(".icon-slot") : null;
+    spinner?.classList.add("spin");
+    try {
+      const snap = await getDoc(doc(db, "users", currentUserId));
+      if (snap.exists()) {
+        const data = snap.data();
+        // Keep whatever level is actually stored — don't overwrite real data.
+        user.level = data.level || user.level;
+        user.progress = clamp(data.progress);
+        user.streak = Number(data.streak) || 0;
+        user.name = data.name || user.name;
+        user.photoURL = data.photoURL || user.photoURL;
+        user.membershipNumber = data.membershipNumber || user.membershipNumber;
+        renderUI();
+        showNotice("Your journey is up to date.");
+      }
+    } finally {
+      spinner?.classList.remove("spin");
+    }
+  }
+  $("refreshBtn").addEventListener("click", () => refreshFromFirestore("refreshBtn"));
+
+  $("logoutBtn").addEventListener("click", async () => {
+    if (auth) await signOut(auth);
+    window.location.href = "login.html";
+  });
+
+  // ---- Profile panel: everything about the account in one place, live from users/{uid} ----
+  function renderProfilePanel() {
+    const panel = $("panel-Profile");
+    const firstName = (user.name || "Visionary").trim().split(" ")[0] || "Visionary";
+    const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    panel.innerHTML = `
+      <div class="info-card">
+        <div class="profile-toprow">
+          <div>
+            <h2 style="margin-bottom:2px;">VISION_S DASHBOARD</h2>
+            <p class="card-sub" style="margin-bottom:0;">Member Area</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="resource-tag">Level · ${escapeHtml(String(user.level))}</span>
+            <button class="ghost-button" id="profileRefreshBtn"><span class="icon-slot" data-icon="refreshCw" data-size="14"></span> Refresh</button>
+          </div>
+        </div>
+        <div class="profile-head" style="margin-top:14px;">
+          <span class="avatar-lg" id="profileAvatar"></span>
+          <div>
+            <div class="profile-name">${escapeHtml(user.name)}</div>
+            <div class="profile-email">${escapeHtml(user.email || currentUserEmail || "—")}</div>
+            <div class="settings-msg" style="margin-top:4px;">Membership No. ${escapeHtml(user.membershipNumber || "VS-000000")}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2>LOGIN STREAK</h2>
+        <p class="card-sub" style="margin-bottom:4px;font-size:20px;color:var(--gold);font-family:var(--font-display);">${user.streak} 🔥</p>
+        <p class="settings-msg">Login daily to maintain streak and increase level faster.</p>
+      </div>
+
+      <div class="info-card">
+        <h2>PROGRESS TOWARDS NEXT LEVEL</h2>
+        <div class="profile-toprow" style="margin-bottom:0;">
+          <strong style="font-family:var(--font-display);color:var(--foreground);font-size:15px;">${escapeHtml(String(user.level))}</strong>
+          <span class="resource-tag">${escapeHtml(String(user.level))}</span>
+        </div>
+        <div class="progress-bar-lg"><i style="width:${user.progress}%"></i></div>
+        <div class="progress-meta-row"><span>${user.progress}%</span><span>${user.progress} / 100</span></div>
+      </div>
+
+      <div class="info-card">
+        <h2>WELCOME BACK, ${escapeHtml(firstName.toUpperCase())}!</h2>
+        <p class="card-sub">Login daily to maintain streak and level up faster.</p>
+        <div class="profile-stats" style="margin-top:0;">
+          <div class="profile-stat"><span>CURRENT LEVEL</span><strong>${escapeHtml(String(user.level))}</strong></div>
+          <div class="profile-stat"><span>PROGRESS</span><strong>${user.progress}%</strong></div>
+          <div class="profile-stat"><span>NEXT REWARD</span><strong>Unlock at 100%</strong></div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <p class="profile-quote">"${escapeHtml(quote)}"</p>
+      </div>`;
+
+    const avatarEl = panel.querySelector("#profileAvatar");
+    if (user.photoURL) avatarEl.innerHTML = `<img src="${user.photoURL}" alt="" />`;
+    else avatarEl.textContent = (user.name[0] || "U").toUpperCase();
+
+    hydrateIcons(panel);
+    panel.querySelector("#profileRefreshBtn").addEventListener("click", () => refreshFromFirestore());
+  }
+
+  // ---- Resources panel: tries a real "resources" Firestore collection first ----
+  async function renderResourcesPanel() {
+    const panel = $("panel-Resources");
+    panel.innerHTML = `<div class="info-card"><h2>RESOURCES</h2><p class="card-sub">Curated material to support your journey.</p><div class="resource-grid" id="resourceGrid"><p class="settings-msg">Loading…</p></div></div>`;
+    const grid = panel.querySelector("#resourceGrid");
+    let items = [];
+    if (db) {
+      try {
+        const snap = await getDocs(collection(db, "resources"));
+        snap.forEach((d) => {
+          const data = d.data();
+          items.push({ category: data.category || "Resource", title: data.title || "Untitled", desc: data.description || "", url: data.url || "#" });
+        });
+      } catch (err) { console.warn("No resources collection yet", err); }
+    }
+    const usingFallback = items.length === 0;
+    if (usingFallback) items = STATIC_RESOURCES;
+    grid.innerHTML = items.map((r) => `
+      <div class="resource-card">
+        <span class="resource-tag">${escapeHtml(r.category)}</span>
+        <h3>${escapeHtml(r.title)}</h3>
+        <p>${escapeHtml(r.desc)}</p>
+        <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener">Open →</a>
+      </div>`).join("");
+    if (usingFallback) {
+      grid.insertAdjacentHTML("beforeend", `<p class="settings-msg" style="grid-column:1/-1;">Showing starter resources — add documents to a "resources" collection in Firestore to replace these with your own.</p>`);
+    }
+  }
+
+  // ---- Projects panel: tries users/{uid}/projects first ----
+  async function renderProjectsPanel() {
+    const panel = $("panel-Projects");
+    panel.innerHTML = `<div class="info-card"><div class="profile-toprow"><div><h2>PROJECTS</h2><p class="card-sub">Track what you're building right now.</p></div><button class="ghost-button" id="addProjectBtn">+ Add project</button></div><div class="project-list" id="projectList"><p class="settings-msg">Loading…</p></div></div>`;
+    panel.querySelector("#addProjectBtn").addEventListener("click", async () => {
+      const name = window.prompt("Project name");
+      if (!name?.trim() || !db || !currentUserId) return;
+      try { await addDoc(collection(db, "users", currentUserId, "projects"), { name: name.trim(), status: "planned", progress: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); showNotice("Project created."); await renderProjectsPanel(); }
+      catch (err) { console.error(err); showNotice("Project could not be created. Check Firestore rules."); }
+    });
+    const list = panel.querySelector("#projectList");
+    let items = [];
+    if (db && currentUserId) {
+      try {
+        const snap = await getDocs(collection(db, "users", currentUserId, "projects"));
+        snap.forEach((d) => {
+          const data = d.data();
+          items.push({ name: data.name || "Untitled project", status: data.status || "active", progress: clamp(data.progress) });
+        });
+      } catch (err) { console.warn("No projects subcollection yet", err); }
+    }
+    const usingFallback = items.length === 0;
+    if (usingFallback) items = STATIC_PROJECTS;
+    list.innerHTML = items.map((p) => {
+      const statusClass = ["active", "done", "planned"].includes(p.status) ? `project-status--${p.status}` : "";
+      return `<div class="project-card">
+        <div class="project-info">
+          <h3>${escapeHtml(p.name)}</h3>
+          <div class="mini-line" style="margin-top:8px;"><i style="width:${p.progress}%"></i></div>
+        </div>
+        <span class="project-status ${statusClass}">${escapeHtml((p.status || "active").toUpperCase())}</span>
+      </div>`;
+    }).join("");
+    if (usingFallback) {
+      list.insertAdjacentHTML("beforeend", `<p class="settings-msg">Showing starter examples — add documents to users/${currentUserId || "{uid}"}/projects in Firestore to replace these with your real projects.</p>`);
+    }
+  }
+
+  // ---- Activity panel: real stats from the user doc, plus users/{uid}/activities if present ----
+  async function renderActivityPanel() {
+    const panel = $("panel-Activity");
+    const lastLoginStr = user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Today";
+    let extraRows = "";
+    if (db && currentUserId) {
+      try {
+        const snap = await getDocs(query(collection(db, "users", currentUserId, "activities"), orderBy("timestamp", "desc")));
+        snap.forEach((d) => {
+          const data = d.data();
+          const ts = data.timestamp?.toDate?.() ? data.timestamp.toDate().toLocaleString() : "";
+          extraRows += `<div class="activity-row"><span class="activity-icon"><span class="icon-slot" data-icon="activity" data-size="17"></span></span><div><strong>${escapeHtml(data.title || "Activity")}</strong><small>${escapeHtml(ts)}</small></div><span class="activity-dot"></span></div>`;
+        });
+      } catch (err) { console.warn("No activities subcollection yet", err); }
+    }
+    panel.innerHTML = `<div class="info-card">
+      <h2>ACTIVITY</h2>
+      <p class="card-sub">A live look at your recent Vision_S history.</p>
+      <div id="activityFullList">
+        <div class="activity-row"><span class="activity-icon activity-icon--green"><span class="icon-slot" data-icon="logout" data-size="17"></span></span><div><strong>Logged in</strong><small>${escapeHtml(lastLoginStr)}</small></div><span class="activity-dot activity-dot--green"></span></div>
+        <div class="activity-row"><span class="activity-icon"><span class="icon-slot" data-icon="flame" data-size="17"></span></span><div><strong>Current streak</strong><small>${user.streak} day${user.streak === 1 ? "" : "s"} running</small></div><span class="activity-dot"></span></div>
+        <div class="activity-row"><span class="activity-icon"><span class="icon-slot" data-icon="activity" data-size="17"></span></span><div><strong>Current level</strong><small>${escapeHtml(user.level)} · ${user.progress}% to next</small></div><span class="activity-dot"></span></div>
+        ${extraRows}
+      </div>
+      ${extraRows === "" ? `<p class="settings-msg">Add documents to users/${currentUserId || "{uid}"}/activities to show a full real history here.</p>` : ""}
+    </div>`;
+    hydrateIcons(panel);
+  }
+
+  // ---- Settings panel: writes straight back to users/{uid} in Firestore ----
+  function renderSettingsPanel() {
+    const panel = $("panel-Settings");
+    panel.innerHTML = `<div class="info-card">
+      <h2>SETTINGS</h2>
+      <p class="card-sub">Update your account details.</p>
+      <div class="settings-form">
+        <div class="settings-field">
+          <label for="settingsName">Display name</label>
+          <input type="text" id="settingsName" value="${escapeHtml(user.name)}" />
+        </div>
+        <div class="settings-field">
+          <label for="settingsPhoto">Avatar photo URL (optional)</label>
+          <input type="url" id="settingsPhoto" value="${escapeHtml(user.photoURL || "")}" placeholder="https://…" />
+        </div>
+        <div class="settings-row">
+          <span>Email notifications</span>
+          <span class="toggle" id="notifToggle"></span>
+        </div>
+        <button class="settings-save" id="settingsSaveBtn">Save changes</button>
+        <p class="settings-msg" id="settingsMsg"></p>
+        <button class="settings-save settings-logout" id="settingsLogoutBtn">Log out</button>
+      </div>
+    </div>`;
+
+    const notifToggle = panel.querySelector("#notifToggle");
+    let notifOn = user.emailNotifications !== false;
+    notifToggle.classList.toggle("on", notifOn);
+    notifToggle.setAttribute("role", "switch"); notifToggle.setAttribute("tabindex", "0"); notifToggle.setAttribute("aria-checked", String(notifOn));
+    const toggleNotifications = () => { notifOn = !notifOn; notifToggle.classList.toggle("on", notifOn); notifToggle.setAttribute("aria-checked", String(notifOn)); };
+    notifToggle.addEventListener("click", toggleNotifications);
+    notifToggle.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggleNotifications(); } });
+
+    panel.querySelector("#settingsSaveBtn").addEventListener("click", async () => {
+      const msg = panel.querySelector("#settingsMsg");
+      const newName = panel.querySelector("#settingsName").value.trim() || user.name;
+      const newPhoto = panel.querySelector("#settingsPhoto").value.trim() || null;
+      if (!db || !currentUserId) {
+        msg.textContent = "Preview mode — changes aren't saved to Firebase.";
+        user.name = newName; user.photoURL = newPhoto;
+        renderUI();
+        return;
+      }
+      try {
+        await updateDoc(doc(db, "users", currentUserId), { name: newName, photoURL: newPhoto, emailNotifications: notifOn, updatedAt: serverTimestamp() });
+        await addDoc(collection(db, "users", currentUserId, "activities"), { title: "Profile updated", timestamp: serverTimestamp(), type: "profile" });
+        user.name = newName; user.photoURL = newPhoto; user.emailNotifications = notifOn;
+        renderUI();
+        msg.textContent = "Saved.";
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "Firebase permissions blocked this update.";
+      }
+    });
+
+    panel.querySelector("#settingsLogoutBtn").addEventListener("click", () => $("logoutBtn").click());
+  }
+
+  // ---- admin panel ----
+  async function loadAdminUsers() {
+    const list = $("adminList");
+    const msg = $("adminMessage");
+    msg.textContent = "Loading users…";
+    try {
+      const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
+      const rows = [];
+      snap.forEach((entry) => {
+        const data = entry.data();
+        rows.push({
+          id: entry.id,
+          name: data.name || "User",
+          email: data.email || "",
+          level: data.level || "Bronze",
+          progress: clamp(data.progress),
+        });
+      });
+      msg.textContent = rows.length ? "" : "No users found.";
+      list.innerHTML = rows.map((row) => `
+        <div class="admin-row" data-uid="${row.id}">
+          <span><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(row.email)}</small></span>
+          <select class="levelSelect">${buildLevelOptions(row.level).map((l) => `<option value="${escapeHtml(String(l))}" ${l === row.level ? "selected" : ""}>${escapeHtml(String(l))}</option>`).join("")}</select>
+          <input class="progressInput" type="number" min="0" max="100" value="${row.progress}" />
+          <button class="saveBtn">Save</button>
+        </div>`).join("");
+      list.querySelectorAll(".admin-row").forEach((rowEl) => {
+        rowEl.querySelector(".saveBtn").addEventListener("click", async () => {
+          const uid = rowEl.dataset.uid;
+          const level = rowEl.querySelector(".levelSelect").value;
+          const progress = clamp(rowEl.querySelector(".progressInput").value);
+          try {
+            await updateDoc(doc(db, "users", uid), { level, progress });
+            msg.textContent = "User updated.";
+          } catch (err) {
+            console.error(err);
+            msg.textContent = "This update was blocked by Firebase permissions.";
           }
         });
       });
-    } catch(err){
-      userListDiv.innerHTML = "Error loading users.";
+    } catch (err) {
       console.error(err);
+      msg.textContent = "Firebase permissions did not allow the user list to load.";
     }
   }
 
-  // Handle daily streak and progress logic
-  async function updateStreakAndProgress() {
-    if(!localUser.lastLogin) return;
-
-    const todayKey = toDateKey(new Date());
-    const lastLoginKey = toDateKey(localUser.lastLogin);
-    const diffDays = (new Date(todayKey) - new Date(lastLoginKey))/(1000*3600*24);
-
-    let newStreak = localUser.streak || 0;
-    let newProgress = localUser.progress || 0;
-
-    if(diffDays === 1){
-      // consecutive login
-      newStreak += 1;
-      newProgress += 1;
-    } else if(diffDays > 1){
-      // streak break
-      newStreak = 1;
-      newProgress = clamp(newProgress - 1,0,100);
+  // ---- boot: preview mode or real Firebase auth ----
+  async function boot() {
+    if (new URLSearchParams(window.location.search).has("preview")) {
+      user = { ...DEFAULT_USER, name: "Saurav", level: "Gold", progress: 67, streak: 14 };
+      currentUserEmail = "";
+      renderUI();
+      return;
     }
+    try {
+      if (!hasFirebaseConfig) {
+        showNotice("Firebase keys are not set in this file. Showing sample dashboard data.");
+        user = { ...DEFAULT_USER, name: "Saurav", level: "Gold", progress: 67, streak: 14 };
+        renderUI();
+        return;
+      }
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
 
-    if(newProgress >= 100){
-      // level up
-      const currentLevelIndex = LEVELS.indexOf(localUser.level) || 0;
-      const nextLevel = LEVELS[Math.min(currentLevelIndex+1,LEVELS.length-1)];
-      localUser.level = nextLevel;
-      newProgress = newProgress - 100;
-      // Optional: trigger animation/pop up
-      alert(`Congrats! You leveled up to ${nextLevel}`);
+      onAuthStateChanged(auth, async (account) => {
+        if (!account) {
+          window.location.href = "login.html";
+          return;
+        }
+        currentUserId = account.uid;
+        currentUserEmail = account.email || "";
+        const tokenResult = await getIdTokenResult(account, true);
+       isAdmin = tokenResult.claims.admin === true || account.email === ADMIN_EMAIL;
+        const ref = doc(db, "users", account.uid);
+        const snap = await getDoc(ref);
+        let next;
+        if (!snap.exists()) {
+          next = {
+            name: account.displayName || account.email?.split("@")[0] || "User",
+            email: account.email || "",
+            level: "Bronze",
+            progress: 0,
+            streak: 1,
+            lastLogin: new Date(),
+            photoURL: account.photoURL || null,
+            membershipNumber: deriveMembershipNumber(account.uid),
+            emailNotifications: true,
+          };
+          await setDoc(ref, { ...next, lastLogin: serverTimestamp() });
+        } else {
+          const data = snap.data();
+          next = {
+            name: data.name || account.displayName || account.email?.split("@")[0] || "User",
+            email: data.email || account.email || "",
+            // Use whatever level value is actually stored — don't force unrecognized
+            // values (e.g. a plain number) back to "Bronze".
+            level: data.level || "Bronze",
+            progress: clamp(data.progress),
+            streak: Number(data.streak) || 0,
+            lastLogin: data.lastLogin?.toDate?.() ?? null,
+            photoURL: data.photoURL || account.photoURL || null,
+            membershipNumber: data.membershipNumber || deriveMembershipNumber(account.uid),
+            emailNotifications: data.emailNotifications !== false,
+          };
+          if (!data.membershipNumber) {
+            // Backfill once so this account has a permanent membership number going forward.
+            updateDoc(ref, { membershipNumber: next.membershipNumber }).catch((err) => console.warn("Could not save membership number", err));
+          }
+          if (next.lastLogin) {
+            await runTransaction(db, async (transaction) => {
+              const fresh = await transaction.get(ref);
+              if (!fresh.exists()) return;
+              const live = fresh.data();
+              const previousDate = live.lastLogin?.toDate?.() ?? null;
+              if (!previousDate) return;
+              const diffDays = (Date.parse(dayKey(new Date())) - Date.parse(dayKey(previousDate))) / 86400000;
+              if (diffDays < 1) return;
+              let streak = diffDays === 1 ? (Number(live.streak) || 0) + 1 : 1;
+              let progress = clamp((Number(live.progress) || 0) + (diffDays === 1 ? 1 : -1));
+              let level = live.level || "Bronze";
+              if (progress >= 100) {
+                const idx = LEVELS.indexOf(level);
+                if (idx !== -1 && idx < LEVELS.length - 1) { level = LEVELS[idx + 1]; progress = 0; }
+                else if (idx === -1 && /^\d+$/.test(String(level))) { level = String(Number(level) + 1); progress = 0; }
+                else progress = 100;
+              }
+              transaction.update(ref, { streak, progress, level, lastLogin: serverTimestamp() });
+            });
+            const refreshed = await getDoc(ref);
+            if (refreshed.exists()) {
+              const live = refreshed.data();
+              next.streak = Number(live.streak) || 0;
+              next.progress = clamp(live.progress);
+              next.level = live.level || next.level;
+              next.lastLogin = live.lastLogin?.toDate?.() ?? next.lastLogin;
+            }
+          }
+        }
+        user = next;
+        renderUI();
+      });
+    } catch (err) {
+      console.error(err);
+      showNotice("Dashboard data could not be loaded. Showing the last available view.");
+      renderUI();
     }
-
-    localUser.streak = newStreak;
-    localUser.progress = clamp(newProgress,0,100);
-    localUser.lastLogin = new Date();
-
-    await updateDoc(userRef,{
-      streak: localUser.streak,
-      progress: localUser.progress,
-      level: localUser.level,
-      lastLogin: serverTimestamp()
-    });
-
-    renderUI();
   }
 
-  // After auth, check if super admin
-  onAuthStateChanged(auth, async ()=>{
-    await checkAdmin();
-    await updateStreakAndProgress();
-  });
-
+  boot();
 </script>
-
 </body>
 </html>
+
