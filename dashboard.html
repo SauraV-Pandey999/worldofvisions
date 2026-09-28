@@ -404,10 +404,11 @@
   import {
     getAuth, onAuthStateChanged, signOut, getIdTokenResult,
   } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, serverTimestamp,
-    collection, getDocs, query, orderBy, limit, runTransaction,
-  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp,
+  collection, getDocs, query, orderBy, limit, runTransaction,
+} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
 
   // ---- Firebase config: same project as the rest of Vision_S ----
   const firebaseConfig = window.VISION_S_FIREBASE_CONFIG || {};
@@ -740,33 +741,115 @@
   }
 
   // ---- Resources panel: tries a real "resources" Firestore collection first ----
-  async function renderResourcesPanel() {
-    const panel = $("panel-Resources");
-    panel.innerHTML = `<div class="info-card"><h2>RESOURCES</h2><p class="card-sub">Curated material to support your journey.</p><div class="resource-grid" id="resourceGrid"><p class="settings-msg">Loading…</p></div></div>`;
-    const grid = panel.querySelector("#resourceGrid");
-    let items = [];
-    if (db) {
+ // ---- Resources panel with Admin Add & Delete ----
+async function renderResourcesPanel() {
+  const panel = $("panel-Resources");
+  panel.innerHTML = `
+    <div class="info-card">
+      <div class="profile-toprow">
+        <div>
+          <h2>RESOURCES</h2>
+          <p class="card-sub">Curated material to support your journey.</p>
+        </div>
+        ${isAdmin ? `<button class="ghost-button" id="adminAddResourceBtn">+ Add Resource</button>` : ""}
+      </div>
+      <div class="resource-grid" id="resourceGrid">
+        <p class="settings-msg">Loading…</p>
+      </div>
+    </div>`;
+
+  const grid = panel.querySelector("#resourceGrid");
+
+  // Admin Add Button Handler
+  if (isAdmin) {
+    panel.querySelector("#adminAddResourceBtn")?.addEventListener("click", async () => {
+      const title = window.prompt("Resource Title:");
+      if (!title?.trim()) return;
+      const category = window.prompt("Category (e.g. Tools, Mindset, Guides):", "General") || "General";
+      const desc = window.prompt("Short Description:") || "";
+      const url = window.prompt("Target URL (https://...):", "https://") || "#";
+
       try {
-        const snap = await getDocs(collection(db, "resources"));
-        snap.forEach((d) => {
-          const data = d.data();
-          items.push({ category: data.category || "Resource", title: data.title || "Untitled", desc: data.description || "", url: data.url || "#" });
+        await addDoc(collection(db, "resources"), {
+          title: title.trim(),
+          category: category.trim(),
+          description: desc.trim(),
+          url: url.trim(),
+          createdAt: serverTimestamp(),
         });
-      } catch (err) { console.warn("No resources collection yet", err); }
-    }
-    const usingFallback = items.length === 0;
-    if (usingFallback) items = STATIC_RESOURCES;
-    grid.innerHTML = items.map((r) => `
-      <div class="resource-card">
-        <span class="resource-tag">${escapeHtml(r.category)}</span>
-        <h3>${escapeHtml(r.title)}</h3>
-        <p>${escapeHtml(r.desc)}</p>
-        <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener">Open →</a>
-      </div>`).join("");
-    if (usingFallback) {
-      grid.insertAdjacentHTML("beforeend", `<p class="settings-msg" style="grid-column:1/-1;">Showing starter resources — add documents to a "resources" collection in Firestore to replace these with your own.</p>`);
+        showToast("Resource added successfully!");
+        renderResourcesPanel();
+      } catch (err) {
+        console.error(err);
+        showToast("Failed to add resource.");
+      }
+    });
+  }
+
+  // Fetch Firestore resources
+  let items = [];
+  if (db) {
+    try {
+      const snap = await getDocs(collection(db, "resources"));
+      snap.forEach((d) => {
+        const data = d.data();
+        items.push({
+          id: d.id,
+          category: data.category || "Resource",
+          title: data.title || "Untitled",
+          desc: data.description || "",
+          url: data.url || "#",
+          isCustom: true,
+        });
+      });
+    } catch (err) {
+      console.warn("No resources collection yet", err);
     }
   }
+
+  const usingFallback = items.length === 0;
+  if (usingFallback) {
+    items = STATIC_RESOURCES.map((r) => ({ ...r, isCustom: false }));
+  }
+
+  grid.innerHTML = items.map((r) => `
+    <div class="resource-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <span class="resource-tag">${escapeHtml(r.category)}</span>
+        <h3 style="margin: 8px 0 6px;">${escapeHtml(r.title)}</h3>
+        <p style="font-size: 13px; color: var(--muted-foreground);">${escapeHtml(r.desc)}</p>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+        <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener">Open →</a>
+        ${isAdmin && r.isCustom ? `<button class="ghost-button delete-res-btn" data-id="${r.id}" style="padding:4px 10px; font-size:11px; color:#ef4444; border-color:#ef4444;">Delete</button>` : ""}
+      </div>
+    </div>`).join("");
+
+  // Attach delete handlers
+  if (isAdmin) {
+    grid.querySelectorAll(".delete-res-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to delete this resource?")) return;
+        const resId = btn.dataset.id;
+        try {
+          await deleteDoc(doc(db, "resources", resId));
+          showToast("Resource deleted.");
+          renderResourcesPanel();
+        } catch (err) {
+          console.error(err);
+          showToast("Failed to delete resource.");
+        }
+      });
+    });
+  }
+
+  if (usingFallback) {
+    grid.insertAdjacentHTML(
+      "beforeend",
+      `<p class="settings-msg" style="grid-column:1/-1;">Showing starter resources. Click <strong>+ Add Resource</strong> above to publish your first real resource.</p>`
+    );
+  }
+}
 
   // ---- Projects panel: tries users/{uid}/projects first ----
   async function renderProjectsPanel() {
