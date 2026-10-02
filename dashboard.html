@@ -426,6 +426,172 @@
 .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--deep); }
 .tag-pill { background: rgba(201,168,76,.15); border: 1px solid var(--gold); color: var(--gold); padding: 3px 8px; border-radius: 4px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
 .tag-pill button { background: none; border: none; color: inherit; cursor: pointer; font-size: 14px; }
+  /* ==========================================
+     GLOBAL BROADCAST BANNER (ADMIN 2)
+     ========================================== */
+  .broadcast-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(90deg, rgba(229,180,75,0.18), rgba(0,229,255,0.12));
+    border: 1px solid rgba(229,180,75,0.4);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 16px 24px 0 24px;
+    color: #fff;
+    font-size: 13px;
+    animation: bannerGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes bannerGlow {
+    from { box-shadow: 0 0 10px rgba(229,180,75,0.1); }
+    to { box-shadow: 0 0 18px rgba(0,229,255,0.25); }
+  }
+  .broadcast-banner strong {
+    color: var(--gold, #e5b44b);
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 1px;
+    margin-right: 6px;
+  }
+  .broadcast-close {
+    background: transparent;
+    border: none;
+    color: var(--muted, #8e9bb0);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 6px;
+  }
+  .broadcast-close:hover { color: #fff; }
+
+  /* ==========================================
+     ADMIN MANAGER SUB-TABS (ADMIN 1, 2, 3)
+     ========================================== */
+  .admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+  }
+  .admin-tab-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #cbd5e1;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .admin-tab-btn.active, .admin-tab-btn:hover {
+    background: var(--gold, #e5b44b);
+    color: #0b0f19;
+    border-color: var(--gold, #e5b44b);
+  }
+  .admin-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,229,255,0.15);
+    border: 1px solid rgba(0,229,255,0.4);
+    color: #00e5ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin: 2px;
+  }
+  .admin-badge-remove {
+    cursor: pointer;
+    color: #ff5555;
+    font-weight: bold;
+    padding: 0 2px;
+  }
+
+  /* ==========================================
+     COMMUNITY LEADERBOARD (USER 3)
+     ========================================== */
+  .leaderboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .podium-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 16px;
+    align-items: flex-end;
+    margin: 30px 0 40px;
+  }
+  .podium-card {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px 14px;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s ease;
+  }
+  .podium-card:hover { transform: translateY(-4px); }
+  .podium-card.first {
+    border-color: #ffd700;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+    padding-top: 32px;
+  }
+  .podium-card.second {
+    border-color: #e2e8f0;
+    box-shadow: 0 0 18px rgba(226, 232, 240, 0.2);
+  }
+  .podium-card.third {
+    border-color: #cd7f32;
+    box-shadow: 0 0 18px rgba(205, 127, 50, 0.2);
+  }
+  .podium-rank {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #0b0f19;
+  }
+  .podium-card.first .podium-rank { background: #ffd700; }
+  .podium-card.second .podium-rank { background: #e2e8f0; }
+  .podium-card.third .podium-rank { background: #cd7f32; }
+
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .leaderboard-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--muted, #94a3b8);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .leaderboard-table td {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+  }
+  .leaderboard-table tr:hover td { background: rgba(255, 255, 255, 0.03); }
 
 </style>
   <!-- QR Code & Card Image Export CDN -->
@@ -547,6 +713,15 @@
       <span id="toastText"></span>
       <button id="toastDismiss" aria-label="Dismiss"><span class="icon-slot" data-icon="x" data-size="15"></span></button>
     </div>
+    <!-- GLOBAL BROADCAST BANNER -->
+    <div class="broadcast-banner" id="broadcastBanner" hidden>
+      <div>
+        <span class="icon-slot" data-icon="bell" data-size="16"></span>
+        <strong id="bannerTitle">VISION-S BROADCAST:</strong>
+        <span id="bannerText"></span>
+      </div>
+      <button class="broadcast-close" id="dismissBannerBtn" aria-label="Dismiss banner">✕</button>
+    </div>
 
     <div class="tab-panel" id="panel-Overview">
       <section class="welcome-panel">
@@ -639,12 +814,60 @@
         </article>
       </section>
 
-      <section class="admin-panel" id="adminPanel" hidden>
-        <h2>SUPER ADMIN</h2>
-        <p>Manage member levels and progress.</p>
-        <p role="status" id="adminMessage">Loading users…</p>
-        <div class="admin-list" id="adminList"></div>
+          <section class="admin-panel" id="adminPanel" hidden>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(229,180,75,0.3); padding-bottom: 10px;">
+          <h2 style="margin: 0; font-family: 'Orbitron', monospace; color: var(--gold, #e5b44b);">SUPER ADMIN COMMAND CENTER</h2>
+          <span style="font-size: 11px; background: rgba(229,180,75,0.15); border: 1px solid var(--gold); color: var(--gold); padding: 3px 8px; border-radius: 4px;">CLEARANCE LEVEL: ALPHA</span>
+        </div>
+
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" data-admintab="users">1. Members & Badges</button>
+          <button class="admin-tab-btn" data-admintab="codes">2. Mint Access Codes</button>
+          <button class="admin-tab-btn" data-admintab="broadcast">3. Cosmic Broadcast</button>
+        </div>
+
+        <!-- SUB-PANEL 1: USERS & BADGES -->
+        <div id="adminTab-users">
+          <p style="font-size: 13px; color: var(--muted);">Manage ranks, progress, and award honorary badges.</p>
+          <p role="status" id="adminMessage" style="color: var(--gold); font-size: 12px;">Loading users…</p>
+          <div class="admin-list" id="adminList"></div>
+        </div>
+
+        <!-- SUB-PANEL 2: ACCESS CODES -->
+        <div id="adminTab-codes" hidden>
+          <p style="font-size: 13px; color: var(--muted);">Mint official VIP access codes for the Membership portal.</p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+            <input type="text" id="newCodeInput" placeholder="Code (e.g. VS-982144)" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 4px; font-family: 'Orbitron', monospace;" />
+            <button id="genRandomCodeBtn" class="admin-tab-btn">Generate Random</button>
+            <select id="newCodeTier" style="background: #111827; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px;">
+              <option value="Bronze">Bronze</option>
+              <option value="Silver">Silver</option>
+              <option value="Gold" selected>Gold</option>
+              <option value="Platinum">Platinum</option>
+              <option value="Diamond">Diamond</option>
+              <option value="Titan">Titan</option>
+              <option value="Conqueror">Conqueror</option>
+            </select>
+            <button id="mintCodeBtn" style="background: var(--gold, #e5b44b); color: #000; border: none; font-weight: bold; padding: 6px 16px; border-radius: 4px; cursor: pointer;">✦ Mint Code</button>
+          </div>
+          <p id="codeAdminMsg" style="font-size: 12px; color: var(--gold);"></p>
+          <div id="activeCodesList" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;"></div>
+        </div>
+
+        <!-- SUB-PANEL 3: GLOBAL BROADCAST -->
+        <div id="adminTab-broadcast" hidden>
+          <p style="font-size: 13px; color: var(--muted);">Publish an instant banner alert to all active Vision_S members.</p>
+          <div style="display: flex; flex-direction: column; gap: 10px; max-width: 600px;">
+            <input type="text" id="adminBroadcastInput" placeholder="Announcement message..." style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 12px; border-radius: 4px;" />
+            <div style="display: flex; gap: 10px;">
+              <button id="publishBroadcastBtn" style="background: #00e5ff; color: #000; font-weight: bold; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Publish Broadcast</button>
+              <button id="clearBroadcastBtn" style="background: rgba(255,255,255,0.1); color: #ff5555; border: 1px solid #ff5555; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Clear Active Broadcast</button>
+            </div>
+            <p id="broadcastAdminMsg" style="font-size: 12px; color: #00e5ff;"></p>
+          </div>
+        </div>
       </section>
+
     </div>
 
     <div class="tab-panel" id="panel-Profile" hidden></div>
@@ -652,6 +875,29 @@
     <div class="tab-panel" id="panel-Projects" hidden></div>
     <div class="tab-panel" id="panel-Activity" hidden></div>
     <div class="tab-panel" id="panel-Settings" hidden></div>
+    <div class="tab-panel" id="panel-Leaderboard" hidden>
+      <div class="leaderboard-container">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="font-family: 'Orbitron', monospace; font-size: 26px; color: var(--gold, #e5b44b); letter-spacing: 2px;">COMMUNITY VISIONARIES</h1>
+          <p style="color: var(--muted, #94a3b8); font-size: 14px;">Real-time ranking of Vision_S members by streak & mastery level.</p>
+        </div>
+        <div id="podiumContainer" class="podium-grid"></div>
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Rank</th>
+              <th>Visionary</th>
+              <th>Rank Tier</th>
+              <th>Badges</th>
+              <th style="text-align: right;">Streak</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardList">
+            <tr><td colspan="5" style="text-align: center; padding: 24px;">Scanning cosmic database…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
   </main>
 </div>
@@ -726,6 +972,7 @@ import {
 
   // ---- tiny generic icon set (outline icons, no external lib) ----
     const ICONS = {
+          trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M18 4H6v7a6 6 0 0 0 12 0V4z"/>',
     card: '<rect width="20" height="14" x="2" y="5" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="2" x2="22" y1="10" y2="10" stroke="currentColor" stroke-width="2"/>',
     home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
@@ -775,6 +1022,7 @@ import {
 
   const NAV_ITEMS = [
     { name: "Overview", icon: "home" },
+    { name: "Leaderboard", icon: "trophy" },
     { name: "Profile", icon: "user" },
     { name: "Membership", icon: "card" },
     { name: "Resources", icon: "bookOpen" },
@@ -824,6 +1072,8 @@ import {
     else if (name === "Activity") renderActivityPanel();
     else if (name === "Settings") renderSettingsPanel();
         else if (name === "Membership") renderMembershipCard();
+        else if (name === "Leaderboard") renderLeaderboardPanel();
+
 
   }
 
@@ -1532,6 +1782,283 @@ async function renderResourcesPanel() {
       });
     }
   });
+  // ==========================================
+  // SUPER ADMIN FEATURES (1, 2, 3) & LEADERBOARD (USER 3)
+  // ==========================================
+
+  // --- ADMIN 2: GLOBAL BROADCAST SYSTEM ---
+  async function loadGlobalBroadcast() {
+    try {
+      const bDoc = await getDoc(doc(db, "system", "announcements"));
+      const banner = $("broadcastBanner");
+      if (bDoc.exists() && bDoc.data().active && bDoc.data().text) {
+        $("bannerText").textContent = bDoc.data().text;
+        banner.hidden = false;
+        hydrateIcons(banner);
+      } else {
+        banner.hidden = true;
+      }
+    } catch (e) {
+      console.warn("Broadcast fetch skipped:", e);
+    }
+  }
+
+  $("dismissBannerBtn")?.addEventListener("click", () => {
+    $("broadcastBanner").hidden = true;
+  });
+
+  $("publishBroadcastBtn")?.addEventListener("click", async () => {
+    const text = $("adminBroadcastInput").value.trim();
+    const msg = $("broadcastAdminMsg");
+    if (!text) { msg.textContent = "Please enter an announcement."; return; }
+    try {
+      await setDoc(doc(db, "system", "announcements"), {
+        text, active: true, publishedAt: serverTimestamp(), author: currentUserEmail
+      });
+      msg.textContent = "✓ Cosmic Broadcast published!";
+      loadGlobalBroadcast();
+    } catch (err) {
+      msg.textContent = "Error: " + err.message;
+    }
+  });
+
+  $("clearBroadcastBtn")?.addEventListener("click", async () => {
+    try {
+      await setDoc(doc(db, "system", "announcements"), { active: false });
+      $("broadcastAdminMsg").textContent = "✓ Broadcast removed.";
+      $("broadcastBanner").hidden = true;
+    } catch (err) {
+      $("broadcastAdminMsg").textContent = "Error: " + err.message;
+    }
+  });
+
+  // --- ADMIN 1: ACCESS CODE MINTING & REVOCATION ---
+  $("genRandomCodeBtn")?.addEventListener("click", () => {
+    const rand = Math.floor(100000 + Math.random() * 900000);
+    $("newCodeInput").value = "VS-" + rand;
+  });
+
+  $("mintCodeBtn")?.addEventListener("click", async () => {
+    const code = $("newCodeInput").value.trim().toUpperCase();
+    const tier = $("newCodeTier").value;
+    const msg = $("codeAdminMsg");
+    if (!code) { msg.textContent = "Enter or generate a code."; return; }
+    try {
+      await setDoc(doc(db, "access_codes", code), {
+        code, tier, status: "active", createdAt: serverTimestamp()
+      });
+      msg.textContent = `✓ Access code ${code} minted (${tier} tier)!`;
+      $("newCodeInput").value = "";
+      loadActiveCodes();
+    } catch (err) {
+      msg.textContent = "Minting failed: " + err.message;
+    }
+  });
+
+  async function loadActiveCodes() {
+    const container = $("activeCodesList");
+    if (!container) return;
+    try {
+      const snap = await getDocs(collection(db, "access_codes"));
+      const codes = [];
+      snap.forEach(d => codes.push(d.data()));
+      if (!codes.length) { container.innerHTML = "<p style='color:var(--muted);font-size:12px;'>No active codes minted yet.</p>"; return; }
+      container.innerHTML = codes.map(c => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.04); padding:6px 12px; border-radius:4px; font-size:12px;">
+          <span><strong style="color:var(--gold); font-family:'Orbitron', monospace;">${escapeHtml(c.code)}</strong> [${escapeHtml(c.tier)}]</span>
+          <button class="revokeCodeBtn" data-code="${escapeHtml(c.code)}" style="background:transparent; border:1px solid #ff5555; color:#ff5555; padding:2px 8px; border-radius:3px; cursor:pointer;">Revoke</button>
+        </div>
+      `).join("");
+      container.querySelectorAll(".revokeCodeBtn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          if (!confirm(`Revoke code ${btn.dataset.code}?`)) return;
+          await deleteDoc(doc(db, "access_codes", btn.dataset.code));
+          loadActiveCodes();
+        });
+      });
+    } catch (e) {
+      container.innerHTML = "<p style='color:var(--muted);font-size:12px;'>Could not load access codes.</p>";
+    }
+  }
+
+  // --- ADMIN TABS NAVIGATION ---
+  document.querySelectorAll(".admin-tab-btn[data-admintab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".admin-tab-btn[data-admintab]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.admintab;
+      $("adminTab-users").hidden = tab !== "users";
+      $("adminTab-codes").hidden = tab !== "codes";
+      $("adminTab-broadcast").hidden = tab !== "broadcast";
+      if (tab === "codes") loadActiveCodes();
+    });
+  });
+
+  // --- ADMIN 3: BADGE GRANTING & USER DIRECTORY EXTENSION ---
+  // Replace the loadAdminUsers function so it supports adding/removing honorary badges:
+  async function loadAdminUsers() {
+    const list = $("adminList");
+    const msg = $("adminMessage");
+    msg.textContent = "Loading users…";
+    try {
+      const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
+      const rows = [];
+      snap.forEach((entry) => {
+        const data = entry.data();
+        rows.push({
+          id: entry.id,
+          name: data.name || "User",
+          email: data.email || "",
+          level: data.level || "Bronze",
+          progress: clamp(data.progress),
+          badges: Array.isArray(data.badges) ? data.badges : [],
+        });
+      });
+      msg.textContent = rows.length ? "" : "No users found.";
+      list.innerHTML = rows.map((row) => `
+        <div class="admin-row" data-uid="${row.id}" style="display:flex; flex-direction:column; gap:8px; padding:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:6px; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span><strong>${escapeHtml(row.name)}</strong> <small style="color:var(--muted); margin-left:8px;">${escapeHtml(row.email)}</small></span>
+            <div style="display:flex; gap:6px;">
+              <select class="levelSelect">${buildLevelOptions(row.level).map((l) => `<option value="${escapeHtml(String(l))}" ${l === row.level ? "selected" : ""}>${escapeHtml(String(l))}</option>`).join("")}</select>
+              <input class="progressInput" type="number" min="0" max="100" value="${row.progress}" style="width:60px;" />
+              <button class="saveBtn">Save Rank</button>
+            </div>
+          </div>
+          <!-- BADGES ROW -->
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
+            <span style="font-size:11px; color:var(--muted);">Accolades:</span>
+            <div class="user-badges-container">
+              ${row.badges.map(b => `<span class="admin-badge-pill">${escapeHtml(b)} <span class="admin-badge-remove" data-badge="${escapeHtml(b)}">×</span></span>`).join("") || "<em style='font-size:11px;color:#64748b;'>None</em>"}
+            </div>
+            <select class="badgeSelect" style="background:#111827; color:#fff; font-size:11px; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:2px 6px;">
+              <option value="">+ Award Badge...</option>
+              <option value="Founding Visionary">Founding Visionary</option>
+              <option value="Elite Builder">Elite Builder</option>
+              <option value="Master Strategist">Master Strategist</option>
+              <option value="Streak Legend">Streak Legend</option>
+              <option value="Cosmic Pioneer">Cosmic Pioneer</option>
+            </select>
+          </div>
+        </div>`).join("");
+
+      list.querySelectorAll(".admin-row").forEach((rowEl) => {
+        const uid = rowEl.dataset.uid;
+        rowEl.querySelector(".saveBtn").addEventListener("click", async () => {
+          const level = rowEl.querySelector(".levelSelect").value;
+          const progress = clamp(rowEl.querySelector(".progressInput").value);
+          try {
+            await updateDoc(doc(db, "users", uid), { level, progress });
+            showNotice("User rank and progress updated.");
+          } catch (err) {
+            showNotice("Update blocked by permissions.");
+          }
+        });
+
+        // Award badge
+        const badgeSelect = rowEl.querySelector(".badgeSelect");
+        badgeSelect.addEventListener("change", async () => {
+          const badge = badgeSelect.value;
+          if (!badge) return;
+          const userRow = rows.find(r => r.id === uid);
+          if (userRow && !userRow.badges.includes(badge)) {
+            userRow.badges.push(badge);
+            await updateDoc(doc(db, "users", uid), { badges: userRow.badges });
+            showNotice(`Badge "${badge}" awarded!`);
+            loadAdminUsers();
+          }
+        });
+
+        // Remove badge
+        rowEl.querySelectorAll(".admin-badge-remove").forEach(del => {
+          del.addEventListener("click", async () => {
+            const bToRemove = del.dataset.badge;
+            const userRow = rows.find(r => r.id === uid);
+            if (userRow) {
+              userRow.badges = userRow.badges.filter(b => b !== bToRemove);
+              await updateDoc(doc(db, "users", uid), { badges: userRow.badges });
+              showNotice(`Badge removed.`);
+              loadAdminUsers();
+            }
+          });
+        });
+      });
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "Firebase permissions did not allow the user list to load.";
+    }
+  }
+
+  // --- USER 3: COMMUNITY VISIONARY LEADERBOARD ---
+  async function renderLeaderboardPanel() {
+    const podium = $("podiumContainer");
+    const list = $("leaderboardList");
+    if (!list) return;
+
+    try {
+      const snap = await getDocs(collection(db, "users"));
+      const visionaries = [];
+      snap.forEach(d => {
+        const data = d.data();
+        visionaries.push({
+          name: data.name || "Anonymous",
+          level: data.level || "Bronze",
+          streak: Number(data.streak) || 0,
+          progress: Number(data.progress) || 0,
+          badges: Array.isArray(data.badges) ? data.badges : [],
+        });
+      });
+
+      // Rank by Streak length, then Progress
+      visionaries.sort((a, b) => b.streak - a.streak || b.progress - a.progress);
+
+      // Render Top 3 Podium
+      const top1 = visionaries[0];
+      const top2 = visionaries[1];
+      const top3 = visionaries[2];
+
+      podium.innerHTML = `
+        ${top2 ? `
+        <div class="podium-card second">
+          <div class="podium-rank">2</div>
+          <div style="color: #e2e8f0; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top2.name)}</div>
+          <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top2.level)}</div>
+          <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top2.streak} Days</div>
+        </div>` : ''}
+
+        ${top1 ? `
+        <div class="podium-card first">
+          <div class="podium-rank">1</div>
+          <div style="font-size:24px; margin-bottom:4px;">👑</div>
+          <div style="color: #ffd700; font-family:'Orbitron', monospace; font-size:18px; font-weight:bold;">${escapeHtml(top1.name)}</div>
+          <div style="font-size:12px; color:var(--muted); margin:4px 0;">${escapeHtml(top1.level)}</div>
+          <div style="color:var(--gold); font-size:16px; font-weight:bold;">🔥 ${top1.streak} Days</div>
+        </div>` : ''}
+
+        ${top3 ? `
+        <div class="podium-card third">
+          <div class="podium-rank">3</div>
+          <div style="color: #cd7f32; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top3.name)}</div>
+          <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top3.level)}</div>
+          <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top3.streak} Days</div>
+        </div>` : ''}
+      `;
+
+      // Render Full Ranking Table
+      list.innerHTML = visionaries.map((v, i) => `
+        <tr>
+          <td style="font-family:'Orbitron', monospace; font-weight:bold; color:${i < 3 ? 'var(--gold)' : 'var(--muted)'};">#${i + 1}</td>
+          <td><strong style="color:#fff;">${escapeHtml(v.name)}</strong></td>
+          <td><span style="background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:4px; font-size:11px;">${escapeHtml(v.level)}</span></td>
+          <td>${v.badges.map(b => `<span style="background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; font-size:10px; padding:2px 5px; border-radius:3px; margin-right:3px;">${escapeHtml(b)}</span>`).join("") || '<span style="color:#64748b; font-size:11px;">-</span>'}</td>
+          <td style="text-align:right; font-weight:bold; color:var(--gold);">🔥 ${v.streak}</td>
+        </tr>
+      `).join("");
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ff5555; padding: 24px;">Failed to load leaderboard.</td></tr>`;
+    }
+  }
 
 
   boot();
