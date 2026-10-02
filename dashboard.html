@@ -520,6 +520,96 @@
   /* ==========================================
      COMMUNITY LEADERBOARD (USER 3)
      ========================================== */
+    /* ==========================================
+     EXECUTIVE COUNCIL (LEADERBOARD)
+     ========================================== */
+  .exec-council-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 860px) {
+    .exec-council-grid { grid-template-columns: 1fr; }
+  }
+  .exec-card {
+    background: rgba(15, 23, 42, 0.65);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .exec-card:hover { transform: translateY(-3px); }
+  
+  /* C.E.O - Radiant Gold */
+  .exec-card--ceo {
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.12), inset 0 0 15px rgba(255, 215, 0, 0.05);
+  }
+  .exec-card--ceo .exec-badge {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.3), rgba(255, 140, 0, 0.3));
+    border: 1px solid #ffd700;
+    color: #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+  }
+
+  /* Operation Coordinator - Electric Purple */
+  .exec-card--ops {
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.12), inset 0 0 15px rgba(168, 85, 247, 0.05);
+  }
+  .exec-card--ops .exec-badge {
+    background: rgba(168, 85, 247, 0.25);
+    border: 1px solid #a855f7;
+    color: #d8b4fe;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+  }
+
+  /* Marketing Manager - Emerald Green */
+  .exec-card--mkt {
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.12), inset 0 0 15px rgba(34, 197, 94, 0.05);
+  }
+  .exec-card--mkt .exec-badge {
+    background: rgba(34, 197, 94, 0.25);
+    border: 1px solid #22c55e;
+    color: #86efac;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.35);
+  }
+
+  .exec-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .exec-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .exec-tier {
+    font-size: 11px;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+  }
+  .exec-streak {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--gold);
+  }
+
   .leaderboard-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -839,6 +929,26 @@
         <div id="adminTab-users">
           <p style="font-size: 13px; color: var(--muted);">Manage ranks, progress, and award honorary badges.</p>
           <p role="status" id="adminMessage" style="color: var(--gold); font-size: 12px;">Loading users…</p>
+                  <!-- EXECUTIVE APPOINTMENTS -->
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; margin-bottom:18px;">
+          <h4 style="margin:0 0 12px; font-size:13px; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase;">✦ Executive Council Appointments</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">⚡ Operation Coordinator:</label>
+              <select id="selectOpsLead" style="width:100%; background:#111827; color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:6px; font-size:12px;">
+                <option value="">-- None Assigned --</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">📈 Marketing Manager:</label>
+              <select id="selectMktLead" style="width:100%; background:#111827; color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:6px; font-size:12px;">
+                <option value="">-- None Assigned --</option>
+              </select>
+            </div>
+          </div>
+          <button id="saveLeadershipBtn" style="margin-top:12px; background:linear-gradient(90deg, #9333ea, #4f46e5); color:#fff; border:none; padding:6px 14px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">Save Executive Appointments</button>
+        </div>
+
           <div class="admin-list" id="adminList"></div>
         </div>
 
@@ -886,6 +996,25 @@
     <div class="tab-panel" id="panel-Settings" hidden></div>
     <div class="tab-panel" id="panel-Leaderboard" hidden>
       <div class="leaderboard-container">
+          
+      <div class="leaderboard-header">
+        <h2>COMMUNITY VISIONARIES</h2>
+        <p>The cosmic vanguard: Ranked by continuous discipline and vision progression.</p>
+      </div>
+
+      <!-- ✦ EXECUTIVE COUNCIL SLOTS ✦ -->
+      <div class="exec-council-grid" id="execCouncilContainer">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <span style="font-family:var(--font-display); font-size:12px; letter-spacing:0.2em; color:var(--muted-foreground); text-transform:uppercase;">Community Rankings</span>
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
+      </div>
+
+      <!-- Top 3 Podium Cards -->
+      <div class="podium-grid" id="podiumContainer"></div>
+
         <div style="text-align: center; margin-bottom: 24px;">
           <h1 style="font-family: 'Orbitron', monospace; font-size: 26px; color: var(--gold, #e5b44b); letter-spacing: 2px;">COMMUNITY VISIONARIES</h1>
           <p style="color: var(--muted, #94a3b8); font-size: 14px;">Real-time ranking of Vision_S members by streak & mastery level.</p>
@@ -1863,30 +1992,115 @@ async function renderResourcesPanel() {
 
   // --- ADMIN 3: BADGE GRANTING & USER DIRECTORY EXTENSION ---
   // Replace the loadAdminUsers function so it supports adding/removing honorary badges:
+  // ==========================================
+  // ADMIN 1 & 3: USER MANAGEMENT & EXECUTIVE APPOINTMENTS
+  // ==========================================
   async function loadAdminUsers() {
     const list = $("adminList");
     const msg = $("adminMessage");
+    if (!list) return;
+    if (!db) return;
     msg.textContent = "Loading users…";
+
     try {
+      // 1. Fetch Executive Council appointments from Firestore
+      let leadership = {};
+      try {
+        const leadSnap = await getDoc(doc(db, "system", "leadership"));
+        if (leadSnap.exists()) leadership = leadSnap.data();
+      } catch (e) {
+        console.warn("Leadership doc fetch:", e);
+      }
+
+      // 2. Fetch all users from Firestore
       const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
       const rows = [];
       snap.forEach((entry) => {
         const data = entry.data();
+        const rowBadges = Array.isArray(data.badges) ? data.badges : [];
+
+        // Auto-grant C.E.O badge to your admin account
+        if (data.email === ADMIN_EMAIL && !rowBadges.includes("C.E.O")) {
+          rowBadges.unshift("C.E.O");
+          updateDoc(doc(db, "users", entry.id), { badges: rowBadges }).catch(console.error);
+        }
+
         rows.push({
           id: entry.id,
           name: data.name || "User",
           email: data.email || "",
           level: data.level || "Bronze",
           progress: clamp(data.progress),
-          badges: Array.isArray(data.badges) ? data.badges : [],
+          badges: rowBadges,
+          hideFromLeaderboard: data.hideFromLeaderboard === true,
         });
       });
+
+      // 3. Auto-inject Executive Council selector box in Admin Panel if not present
+      let leadBox = $("execLeadBox");
+      if (!leadBox && list.parentNode) {
+        leadBox = document.createElement("div");
+        leadBox.id = "execLeadBox";
+        leadBox.style.cssText = "background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; margin-bottom:18px;";
+        leadBox.innerHTML = `
+          <h4 style="margin:0 0 12px; font-size:13px; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase;">✦ Executive Council Appointments</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">⚡ Operation Coordinator:</label>
+              <select id="selectOpsLead" style="width:100%; background:#111827; color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:6px; font-size:12px;">
+                <option value="">-- None Assigned --</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">📈 Marketing Manager:</label>
+              <select id="selectMktLead" style="width:100%; background:#111827; color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:6px; font-size:12px;">
+                <option value="">-- None Assigned --</option>
+              </select>
+            </div>
+          </div>
+          <button id="saveLeadershipBtn" style="margin-top:12px; background:linear-gradient(90deg, #9333ea, #4f46e5); color:#fff; border:none; padding:7px 16px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">Save Executive Appointments</button>
+        `;
+        list.parentNode.insertBefore(leadBox, list);
+      }
+
+      // Populate Executive Dropdowns
+      const selectOps = $("selectOpsLead");
+      const selectMkt = $("selectMktLead");
+      const saveLeadersBtn = $("saveLeadershipBtn");
+      if (selectOps && selectMkt) {
+        const memberOptions = rows.map(r => `<option value="${r.id}">${escapeHtml(r.name)} (${escapeHtml(r.email)})</option>`).join("");
+        selectOps.innerHTML = `<option value="">-- None Assigned --</option>` + memberOptions;
+        selectMkt.innerHTML = `<option value="">-- None Assigned --</option>` + memberOptions;
+        if (leadership.opsUid) selectOps.value = leadership.opsUid;
+        if (leadership.mktUid) selectMkt.value = leadership.mktUid;
+
+        if (saveLeadersBtn) {
+          saveLeadersBtn.onclick = async () => {
+            try {
+              await setDoc(doc(db, "system", "leadership"), {
+                opsUid: selectOps.value || null,
+                mktUid: selectMkt.value || null,
+                updatedAt: serverTimestamp()
+              }, { merge: true });
+              showNotice("Executive Council updated successfully!");
+              loadAdminUsers();
+            } catch (err) {
+              console.error(err);
+              showNotice("Failed to save leadership appointments.");
+            }
+          };
+        }
+      }
+
       msg.textContent = rows.length ? "" : "No users found.";
       list.innerHTML = rows.map((row) => `
         <div class="admin-row" data-uid="${row.id}" style="display:flex; flex-direction:column; gap:8px; padding:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:6px; margin-bottom:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <span><strong>${escapeHtml(row.name)}</strong> <small style="color:var(--muted); margin-left:8px;">${escapeHtml(row.email)}</small></span>
-            <div style="display:flex; gap:6px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="toggleLeaderboardBtn" style="font-size:11px; padding:3px 8px; border-radius:4px; cursor:pointer; background:${row.hideFromLeaderboard ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.15)'}; color:${row.hideFromLeaderboard ? '#f87171' : '#4ade80'}; border:1px solid ${row.hideFromLeaderboard ? 'rgba(239,68,68,0.4)' : 'rgba(34,197,94,0.3)'};">
+                ${row.hideFromLeaderboard ? '🚫 Hidden from Board' : '👁️ On Leaderboard'}
+              </button>
               <select class="levelSelect">${buildLevelOptions(row.level).map((l) => `<option value="${escapeHtml(String(l))}" ${l === row.level ? "selected" : ""}>${escapeHtml(String(l))}</option>`).join("")}</select>
               <input class="progressInput" type="number" min="0" max="100" value="${row.progress}" style="width:60px;" />
               <button class="saveBtn">Save Rank</button>
@@ -1896,7 +2110,7 @@ async function renderResourcesPanel() {
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
             <span style="font-size:11px; color:var(--muted);">Accolades:</span>
             <div class="user-badges-container">
-              ${row.badges.map(b => `<span class="admin-badge-pill">${escapeHtml(b)} <span class="admin-badge-remove" data-badge="${escapeHtml(b)}">×</span></span>`).join("") || "<em style='font-size:11px;color:#64748b;'>None</em>"}
+              ${row.badges.map(b => formatBadgeHtml(b, true)).join("") || "<em style='font-size:11px;color:#64748b;'>None</em>"}
             </div>
             <select class="badgeSelect" style="background:#111827; color:#fff; font-size:11px; border:1px solid rgba(255,255,255,0.2); border-radius:4px; padding:2px 6px;">
               <option value="">+ Award Badge...</option>
@@ -1911,7 +2125,9 @@ async function renderResourcesPanel() {
 
       list.querySelectorAll(".admin-row").forEach((rowEl) => {
         const uid = rowEl.dataset.uid;
-        rowEl.querySelector(".saveBtn").addEventListener("click", async () => {
+
+        // Save Rank & Progress
+        rowEl.querySelector(".saveBtn").onclick = async () => {
           const level = rowEl.querySelector(".levelSelect").value;
           const progress = clamp(rowEl.querySelector(".progressInput").value);
           try {
@@ -1920,11 +2136,25 @@ async function renderResourcesPanel() {
           } catch (err) {
             showNotice("Update blocked by permissions.");
           }
-        });
+        };
+
+        // Toggle Leaderboard visibility
+        rowEl.querySelector(".toggleLeaderboardBtn").onclick = async () => {
+          const userRow = rows.find(r => r.id === uid);
+          if (!userRow) return;
+          const newHidden = !userRow.hideFromLeaderboard;
+          try {
+            await updateDoc(doc(db, "users", uid), { hideFromLeaderboard: newHidden });
+            showNotice(newHidden ? `Hidden "${userRow.name}" from Leaderboard.` : `"${userRow.name}" is now on Leaderboard.`);
+            loadAdminUsers();
+          } catch (err) {
+            showNotice("Visibility update blocked by permissions.");
+          }
+        };
 
         // Award badge
         const badgeSelect = rowEl.querySelector(".badgeSelect");
-        badgeSelect.addEventListener("change", async () => {
+        badgeSelect.onchange = async () => {
           const badge = badgeSelect.value;
           if (!badge) return;
           const userRow = rows.find(r => r.id === uid);
@@ -1934,11 +2164,11 @@ async function renderResourcesPanel() {
             showNotice(`Badge "${badge}" awarded!`);
             loadAdminUsers();
           }
-        });
+        };
 
         // Remove badge
         rowEl.querySelectorAll(".admin-badge-remove").forEach(del => {
-          del.addEventListener("click", async () => {
+          del.onclick = async () => {
             const bToRemove = del.dataset.badge;
             const userRow = rows.find(r => r.id === uid);
             if (userRow) {
@@ -1947,7 +2177,7 @@ async function renderResourcesPanel() {
               showNotice(`Badge removed.`);
               loadAdminUsers();
             }
-          });
+          };
         });
       });
     } catch (err) {
@@ -1956,69 +2186,142 @@ async function renderResourcesPanel() {
     }
   }
 
-  // --- USER 3: COMMUNITY VISIONARY LEADERBOARD ---
+  // --- SPECIAL BADGE FORMATTER ---
+  function formatBadgeHtml(badge, canRemove = false) {
+    const removeBtn = canRemove ? ` <span class="admin-badge-remove" data-badge="${escapeHtml(badge)}" style="cursor:pointer; margin-left:4px; font-weight:bold;">×</span>` : "";
+    return `<span class="admin-badge-pill" style="background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; font-size:10px; padding:2px 6px; border-radius:3px; display:inline-flex; align-items:center;">${escapeHtml(badge)}${removeBtn}</span>`;
+  }
+
+  // --- LEADERBOARD & EXECUTIVE COUNCIL ---
   async function renderLeaderboardPanel() {
-    const podium = $("podiumContainer");
     const list = $("leaderboardList");
-    if (!list) return;
-    if (!db) return;
+    const podium = $("podiumContainer");
+    if (!list || !db) return;
 
     try {
+      // 1. Fetch Executive Council appointments from Firestore
+      let leadership = {};
+      try {
+        const leadSnap = await getDoc(doc(db, "system", "leadership"));
+        if (leadSnap.exists()) leadership = leadSnap.data();
+      } catch (e) {
+        console.warn(e);
+      }
+
+      // 2. Fetch all users from Firestore
       const snap = await getDocs(collection(db, "users"));
-      const visionaries = [];
+      const userMap = {};
+      const community = [];
+
       snap.forEach(d => {
         const data = d.data();
-        visionaries.push({
+        const userData = {
+          id: d.id,
           name: data.name || "Anonymous",
+          email: data.email || "",
           level: data.level || "Bronze",
           streak: Number(data.streak) || 0,
           progress: Number(data.progress) || 0,
           badges: Array.isArray(data.badges) ? data.badges : [],
-        });
+          hideFromLeaderboard: data.hideFromLeaderboard === true,
+        };
+        userMap[d.id] = userData;
+        if (userData.email === ADMIN_EMAIL) userMap["admin"] = userData;
+
+        // Exclude hidden members from community rankings
+        if (!userData.hideFromLeaderboard) {
+          community.push(userData);
+        }
       });
 
-      // Rank by Streak length, then Progress
-      visionaries.sort((a, b) => b.streak - a.streak || b.progress - a.progress);
+      // 3. Ensure Executive Council container exists above the podium
+      let council = $("execCouncilContainer");
+      if (!council && podium && podium.parentNode) {
+        council = document.createElement("div");
+        council.id = "execCouncilContainer";
+        council.style.cssText = "display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin-bottom:28px;";
+        podium.parentNode.insertBefore(council, podium);
+      }
 
-      // Render Top 3 Podium
-      const top1 = visionaries[0];
-      const top2 = visionaries[1];
-      const top3 = visionaries[2];
+      // 4. Render Executive Council Cards
+      const ceoUser = userMap["admin"] || { name: user?.name || "Saurav Pandey", level: user?.level || "CONQUEROR", streak: user?.streak || 0 };
+      const opsUser = leadership.opsUid ? userMap[leadership.opsUid] : null;
+      const mktUser = leadership.mktUid ? userMap[leadership.mktUid] : null;
 
-      podium.innerHTML = `
-        ${top2 ? `
-        <div class="podium-card second">
-          <div class="podium-rank">2</div>
-          <div style="color: #e2e8f0; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top2.name)}</div>
-          <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top2.level)}</div>
-          <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top2.streak} Days</div>
-        </div>` : ''}
+      if (council) {
+        council.innerHTML = `
+          <div style="grid-column: 1 / -1; font-family:var(--font-display, monospace); font-size:12px; letter-spacing:0.2em; color:var(--gold, #ffd700); text-transform:uppercase; margin-bottom:4px;">✦ VISION-S EXECUTIVE COUNCIL ✦</div>
+          
+          <!-- C.E.O Card (Fixed to you) -->
+          <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,215,0,0.5); box-shadow:0 0 25px rgba(255,215,0,0.15), inset 0 0 15px rgba(255,215,0,0.06); border-radius:8px; padding:20px 16px; text-align:center;">
+            <div style="background:linear-gradient(90deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3)); border:1px solid #ffd700; color:#ffd700; box-shadow:0 0 10px rgba(255,215,0,0.35); font-size:11px; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:20px; text-transform:uppercase; display:inline-block; margin-bottom:12px;">👑 C.E.O</div>
+            <div style="font-family:var(--font-display, monospace); font-size:18px; font-weight:700; color:#fff; margin-bottom:4px;">${escapeHtml(ceoUser.name)}</div>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">${escapeHtml(ceoUser.level)}</div>
+            <div style="font-size:13px; font-weight:bold; color:var(--gold);">🔥 ${ceoUser.streak} Days</div>
+          </div>
 
-        ${top1 ? `
-        <div class="podium-card first">
-          <div class="podium-rank">1</div>
-          <div style="font-size:24px; margin-bottom:4px;">👑</div>
-          <div style="color: #ffd700; font-family:'Orbitron', monospace; font-size:18px; font-weight:bold;">${escapeHtml(top1.name)}</div>
-          <div style="font-size:12px; color:var(--muted); margin:4px 0;">${escapeHtml(top1.level)}</div>
-          <div style="color:var(--gold); font-size:16px; font-weight:bold;">🔥 ${top1.streak} Days</div>
-        </div>` : ''}
+          <!-- Operation Coordinator Card -->
+          <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(168,85,247,0.5); box-shadow:0 0 25px rgba(168,85,247,0.15), inset 0 0 15px rgba(168,85,247,0.06); border-radius:8px; padding:20px 16px; text-align:center;">
+            <div style="background:rgba(168,85,247,0.25); border:1px solid #a855f7; color:#d8b4fe; box-shadow:0 0 10px rgba(168,85,247,0.35); font-size:11px; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:20px; text-transform:uppercase; display:inline-block; margin-bottom:12px;">⚡ Operation Coordinator</div>
+            <div style="font-family:var(--font-display, monospace); font-size:18px; font-weight:700; color:#fff; margin-bottom:4px;">${opsUser ? escapeHtml(opsUser.name) : '<span style="color:#64748b; font-size:14px;">Awaiting Appointment</span>'}</div>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">${opsUser ? escapeHtml(opsUser.level) : 'Visionary Core'}</div>
+            <div style="font-size:13px; font-weight:bold; color:var(--gold);">${opsUser ? `🔥 ${opsUser.streak} Days` : '—'}</div>
+          </div>
 
-        ${top3 ? `
-        <div class="podium-card third">
-          <div class="podium-rank">3</div>
-          <div style="color: #cd7f32; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top3.name)}</div>
-          <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top3.level)}</div>
-          <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top3.streak} Days</div>
-        </div>` : ''}
-      `;
+          <!-- Marketing Manager Card -->
+          <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(34,197,94,0.5); box-shadow:0 0 25px rgba(34,197,94,0.15), inset 0 0 15px rgba(34,197,94,0.06); border-radius:8px; padding:20px 16px; text-align:center;">
+            <div style="background:rgba(34,197,94,0.25); border:1px solid #22c55e; color:#86efac; box-shadow:0 0 10px rgba(34,197,94,0.35); font-size:11px; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:20px; text-transform:uppercase; display:inline-block; margin-bottom:12px;">📈 Marketing Manager</div>
+            <div style="font-family:var(--font-display, monospace); font-size:18px; font-weight:700; color:#fff; margin-bottom:4px;">${mktUser ? escapeHtml(mktUser.name) : '<span style="color:#64748b; font-size:14px;">Awaiting Appointment</span>'}</div>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">${mktUser ? escapeHtml(mktUser.level) : 'Visionary Core'}</div>
+            <div style="font-size:13px; font-weight:bold; color:var(--gold);">${mktUser ? `🔥 ${mktUser.streak} Days` : '—'}</div>
+          </div>
+        `;
+      }
 
-      // Render Full Ranking Table
-      list.innerHTML = visionaries.map((v, i) => `
+      // Sort community by streak length, then progress
+      community.sort((a, b) => b.streak - a.streak || b.progress - a.progress);
+
+      // Render Community Top 3 Podium
+      const top1 = community[0];
+      const top2 = community[1];
+      const top3 = community[2];
+
+      if (podium) {
+        podium.innerHTML = `
+          ${top2 ? `
+          <div class="podium-card second">
+            <div class="podium-rank">2</div>
+            <div style="color: #e2e8f0; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top2.name)}</div>
+            <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top2.level)}</div>
+            <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top2.streak} Days</div>
+          </div>` : ''}
+
+          ${top1 ? `
+          <div class="podium-card first">
+            <div class="podium-rank">1</div>
+            <div style="font-size:24px; margin-bottom:4px;">👑</div>
+            <div style="color: #ffd700; font-family:'Orbitron', monospace; font-size:18px; font-weight:bold;">${escapeHtml(top1.name)}</div>
+            <div style="font-size:12px; color:var(--muted); margin:4px 0;">${escapeHtml(top1.level)}</div>
+            <div style="color:var(--gold); font-size:16px; font-weight:bold;">🔥 ${top1.streak} Days</div>
+          </div>` : ''}
+
+          ${top3 ? `
+          <div class="podium-card third">
+            <div class="podium-rank">3</div>
+            <div style="color: #cd7f32; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top3.name)}</div>
+            <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top3.level)}</div>
+            <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top3.streak} Days</div>
+          </div>` : ''}
+        `;
+      }
+
+      // Render Community Ranking Table
+      list.innerHTML = community.map((v, i) => `
         <tr>
           <td style="font-family:'Orbitron', monospace; font-weight:bold; color:${i < 3 ? 'var(--gold)' : 'var(--muted)'};">#${i + 1}</td>
           <td><strong style="color:#fff;">${escapeHtml(v.name)}</strong></td>
           <td><span style="background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:4px; font-size:11px;">${escapeHtml(v.level)}</span></td>
-          <td>${v.badges.map(b => `<span style="background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; font-size:10px; padding:2px 5px; border-radius:3px; margin-right:3px;">${escapeHtml(b)}</span>`).join("") || '<span style="color:#64748b; font-size:11px;">-</span>'}</td>
+          <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${v.badges.map(b => formatBadgeHtml(b)).join("") || '<span style="color:#64748b; font-size:11px;">-</span>'}</div></td>
           <td style="text-align:right; font-weight:bold; color:var(--gold);">🔥 ${v.streak}</td>
         </tr>
       `).join("");
@@ -2027,6 +2330,8 @@ async function renderResourcesPanel() {
       list.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ff5555; padding: 24px;">Failed to load leaderboard.</td></tr>`;
     }
   }
+
+
 
 
   boot();
