@@ -429,6 +429,7 @@
   /* ==========================================
      GLOBAL BROADCAST BANNER (ADMIN 2)
      ========================================== */
+  .broadcast-banner[hidden] { display: none !important; }
   .broadcast-banner {
     display: flex;
     align-items: center;
@@ -724,7 +725,17 @@
     </div>
 
     <div class="tab-panel" id="panel-Overview">
-      <section class="welcome-panel">
+      <!-- Tab panel starts here -->
+    <div class="tab-panel" id="panel-Overview">
+      <!-- GLOBAL BROADCAST BANNER (Scoped to Overview only) -->
+      <div class="broadcast-banner" id="broadcastBanner" hidden>
+        <div>
+          <span class="icon-slot" data-icon="bell" data-size="16"></span>
+          <strong id="bannerTitle">VISION-S BROADCAST:</strong>
+          <span id="bannerText"></span>
+        </div>
+        <button class="broadcast-close" id="dismissBannerBtn" aria-label="Dismiss banner">✕</button>
+      </div> <section class="welcome-panel">
         <img src="assets/vision-hero.jpg" alt="A visionary looking at Earth from a futuristic observatory" width="1536" height="512" />
         <div class="welcome-copy">
           <span class="gold-rule"></span>
@@ -1056,13 +1067,15 @@ import {
     $("settingsBtn").classList.toggle("nav-item--active", active === "Settings");
   }
 
-  function chooseSection(name) {
+    function chooseSection(name) {
     active = name;
     mobileNavOpen = false;
     sidebar.classList.remove("sidebar--open");
+    $("menuBtn").innerHTML = iconSvg("menu"); // <-- Reset to hamburger
     renderNav();
     showPanel(name);
   }
+
 
   function showPanel(name) {
     document.querySelectorAll(".tab-panel").forEach((p) => { p.hidden = p.id !== `panel-${name}`; });
@@ -1076,7 +1089,7 @@ import {
 
 
   }
-
+ $("menuBtn").innerHTML = iconSvg("menu"); // <-- Load hamburger initially
   $("menuBtn").addEventListener("click", () => {
     mobileNavOpen = !mobileNavOpen;
     sidebar.classList.toggle("sidebar--open", mobileNavOpen);
