@@ -58,13 +58,19 @@
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .menu-button { display: none; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
 
-  .sidebar { position: fixed; top: 82px; bottom: 0; left: 0; z-index: 20; width: 212px; display: flex; flex-direction: column; padding: 31px 16px 0; background: color-mix(in oklab, var(--deep) 95%, transparent); border-right: 1px solid color-mix(in oklab, var(--violet) 35%, transparent); overflow: hidden; }
+    /* 1. Allow sidebar to scroll smoothly if the window is short */
+  .sidebar { position: fixed; top: 82px; bottom: 0; left: 0; z-index: 20; width: 212px; display: flex; flex-direction: column; padding: 24px 16px 16px; background: color-mix(in oklab, var(--deep) 95%, transparent); border-right: 1px solid color-mix(in oklab, var(--violet) 35%, transparent); overflow-y: auto; overflow-x: hidden; }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
   .sidebar nav { display: grid; gap: 7px; }
   .nav-item { width: 100%; min-height: 44px; display: flex; align-items: center; gap: 16px; padding: 0 18px; border: 1px solid transparent; border-radius: var(--radius); background: transparent; color: var(--muted-foreground); cursor: pointer; font-size: 14px; text-align: left; transition: 180ms ease; }
   .nav-item:hover { color: var(--foreground); background: color-mix(in oklab, var(--violet) 10%, transparent); }
   .nav-item--active { color: var(--foreground); border-color: var(--violet); background: linear-gradient(90deg, color-mix(in oklab, var(--violet) 35%, transparent), color-mix(in oklab, var(--violet) 8%, transparent)); box-shadow: inset 3px 0 0 var(--primary-foreground), 0 0 15px color-mix(in oklab, var(--violet) 35%, transparent); }
   .sidebar-bottom { display: grid; gap: 6px; margin-top: 20px; padding-top: 18px; border-top: 1px solid color-mix(in oklab, var(--muted-foreground) 40%, transparent); }
-  .sidebar-art { pointer-events: none; position: absolute; inset: auto 0 0; height: 210px; }
+
+  /* 2. Position the artwork naturally BELOW the Settings and Logout buttons */
+  .sidebar-art { pointer-events: none; position: relative; margin-top: 18px; height: 160px; min-height: 160px; border-radius: var(--radius); overflow: hidden; flex-shrink: 0; }
   .sidebar-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--deep), transparent 38%, color-mix(in oklab, var(--deep) 55%, transparent)); }
   .sidebar-art img { width: 100%; height: 100%; object-fit: cover; }
   .sidebar-art p { position: absolute; left: 26px; bottom: 16px; z-index: 1; font-family: var(--font-display); font-size: 8px; line-height: 2; letter-spacing: .28em; margin: 0; }
@@ -727,6 +733,8 @@
     <div class="tab-panel" id="panel-Overview">
       <!-- Tab panel starts here -->
     <div class="tab-panel" id="panel-Overview">
+         <!-- Tab panel starts here -->
+    <div class="tab-panel" id="panel-Overview">
       <!-- GLOBAL BROADCAST BANNER (Scoped to Overview only) -->
       <div class="broadcast-banner" id="broadcastBanner" hidden>
         <div>
@@ -735,7 +743,9 @@
           <span id="bannerText"></span>
         </div>
         <button class="broadcast-close" id="dismissBannerBtn" aria-label="Dismiss banner">✕</button>
-      </div> <section class="welcome-panel">
+      </div>
+
+      <section class="welcome-panel">
         <img src="assets/vision-hero.jpg" alt="A visionary looking at Earth from a futuristic observatory" width="1536" height="512" />
         <div class="welcome-copy">
           <span class="gold-rule"></span>
