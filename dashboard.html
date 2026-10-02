@@ -1150,7 +1150,7 @@ import {
     else if (active === "Activity") renderActivityPanel();
     else if (active === "Settings") renderSettingsPanel();
         else if (active === "Membership") renderMembershipCard();
-
+ else if (active === "Leaderboard") renderLeaderboardPanel(); // <-- ADD THIS LINE
   }
 
   hydrateIcons();
@@ -1489,52 +1489,6 @@ async function renderResourcesPanel() {
     panel.querySelector("#settingsLogoutBtn").addEventListener("click", () => $("logoutBtn").click());
   }
 
-  // ---- admin panel ----
-  async function loadAdminUsers() {
-    const list = $("adminList");
-    const msg = $("adminMessage");
-    msg.textContent = "Loading users…";
-    try {
-      const snap = await getDocs(query(collection(db, "users"), orderBy("name")));
-      const rows = [];
-      snap.forEach((entry) => {
-        const data = entry.data();
-        rows.push({
-          id: entry.id,
-          name: data.name || "User",
-          email: data.email || "",
-          level: data.level || "Bronze",
-          progress: clamp(data.progress),
-        });
-      });
-      msg.textContent = rows.length ? "" : "No users found.";
-      list.innerHTML = rows.map((row) => `
-        <div class="admin-row" data-uid="${row.id}">
-          <span><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(row.email)}</small></span>
-          <select class="levelSelect">${buildLevelOptions(row.level).map((l) => `<option value="${escapeHtml(String(l))}" ${l === row.level ? "selected" : ""}>${escapeHtml(String(l))}</option>`).join("")}</select>
-          <input class="progressInput" type="number" min="0" max="100" value="${row.progress}" />
-          <button class="saveBtn">Save</button>
-        </div>`).join("");
-      list.querySelectorAll(".admin-row").forEach((rowEl) => {
-        rowEl.querySelector(".saveBtn").addEventListener("click", async () => {
-          const uid = rowEl.dataset.uid;
-          const level = rowEl.querySelector(".levelSelect").value;
-          const progress = clamp(rowEl.querySelector(".progressInput").value);
-          try {
-            await updateDoc(doc(db, "users", uid), { level, progress });
-            msg.textContent = "User updated.";
-          } catch (err) {
-            console.error(err);
-            msg.textContent = "This update was blocked by Firebase permissions.";
-          }
-        });
-      });
-    } catch (err) {
-      console.error(err);
-      msg.textContent = "Firebase permissions did not allow the user list to load.";
-    }
-  }
-
   // ---- boot: preview mode or real Firebase auth ----
   async function boot() {
     if (new URLSearchParams(window.location.search).has("preview")) {
@@ -1630,6 +1584,7 @@ async function renderResourcesPanel() {
         }
         user = next;
         renderUI();
+         loadGlobalBroadcast(); // <-- ADD THIS LINE
       });
     } catch (err) {
       console.error(err);
@@ -1788,6 +1743,7 @@ async function renderResourcesPanel() {
 
   // --- ADMIN 2: GLOBAL BROADCAST SYSTEM ---
   async function loadGlobalBroadcast() {
+     if (!db) return;
     try {
       const bDoc = await getDoc(doc(db, "system", "announcements"));
       const banner = $("broadcastBanner");
@@ -1994,6 +1950,7 @@ async function renderResourcesPanel() {
     const podium = $("podiumContainer");
     const list = $("leaderboardList");
     if (!list) return;
+    if (!db) return;
 
     try {
       const snap = await getDocs(collection(db, "users"));
