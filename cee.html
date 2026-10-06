@@ -699,13 +699,21 @@
             } else {
                 // Handle failure to load initial batch gracefully
                 updateView('loading');
+                const lastErrMsg = state.lastFetchError || "The AI worker could not generate questions (check API quota or key).";
                 dom.loadingView.innerHTML = `
                     <i class="ph-fill ph-wifi-slash text-6xl mb-4" style="color: var(--danger);"></i>
                     <h2 class="font-display text-3xl font-bold" style="color: var(--danger);">Failed to Load Exam</h2>
-                    <p class="text-center max-w-md mt-2" style="color: var(--text-secondary);">The server could not generate the questions. Please check the network or retry.</p>
-                    <button class="btn btn-primary mt-6" onclick="window.location.reload()">Retry Mode Selection</button>
+                    <p class="text-center max-w-md mt-2 text-sm" style="color: var(--text-secondary);">${lastErrMsg}</p>
+                    <div class="flex gap-3 mt-6">
+                        <button class="btn btn-secondary" onclick="window.location.reload()">Back to Modes</button>
+                        <button class="btn btn-primary" id="retry-fetch-btn">Retry Batch</button>
+                    </div>
                 `;
-                showToast('Initial question fetch failed. Check worker status.', 'error');
+                const retryBtn = document.getElementById("retry-fetch-btn");
+                if (retryBtn) {
+                    retryBtn.addEventListener("click", () => startExam(mode));
+                }
+                showToast('Initial question fetch failed.', 'error');
             }
         }
 
@@ -769,6 +777,7 @@
 
             } catch (error) {
                 console.error(`CRITICAL: Failed to fetch batch ${startIndex}:`, error);
+                state.lastFetchError = error.message;
                 showToast(`Error fetching questions: ${error.message}. Retrying...`, 'error');
                 state.fetchedBatchMarkers.delete(startIndex); // Allow retry later
             }
