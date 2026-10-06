@@ -22,7 +22,10 @@
     <!-- Main JS -->
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" xintegrity="sha384-hIoBPJpTadx5Gvj2adM6iB5oI3P3Q3u/wGfN2MstP/fIRwR1x/ZclVbB8wBHiLIm" crossorigin="anonymous"></script>
     <!-- Auto-rendering extension (for scanning HTML content) -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" xintegrity="sha384-43gviWU0YVjaDtb/Gf1J+D/jV88FfG4zoSGe0YiOdCstrPWPcyqcMfqE+4eCBYC/." crossorigin="anonymous"></script>
+    <!-- KaTeX Auto-rendering extension -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+    <!-- KaTeX mhchem extension for chemistry formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/mhchem.min.js"></script>
 
     <style>
         /* =========================================================
@@ -470,8 +473,8 @@
         // --- CONFIGURATION CONSTANTS ---
         const TOTAL_QUESTIONS = 200;
         const EXAM_DURATION_SECONDS = 3 * 60 * 60; // 3 hours in seconds
-        const QUESTIONS_PER_BATCH = 10; // Batch size for fetching from AI
-        const PREFETCH_BUFFER_INDEX = 5; // Start fetching the next batch when we reach this index in the current batch
+        const QUESTIONS_PER_BATCH = 15; // 15 questions per batch
+        const PREFETCH_BUFFER_INDEX = 9; // Start background pre-fetch when reaching Q10/Q11
 
         // --- ACCESS GATE ---
         // Change this to whatever code you want to hand out to students.
@@ -686,7 +689,7 @@
                         requestType: 'getQuestions',
                         mode: state.examMode,
                         startIndex: startIndex,
-                        count: QUESTIONS_PER_BATCH,
+                        count: Math.min(QUESTIONS_PER_BATCH, TOTAL_QUESTIONS - startIndex),
                     }),
                 });
 
@@ -747,8 +750,17 @@
                     dom.questionSkeleton.classList.add('hidden');
 
                     dom.questionNumber.textContent = `Q. ${index + 1}`;
-                    dom.questionSubject.textContent = questionData.subject;
-                    dom.questionText.innerHTML = questionData.question; // Use innerHTML for KaTeX processing
+                    dom.questionSubject.textContent = `${questionData.subject}${questionData.subtopic ? ' • ' + questionData.subtopic : ''}`;
+
+                    let questionHtml = `<div class="question-title">${questionData.question}</div>`;
+                    if (questionData.diagram_svg && questionData.diagram_svg.trim().length > 10) {
+                        questionHtml += `
+                            <div class="mat-svg-wrapper my-4 p-4 rounded-xl flex items-center justify-center overflow-x-auto border" style="background: var(--bg-void); border-color: var(--border-subtle);">
+                                ${questionData.diagram_svg}
+                            </div>
+                        `;
+                    }
+                    dom.questionText.innerHTML = questionHtml;
 
                     // Options Rendering
                     dom.optionsContainer.innerHTML = '';
@@ -791,11 +803,13 @@
                 updateQuestionNav();
                 updateProgressBar();
 
-                // Pre-fetch logic: Check if we are near the end of a loaded batch
+                // Pre-fetch logic: When candidate reaches question 10 or 11 (index 9/10) of current batch
                 const batchIndex = index % QUESTIONS_PER_BATCH;
                 if (batchIndex >= PREFETCH_BUFFER_INDEX) {
                     const nextBatchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH + QUESTIONS_PER_BATCH;
-                    fetchQuestionBatch(nextBatchStartIndex);
+                    if (nextBatchStartIndex < TOTAL_QUESTIONS) {
+                        fetchQuestionBatch(nextBatchStartIndex);
+                    }
                 }
 
                 // Final visual updates
@@ -1078,30 +1092,43 @@
 
             let score = 0;
             let attempted = 0;
-            // Initialize subject tracking for all 4 required subjects
-            const subjectStats = { Physics: { correct: 0, total: 0 }, Chemistry: { correct: 0, total: 0 }, Biology: { correct: 0, total: 0 }, GK: { correct: 0, total: 0 } };
+            // Initialize subject tracking for 5 CEE subjects (Physics 50, Chemistry 50, Botany 40, Zoology 40, MAT 20)
+            const subjectStats = {
+                Physics: { correct: 0, total: 0, score: 0 },
+                Chemistry: { correct: 0, total: 0, score: 0 },
+                Botany: { correct: 0, total: 0, score: 0 },
+                Zoology: { correct: 0, total: 0, score: 0 },
+                MAT: { correct: 0, total: 0, score: 0 }
+            };
+
+            let correctCount = 0;
+            let incorrectCount = 0;
 
             state.questions.forEach((q, i) => {
-                // Only process questions that successfully loaded
                 if (!q) return;
 
                 const userAnswer = state.userAnswers[i];
-                const subject = q.subject || 'GK';
+                const subject = q.subject || 'Physics';
 
-                // Safety check for subject initialization
-                if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0 };
-
+                if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0, score: 0 };
                 subjectStats[subject].total++;
 
                 if (state.questionStates[i].answered) {
                     attempted++;
-                    // Check correctness
+                    // Nepal CEE marking scheme: +1 for correct, -0.25 for incorrect
                     if (userAnswer === q.correct) {
-                        score++;
+                        score += 1.0;
+                        correctCount++;
                         subjectStats[subject].correct++;
+                        subjectStats[subject].score += 1.0;
+                    } else {
+                        score -= 0.25;
+                        incorrectCount++;
+                        subjectStats[subject].score -= 0.25;
                     }
                 }
             });
+            score = Math.max(0, Math.round(score * 100) / 100);
 
             console.log(`Exam finalized. Score: ${score}/${TOTAL_QUESTIONS}`);
             renderResultPage(score, attempted, subjectStats);
@@ -1114,19 +1141,11 @@
          */
         function renderResultPage(score, attempted, subjectStats) {
             // --- 1. Score Counter Animation ---
-            let currentScore = 0;
-            const scoreInterval = setInterval(() => {
-                if (score === 0) {
-                    dom.resultScore.textContent = 0;
-                    clearInterval(scoreInterval);
-                    return;
-                }
-                currentScore++;
-                dom.resultScore.textContent = currentScore;
-                if (currentScore >= score) clearInterval(scoreInterval);
-            }, 20); // Fast counting animation
+            // Support decimal scores from -0.25 deductions
+            dom.resultScore.textContent = Number.isInteger(score) ? score : score.toFixed(2);
 
-            dom.resultSummaryText.textContent = `You scored ${score} out of ${TOTAL_QUESTIONS}. You attempted ${attempted} questions and had ${attempted - score} incorrect.`;
+            const unattempted = TOTAL_QUESTIONS - attempted;
+            dom.resultSummaryText.textContent = `You scored ${Number.isInteger(score) ? score : score.toFixed(2)} out of ${TOTAL_QUESTIONS}. Attempted: ${attempted} (${correctCount} correct, ${incorrectCount} incorrect, -${(incorrectCount * 0.25).toFixed(2)} penalty). Unattempted: ${unattempted}.`;
 
             // --- 2. Subject-wise Charts ---
             dom.subjectCharts.innerHTML = '';
