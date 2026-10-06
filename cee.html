@@ -269,7 +269,7 @@
         }
     </style>
     <!-- KaTeX mhchem extension for chemistry formulas -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/mhchem.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/mhchem.min.js"></script>
 </head>
 
 <body class="h-screen">
@@ -421,7 +421,8 @@
                             </div>
 
                             <!-- Question Text container (where KaTeX magic happens) -->
-                            <p id="question-text" class="text-xl leading-relaxed mb-8" style="white-space: pre-wrap; color: var(--text-primary);"></p>
+                            <p id="question-text" class="text-xl leading-relaxed mb-4" style="color: var(--text-primary);"></p>
+                            <div id="diagram-container" class="mat-svg-wrapper mb-8 hidden"></div>
 
                             <!-- Options Container -->
                             <div id="options-container" class="space-y-4 mb-10">
@@ -456,8 +457,8 @@
         <!-- ===== 4. Result View (Full Review after Submission) ===== -->
         <div id="result-view" class="h-full p-6 md:p-12 overflow-y-auto hidden">
             <div class="max-w-6xl mx-auto">
-                <h1 class="font-display italic text-5xl font-medium text-center mb-4" style="color: var(--accent-gold);">Exam Results &amp; Review</h1>
-                <p class="text-xl text-center mb-12" style="color: var(--text-secondary);">Congratulations on completing the ${state.examMode} mock exam!</p>
+                <h1 id="result-heading" class="font-display italic text-5xl font-medium text-center mb-4" style="color: var(--accent-gold);">Exam Results &amp; Review</h1>
+                <p id="result-mode-subtitle" class="text-xl text-center mb-12" style="color: var(--text-secondary);">Congratulations on completing your mock exam!</p>
 
                 <!-- Score Summary -->
                 <div class="text-center mb-12 p-8 rounded-xl shadow-2xl border" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
@@ -494,8 +495,10 @@
         // Helper to ensure chemical formulas like \ce{...} are properly wrapped in math delimiters for KaTeX
         function formatLatexFormulas(str) {
             if (!str || typeof str !== 'string') return str || '';
-            // If \ce{...} is not already enclosed in $, wrap it in $...$
-            return str.replace(/(?<!\$)\ce\{([^}]+)\}(?!\$)/g, '$\ce{$1}$');
+            // Replace any \ce{...} that isn't already inside $...$ or $$...$$
+            return str.replace(/(?<!\$)\\ce\{([^}]+)\}(?!\$)/g, (match, formula) => {
+                return '$\\ce{' + formula + '}$';
+            });
         }
 
         /**
@@ -583,6 +586,7 @@
             questionNumber: $('#question-number'),
             questionSubject: $('#question-subject'),
             questionText: $('#question-text'),
+            diagramContainer: $('#diagram-container'),
             optionsContainer: $('#options-container'),
             explanationContainer: $('#explanation-container'),
             explanationText: $('#explanation-text'),
@@ -591,6 +595,8 @@
             flagBtn: $('#flag-btn'),
             markBtn: $('#mark-btn'),
             toastContainer: $('#toast-container'),
+            resultHeading: $('#result-heading'),
+            resultModeSubtitle: $('#result-mode-subtitle'),
             resultScore: $('#result-score'),
             resultSummaryText: $('#result-summary-text'),
             subjectCharts: $('#subject-charts'),
@@ -658,7 +664,7 @@
             });
 
             // 2. Setup exam control buttons
-            dom.submitBtn.addEventListener('click', () => confirmSubmit());
+            dom.submitBtn.addEventListener('click', confirmSubmit);
             dom.prevBtn.addEventListener('click', () => navigateQuestion('prev'));
             dom.nextBtn.addEventListener('click', () => navigateQuestion('next'));
             dom.flagBtn.addEventListener('click', toggleFlag);
@@ -792,7 +798,18 @@
 
                     dom.questionNumber.textContent = `Q. ${index + 1}`;
                     dom.questionSubject.textContent = questionData.subject;
-                    dom.questionText.innerHTML = questionData.question; // Use innerHTML for KaTeX processing
+                    dom.questionText.innerHTML = formatLatexFormulas(questionData.question);
+
+                    // Insert Diagram SVG if present
+                    if (dom.diagramContainer) {
+                        if (questionData.diagram_svg && questionData.diagram_svg.trim().length > 10) {
+                            dom.diagramContainer.innerHTML = questionData.diagram_svg;
+                            dom.diagramContainer.classList.remove('hidden');
+                        } else {
+                            dom.diagramContainer.innerHTML = '';
+                            dom.diagramContainer.classList.add('hidden');
+                        }
+                    }
 
                     // Options Rendering
                     dom.optionsContainer.innerHTML = '';
@@ -803,7 +820,7 @@
                         optionEl.className = 'option-card p-4 rounded-lg cursor-pointer flex items-start gap-4';
                         optionEl.innerHTML = `
                             <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center border-2 rounded-full font-semibold font-mono" style="border-color: var(--border-strong); color: var(--text-secondary);">${String.fromCharCode(65 + i)}</span>
-                            <span class="flex-1 text-lg option-text" style="color: var(--text-primary);">${option}</span>
+                            <span class="flex-1 text-lg option-text" style="color: var(--text-primary);">${formatLatexFormulas(option)}</span>
                         `;
 
                         // Attach selection handler
@@ -1088,27 +1105,44 @@
         // =================================================================================
 
         /**
-         * Displays a confirmation toast before final submission.
+         * State and timeout handling for submit confirmation.
+         */
+        let isConfirmingSubmit = false;
+        let submitConfirmTimeout = null;
+
+        /**
+         * Displays a confirmation state before final submission.
          */
         function confirmSubmit() {
             if (state.isSubmitted) return;
-            showToast('Click "Submit Exam" again to confirm and end the test.', 'warning');
 
-            // Temporarily replace the listener with the final submit function
-            dom.submitBtn.removeEventListener('click', confirmSubmit);
-            dom.submitBtn.addEventListener('click', () => submitExam(false));
+            if (isConfirmingSubmit) {
+                // Second click: proceed with submission
+                if (submitConfirmTimeout) clearTimeout(submitConfirmTimeout);
+                isConfirmingSubmit = false;
+                submitExam();
+                return;
+            }
 
-            // Revert after 5 seconds if not submitted
-            setTimeout(() => {
+            // First click: visual confirmation indicator
+            isConfirmingSubmit = true;
+            const originalContent = dom.submitBtn.innerHTML;
+            dom.submitBtn.innerHTML = '<i class="ph-fill ph-warning-circle"></i> <span>Confirm Submit?</span>';
+            dom.submitBtn.style.backgroundColor = 'var(--danger)';
+            showToast('Click "Confirm Submit?" again to end and grade the exam.', 'warning');
+
+            if (submitConfirmTimeout) clearTimeout(submitConfirmTimeout);
+            submitConfirmTimeout = setTimeout(() => {
                 if (!state.isSubmitted) {
-                    dom.submitBtn.removeEventListener('click', submitExam);
-                    dom.submitBtn.addEventListener('click', confirmSubmit);
+                    isConfirmingSubmit = false;
+                    dom.submitBtn.innerHTML = originalContent;
+                    dom.submitBtn.style.backgroundColor = '';
                 }
             }, 5000);
         }
 
         /**
-         * Finalizes the exam, calculates the score, and renders the result view.
+         * Finalizes the exam, calculates CEE marks (+1 correct, -0.25 wrong), and renders the result view.
          */
         function submitExam() {
             if (state.isSubmitted) return;
@@ -1118,37 +1152,50 @@
 
             // Ensure all UI elements are disabled
             dom.submitBtn.disabled = true;
+            dom.submitBtn.innerHTML = '<i class="ph-fill ph-check-circle"></i> Submitted';
+            dom.submitBtn.style.backgroundColor = '';
             updateButtonStates();
 
-            let score = 0;
+            let correctCount = 0;
+            let wrongCount = 0;
             let attempted = 0;
-            // Initialize subject tracking for all 4 required subjects
-            const subjectStats = { Physics: { correct: 0, total: 0 }, Chemistry: { correct: 0, total: 0 }, Biology: { correct: 0, total: 0 }, GK: { correct: 0, total: 0 } };
+            const subjectStats = {};
 
             state.questions.forEach((q, i) => {
-                // Only process questions that successfully loaded
                 if (!q) return;
 
                 const userAnswer = state.userAnswers[i];
-                const subject = q.subject || 'GK';
+                const subject = q.subject || 'General';
 
-                // Safety check for subject initialization
-                if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0 };
-
+                if (!subjectStats[subject]) {
+                    subjectStats[subject] = { correct: 0, wrong: 0, unattempted: 0, total: 0, score: 0 };
+                }
                 subjectStats[subject].total++;
 
-                if (state.questionStates[i].answered) {
+                if (state.questionStates[i] && state.questionStates[i].answered) {
                     attempted++;
-                    // Check correctness
                     if (userAnswer === q.correct) {
-                        score++;
+                        correctCount++;
                         subjectStats[subject].correct++;
+                    } else {
+                        wrongCount++;
+                        subjectStats[subject].wrong++;
                     }
+                } else {
+                    subjectStats[subject].unattempted++;
                 }
             });
 
-            console.log(`Exam finalized. Score: ${score}/${TOTAL_QUESTIONS}`);
-            renderResultPage(score, attempted, subjectStats);
+            // Calculate subject net scores with -0.25 negative marking
+            for (const stats of Object.values(subjectStats)) {
+                stats.score = Math.round((stats.correct - (stats.wrong * 0.25)) * 100) / 100;
+            }
+
+            // Overall net score: 1 mark per correct, -0.25 per wrong
+            const netScore = Math.round((correctCount - (wrongCount * 0.25)) * 100) / 100;
+
+            console.log(`Exam finalized. Correct: ${correctCount}, Wrong: ${wrongCount}, Net Score: ${netScore}`);
+            renderResultPage(netScore, correctCount, wrongCount, attempted, subjectStats);
             updateView('result');
             dom.questionNavPanel.classList.add('hidden'); // Hide the side panel on result view
         }
@@ -1160,26 +1207,17 @@
          * Renders the comprehensive result and review page with Nepal CEE scoring breakdown.
          */
         function renderResultPage(netScore, correctCount, wrongCount, attempted, subjectStats) {
-            // Mode Heading
+            // Mode & Subtitle Display
             const modeLabel = (state.examMode || 'Exam').toUpperCase().replace('-', ' ');
-            dom.resultHeading.textContent = `Exam Complete: ${modeLabel}`;
+            if (dom.resultHeading) {
+                dom.resultHeading.textContent = `Exam Complete: ${modeLabel}`;
+            }
+            if (dom.resultModeSubtitle) {
+                dom.resultModeSubtitle.textContent = `CEE Score Report • Mode: ${modeLabel}`;
+            }
 
-            // Score Counter Animation
-            let currentScore = 0;
-            const targetScore = Math.max(0, netScore);
-            const scoreInterval = setInterval(() => {
-                if (targetScore === 0) {
-                    dom.resultScore.textContent = '0.00';
-                    clearInterval(scoreInterval);
-                    return;
-                }
-                currentScore += 0.5;
-                if (currentScore >= targetScore) {
-                    currentScore = targetScore;
-                    clearInterval(scoreInterval);
-                }
-                dom.resultScore.textContent = currentScore.toFixed(2);
-            }, 15);
+            // Score Display
+            dom.resultScore.textContent = netScore.toFixed(2);
 
             // Detailed Score Breakdown Cards
             dom.resultSummaryText.innerHTML = `
