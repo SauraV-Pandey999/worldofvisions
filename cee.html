@@ -22,10 +22,7 @@
     <!-- Main JS -->
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" xintegrity="sha384-hIoBPJpTadx5Gvj2adM6iB5oI3P3Q3u/wGfN2MstP/fIRwR1x/ZclVbB8wBHiLIm" crossorigin="anonymous"></script>
     <!-- Auto-rendering extension (for scanning HTML content) -->
-    <!-- KaTeX Auto-rendering extension -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
-    <!-- KaTeX mhchem extension for chemistry formulas -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/mhchem.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" xintegrity="sha384-43gviWU0YVjaDtb/Gf1J+D/jV88FfG4zoSGe0YiOdCstrPWPcyqcMfqE+4eCBYC/." crossorigin="anonymous"></script>
 
     <style>
         /* =========================================================
@@ -245,34 +242,34 @@
         .toast.warning { border-color: var(--accent-amber); }
         .toast.info { border-color: var(--accent-teal); }
     
-        /* Responsive MAT diagram styling */
+        /* MAT Diagram and scorecard styles */
         .mat-svg-wrapper {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 1rem 0;
+            width: 100%;
+            margin: 1.25rem 0;
+            padding: 1.25rem;
+            background: var(--bg-void);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.75rem;
             overflow-x: auto;
         }
         .mat-svg-wrapper svg {
             max-width: 100%;
             height: auto;
-            min-height: 140px;
-            max-height: 220px;
+            max-height: 260px;
             display: block;
         }
         .score-pill {
-            background: var(--bg-card);
+            background: var(--bg-panel);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 1.25rem 1rem;
-            text-align: center;
+            border-radius: 0.75rem;
+            padding: 1rem;
         }
-
     </style>
+    <!-- KaTeX mhchem extension for chemistry formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/mhchem.min.js"></script>
 </head>
 
 <body class="h-screen">
@@ -460,7 +457,7 @@
         <div id="result-view" class="h-full p-6 md:p-12 overflow-y-auto hidden">
             <div class="max-w-6xl mx-auto">
                 <h1 class="font-display italic text-5xl font-medium text-center mb-4" style="color: var(--accent-gold);">Exam Results &amp; Review</h1>
-                <p class="text-xl text-center mb-12" style="color: var(--text-secondary);"><span id="result-exam-mode-name">Mock Exam</span></p>
+                <p class="text-xl text-center mb-12" style="color: var(--text-secondary);">Congratulations on completing the ${state.examMode} mock exam!</p>
 
                 <!-- Score Summary -->
                 <div class="text-center mb-12 p-8 rounded-xl shadow-2xl border" style="background-color: var(--bg-panel); border-color: var(--border-subtle);">
@@ -493,6 +490,37 @@
 
     <!-- ===== Comprehensive JavaScript Logic (Uncompromised) ===== -->
     <script type="module">
+
+        // Helper to ensure chemical formulas like \ce{...} are properly wrapped in math delimiters for KaTeX
+        function formatLatexFormulas(str) {
+            if (!str || typeof str !== 'string') return str || '';
+            // If \ce{...} is not already enclosed in $, wrap it in $...$
+            return str.replace(/(?<!\$)\ce\{([^}]+)\}(?!\$)/g, '$\ce{$1}$');
+        }
+
+        /**
+         * Renders LaTeX math in a given element using KaTeX auto-render.
+         */
+        function renderMath(element = dom.questionContent) {
+            if (!element) return;
+            if (window.renderMathInElement) {
+                try {
+                    window.renderMathInElement(element, {
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true },
+                            { left: '$', right: '$', display: false },
+                            { left: '\(', right: '\)', display: false },
+                            { left: '\[', right: '\]', display: true }
+                        ],
+                        throwOnError: false
+                    });
+                } catch (e) {
+                    console.error('Math rendering failed:', e);
+                }
+            }
+        }
+
+
         // =================================================================================
         // Configuration and Setup
         // =================================================================================
@@ -501,8 +529,8 @@
         // --- CONFIGURATION CONSTANTS ---
         const TOTAL_QUESTIONS = 200;
         const EXAM_DURATION_SECONDS = 3 * 60 * 60; // 3 hours in seconds
-        const QUESTIONS_PER_BATCH = 10; // 10 questions per batch (exact CEE subject alignment)
-        const PREFETCH_BUFFER_INDEX = 6; // Background fetch next batch at Q7 of current batch
+        const QUESTIONS_PER_BATCH = 10; // Batch size for fetching from AI
+        const PREFETCH_BUFFER_INDEX = 5; // Start fetching the next batch when we reach this index in the current batch
 
         // --- ACCESS GATE ---
         // Change this to whatever code you want to hand out to students.
@@ -577,22 +605,7 @@
          * Renders LaTeX math expressions within a specified DOM element.
          * @param {HTMLElement} element - The root element to scan for LaTeX delimiters.
          */
-        function renderMath(element = dom.questionContent) {
-            if (window.renderMathInElement) {
-                renderMathInElement(element, {
-                    // Define standard LaTeX delimiters for auto-rendering
-                    delimiters: [
-                        {left: '$$', right: '$$', display: true},  // Block math
-                        {left: '$', right: '$', display: false}, // Inline math
-                        {left: '\\[', right: '\\]', display: true}, // Alternative block
-                        {left: '\\(', right: '\\)', display: false} // Alternative inline
-                    ],
-                    throwOnError: false // Prevents app crash on bad LaTeX syntax
-                });
-            } else {
-                console.warn("KaTeX library not fully loaded. Math rendering skipped.");
-            }
-        }
+        
 
         // =================================================================================
         // Access Gate Logic
@@ -702,722 +715,56 @@
          */
         async function fetchQuestionBatch(startIndex) {
             if (startIndex >= TOTAL_QUESTIONS || state.fetchedBatchMarkers.has(startIndex)) {
-                return; // Already requested or out of bounds
+                return; // Already requested or index out of bounds
             }
 
             console.log(`Requesting batch starting at index ${startIndex} for mode: ${state.examMode}`);
-            state.fetchedBatchMarkers.add(startIndex);
+            state.fetchedBatchMarkers.add(startIndex); // Mark as requested
 
-            let attempts = 0;
-            const maxAttempts = 2;
-
-            while (attempts < maxAttempts) {
-                attempts++;
-                try {
-                    const response = await fetch(WORKER_URL, {
-                        method: 'POST',
-                        cache: 'no-store',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            requestType: 'getQuestions',
-                            mode: state.examMode,
-                            startIndex: startIndex,
-                            count: Math.min(QUESTIONS_PER_BATCH, TOTAL_QUESTIONS - startIndex),
-                        }),
-                    });
-
-                    const rawText = await response.text();
-                    let newQuestions;
-                    try {
-                        newQuestions = JSON.parse(rawText);
-                    } catch (err) {
-                        throw new Error(`Edge server error (${response.status}): ${rawText.slice(0, 100)}`);
-                    }
-
-                    if (!response.ok) {
-                        throw new Error(newQuestions.message || newQuestions.error || `Request failed with status ${response.status}`);
-                    }
-
-                    if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
-                        throw new Error('Invalid AI response: empty question array');
-                    }
-
-                    // Inject questions into state
-                    newQuestions.forEach((q, i) => {
-                        const index = startIndex + i;
-                        if (index < TOTAL_QUESTIONS) {
-                            state.questions[index] = q;
-                        }
-                    });
-
-                    console.log(`Successfully loaded batch at index ${startIndex}`);
-
-                    // Re-render if user is waiting on this question
-                    if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
-                        renderQuestion(state.currentQuestionIndex, true);
-                    }
-                    return; // Success, exit retry loop
-
-                } catch (error) {
-                    console.error(`Fetch attempt ${attempts} failed for batch ${startIndex}:`, error);
-                    if (attempts < maxAttempts) {
-                        console.log(`Retrying batch ${startIndex} in 2 seconds...`);
-                        await new Promise(res => setTimeout(res, 2000));
-                    } else {
-                        showToast(`Error fetching questions: ${error.message}`, 'error');
-                        state.fetchedBatchMarkers.delete(startIndex); // Allow user retry
-                    }
-                }
-            }
-        }
-
-        /**
-         * Renders the question UI for a specific index.
-         * Handles loading state and pre-fetching logic.
-         * @param {number} index - The question index to render (0-199).
-         * @param {boolean} force - Force re-render even if index hasn't changed.
-         */
-        function renderQuestion(index, force = false) {
-            if (state.isSubmitted) return; // Lock UI after submission
-            if (index < 0 || index >= TOTAL_QUESTIONS) return;
-            if (index === state.currentQuestionIndex && !force) return;
-
-            dom.questionCardContainer.classList.add('opacity-0'); // Smooth transition
-
-            setTimeout(() => {
-                state.currentQuestionIndex = index;
-                const questionData = state.questions[index];
-
-                if (questionData) {
-                    // Show actual content and hide skeleton
-                    dom.questionContent.classList.remove('hidden');
-                    dom.questionSkeleton.classList.add('hidden');
-
-                    dom.questionNumber.textContent = `Q. ${index + 1}`;
-                    dom.questionSubject.textContent = `${questionData.subject}${questionData.subtopic ? ' • ' + questionData.subtopic : ''}`;
-
-                    let questionHtml = `<div class="question-title">${formatLatexFormulas(questionData.question)}</div>`;
-                    if (questionData.diagram_svg && questionData.diagram_svg.trim().length > 10) {
-                        questionHtml += `
-                            <div class="mat-svg-wrapper my-4 p-4 rounded-xl flex items-center justify-center overflow-x-auto border" style="background: var(--bg-void); border-color: var(--border-subtle);">
-                                ${questionData.diagram_svg}
-                            </div>
-                        `;
-                    }
-                    dom.questionText.innerHTML = questionHtml;
-
-                    // Options Rendering
-                    dom.optionsContainer.innerHTML = '';
-                    const userAnswerIndex = state.userAnswers[index];
-
-                    questionData.options.forEach((option, i) => {
-                        const optionEl = document.createElement('div');
-                        optionEl.className = 'option-card p-4 rounded-lg cursor-pointer flex items-start gap-4';
-                        optionEl.innerHTML = `
-                            <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center border-2 rounded-full font-semibold font-mono" style="border-color: var(--border-strong); color: var(--text-secondary);">${String.fromCharCode(65 + i)}</span>
-                            <span class="flex-1 text-lg option-text" style="color: var(--text-primary);">${option}</span>
-                        `;
-
-                        // Attach selection handler
-                        optionEl.addEventListener('click', () => handleOptionSelect(index, i));
-
-                        // Apply 'selected' class if answered
-                        if (i === userAnswerIndex) {
-                            optionEl.classList.add('selected');
-                        }
-
-                        dom.optionsContainer.appendChild(optionEl);
-                    });
-
-                    // Explanation is ALWAYS hidden in the live exam view
-                    dom.explanationContainer.classList.remove('visible');
-
-
-                } else {
-                    // Show skeleton and trigger fetch for the missing batch
-                    dom.questionContent.classList.add('hidden');
-                    dom.questionSkeleton.classList.remove('hidden');
-                    const batchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH;
-                    fetchQuestionBatch(batchStartIndex);
-                }
-
-                // Update state and UI controls
-                state.questionStates[index].visited = true;
-                updateButtonStates();
-                updateQuestionNav();
-                updateProgressBar();
-
-                // Pre-fetch logic: When candidate reaches question 10 or 11 (index 9/10) of current batch
-                const batchIndex = index % QUESTIONS_PER_BATCH;
-                if (batchIndex >= PREFETCH_BUFFER_INDEX) {
-                    const nextBatchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH + QUESTIONS_PER_BATCH;
-                    if (nextBatchStartIndex < TOTAL_QUESTIONS) {
-                        fetchQuestionBatch(nextBatchStartIndex);
-                    }
-                }
-
-                // Final visual updates
-                dom.questionCardContainer.classList.remove('opacity-0');
-                dom.questionPanel.scrollTop = 0;
-
-                // RENDER MATH FOR NEW CONTENT
-                try {
-                    renderMath();
-                } catch (e) {
-                    console.error("KaTeX rendering error during renderQuestion:", e);
-                }
-
-            }, 200); // Wait for transition out
-        }
-
-        /**
-         * Handles the selection of an answer option.
-         * @param {number} questionIndex - Index of the question.
-         * @param {number} optionIndex - Index of the selected option.
-         */
-        function handleOptionSelect(questionIndex, optionIndex) {
-            if (state.isSubmitted) return;
-            if (state.userAnswers[questionIndex] === optionIndex) {
-                // If clicking the same option, de-select it
-                state.userAnswers[questionIndex] = null;
-                state.questionStates[questionIndex].answered = false;
-            } else {
-                // Otherwise, select the new option
-                state.userAnswers[questionIndex] = optionIndex;
-                state.questionStates[questionIndex].answered = true;
-            }
-
-            // Re-render to show the selection/deselection visually
-            renderQuestion(questionIndex, true);
-        }
-
-        /**
-         * Navigates to the next or previous question.
-         * @param {string} direction - 'next' or 'prev'.
-         */
-        function navigateQuestion(direction) {
-            let newIndex = state.currentQuestionIndex;
-            if (direction === 'next') {
-                newIndex = Math.min(TOTAL_QUESTIONS - 1, newIndex + 1);
-            } else {
-                newIndex = Math.max(0, newIndex - 1);
-            }
-            if (newIndex !== state.currentQuestionIndex) {
-                renderQuestion(newIndex);
-            }
-        }
-
-        /**
-         * Handles keyboard shortcuts for quick exam interaction.
-         */
-        function handleKeyDown(e) {
-            if (state.currentView !== 'exam' || state.isSubmitted) return;
-
-            const key = e.key.toLowerCase();
-            // Prevent default behavior for keys that might scroll or trigger browser actions
-            if (['arrowleft', 'arrowright', '1', '2', '3', '4', 'a', 'b', 'c', 'd', 'f', 'm'].includes(key)) {
-                e.preventDefault();
-            }
-
-            switch (key) {
-                case 'arrowleft': navigateQuestion('prev'); break;
-                case 'arrowright': navigateQuestion('next'); break;
-                // Option Selection via Number Keys (1-4) or Letter Keys (A-D)
-                case '1': case 'a': handleOptionSelect(state.currentQuestionIndex, 0); break;
-                case '2': case 'b': handleOptionSelect(state.currentQuestionIndex, 1); break;
-                case '3': case 'c': handleOptionSelect(state.currentQuestionIndex, 2); break;
-                case '4': case 'd': handleOptionSelect(state.currentQuestionIndex, 3); break;
-                // Action Buttons
-                case 'f': toggleFlag(); break;
-                case 'm': toggleMark(); break;
-            }
-        }
-
-
-        // =================================================================================
-        // UI State and Helper Functions
-        // =================================================================================
-
-        /**
-         * Switches the active view (Gate, Mode Select, Loading, Exam, Result).
-         * @param {string} viewName
-         */
-        function updateView(viewName) {
-            state.currentView = viewName;
-            dom.gateView.classList.add('hidden');
-            dom.modeSelectView.classList.add('hidden');
-            dom.modeSelectView.classList.remove('flex');
-            dom.loadingView.classList.add('hidden');
-            dom.examView.classList.add('hidden');
-            dom.resultView.classList.add('hidden');
-
-            if (viewName === 'gate') {
-                dom.gateView.classList.remove('hidden');
-                dom.gateCodeInput.focus();
-            } else if (viewName === 'mode-select') {
-                dom.modeSelectView.classList.remove('hidden');
-                dom.modeSelectView.classList.add('flex');
-            } else if (viewName === 'loading') dom.loadingView.classList.remove('hidden');
-            else if (viewName === 'exam') dom.examView.classList.remove('hidden');
-            else if (viewName === 'result') dom.resultView.classList.remove('hidden');
-        }
-
-        /**
-         * Populates the 200 question navigation grid.
-         */
-        function renderQuestionNav() {
-            let navHtml = '';
-            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-                navHtml += `<div class="nav-item" data-index="${i}">${i + 1}</div>`;
-            }
-            dom.questionNavGrid.innerHTML = navHtml;
-            dom.questionNavGrid.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.dataset.index);
-                    renderQuestion(index);
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    cache: 'no-store',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        requestType: 'getQuestions',
+                        mode: state.examMode,
+                        startIndex: startIndex,
+                        count: QUESTIONS_PER_BATCH,
+                    }),
                 });
-            });
-            updateQuestionNav();
-        }
 
-        /**
-         * Updates the visual state of the question navigation grid items.
-         */
-        function updateQuestionNav() {
-            dom.questionNavGrid.querySelectorAll('.nav-item').forEach((item, i) => {
-                const qState = state.questionStates[i];
-                // Reset classes
-                item.className = 'nav-item';
-
-                // Apply status classes
-                if (qState.answered) item.classList.add('answered');
-                else if (qState.visited) item.classList.add('visited');
-
-                if (i === state.currentQuestionIndex) item.classList.add('current');
-
-                // Handle status icons (Flagged/Marked)
-                let iconHtml = '';
-                if (qState.flagged) iconHtml += `<span class="icon-status icon-flag"><i class="ph-fill ph-flag"></i></span>`;
-                if (qState.marked) iconHtml += `<span class="icon-status icon-mark"><i class="ph-fill ph-bookmark-simple"></i></span>`;
-                item.innerHTML = `${i + 1}${iconHtml}`;
-            });
-        }
-
-        /**
-         * Updates the progress bar and text count.
-         */
-        function updateProgressBar() {
-            const answeredCount = state.questionStates.filter(s => s.answered).length;
-            const percentage = (answeredCount / TOTAL_QUESTIONS) * 100;
-            dom.progressBar.style.width = `${percentage}%`;
-            dom.progressText.textContent = `${answeredCount} / ${TOTAL_QUESTIONS} Answered`;
-        }
-
-        /**
-         * Toggles the state of navigation buttons and action buttons (Flag/Mark).
-         */
-        function updateButtonStates() {
-            dom.prevBtn.disabled = state.currentQuestionIndex === 0 || state.isSubmitted;
-            dom.nextBtn.disabled = state.currentQuestionIndex === TOTAL_QUESTIONS - 1 || state.isSubmitted;
-
-            const qState = state.questionStates[state.currentQuestionIndex];
-            dom.flagBtn.classList.toggle('active', qState.flagged);
-            dom.markBtn.classList.toggle('active', qState.marked);
-
-            // Disable action buttons if submitted
-            dom.flagBtn.disabled = state.isSubmitted;
-            dom.markBtn.disabled = state.isSubmitted;
-        }
-
-        /**
-         * Toggles the 'flagged' status for the current question.
-         */
-        function toggleFlag() {
-            if (state.isSubmitted) return;
-            const index = state.currentQuestionIndex;
-            const qState = state.questionStates[index];
-            qState.flagged = !qState.flagged;
-            showToast(qState.flagged ? 'Question flagged' : 'Flag removed', 'info');
-            updateQuestionNav();
-            updateButtonStates();
-        }
-
-        /**
-         * Toggles the 'marked' status for the current question.
-         */
-        function toggleMark() {
-            if (state.isSubmitted) return;
-            const index = state.currentQuestionIndex;
-            const qState = state.questionStates[index];
-            qState.marked = !qState.marked;
-            showToast(qState.marked ? 'Question marked for review' : 'Mark removed', 'info');
-            updateQuestionNav();
-            updateButtonStates();
-        }
-
-        // =================================================================================
-        // Timer Logic
-        // =================================================================================
-
-        /**
-         * Starts the exam countdown timer.
-         */
-        function startTimer() {
-            dom.timerDisplay.textContent = formatTime(state.secondsRemaining);
-            state.timerHandle = setInterval(() => {
-                state.secondsRemaining--;
-                dom.timerDisplay.textContent = formatTime(state.secondsRemaining);
-
-                // Timer Warnings
-                if (state.secondsRemaining === 300) {
-                    showToast('5 minutes remaining! Complete your answers.', 'warning');
-                    dom.timerDisplay.classList.add('text-yellow-400');
-                } else if (state.secondsRemaining === 60) {
-                    showToast('1 minute remaining! Final countdown.', 'error');
-                    dom.timerDisplay.classList.remove('text-yellow-400');
-                    dom.timerDisplay.classList.add('text-red-500', 'animate-pulse');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error Response:", errorData);
+                    throw new Error(errorData.message || `Worker request failed with status ${response.status}`);
                 }
 
-                if (state.secondsRemaining <= 0) {
-                    clearInterval(state.timerHandle);
-                    dom.timerDisplay.textContent = '00:00:00';
-                    showToast("Time's up! The exam is automatically submitted.", 'error');
-                    submitExam(true); // Auto-submit when time runs out
+                const newQuestions = await response.json();
+
+                if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
+                    throw new Error('Invalid data received from AI: empty or non-array response.');
                 }
-            }, 1000);
-        }
 
-        /**
-         * Formats seconds into HH:MM:SS string.
-         */
-        function formatTime(totalSeconds) {
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            return [hours, minutes, seconds].map(v => v.toString().padStart(2, '0')).join(':');
-        }
+                // Inject new questions into the global state array
+                newQuestions.forEach((q, i) => {
+                    const index = startIndex + i;
+                    if (index < TOTAL_QUESTIONS) {
+                        state.questions[index] = q;
+                    }
+                });
 
-        // =================================================================================
-        // Submission and Result Logic
-        // =================================================================================
+                console.log(`Successfully received and stored batch starting at index ${startIndex}`);
 
-        /**
-         * Displays a confirmation toast before final submission.
-         */
-        function confirmSubmit() {
-            if (state.isSubmitted) return;
-            showToast('Click "Submit Exam" again to confirm and end the test.', 'warning');
-
-            // Temporarily replace the listener with the final submit function
-            dom.submitBtn.removeEventListener('click', confirmSubmit);
-            dom.submitBtn.addEventListener('click', () => submitExam(false));
-
-            // Revert after 5 seconds if not submitted
-            setTimeout(() => {
-                if (!state.isSubmitted) {
-                    dom.submitBtn.removeEventListener('click', submitExam);
-                    dom.submitBtn.addEventListener('click', confirmSubmit);
+                // If the user is currently waiting on a question that just loaded, re-render it
+                if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
+                    renderQuestion(state.currentQuestionIndex, true);
                 }
-            }, 5000);
-        }
 
-        /**
-         * Finalizes the exam, calculates the score, and renders the result view.
-         */
-        function submitExam() {
-            if (state.isSubmitted) return;
-            state.isSubmitted = true;
-            clearInterval(state.timerHandle);
-
-            dom.submitBtn.disabled = true;
-            updateButtonStates();
-
-            let correctCount = 0;
-            let wrongCount = 0;
-            let attempted = 0;
-
-            const subjectStats = {
-                Physics: { correct: 0, wrong: 0, total: 0, score: 0 },
-                Chemistry: { correct: 0, wrong: 0, total: 0, score: 0 },
-                Botany: { correct: 0, wrong: 0, total: 0, score: 0 },
-                Zoology: { correct: 0, wrong: 0, total: 0, score: 0 },
-                MAT: { correct: 0, wrong: 0, total: 0, score: 0 }
-            };
-
-            state.questions.forEach((q, i) => {
-                if (!q) return;
-
-                const userAnswer = state.userAnswers[i];
-                const subject = q.subject || 'Physics';
-
-                if (!subjectStats[subject]) {
-                    subjectStats[subject] = { correct: 0, wrong: 0, total: 0, score: 0 };
-                }
-                subjectStats[subject].total++;
-
-                if (state.questionStates[i].answered) {
-                    attempted++;
-                    if (userAnswer === q.correct) {
-                        correctCount++;
-                        subjectStats[subject].correct++;
-                        subjectStats[subject].score += 1.0;
-                    } else {
-                        wrongCount++;
-                        subjectStats[subject].wrong++;
-                        subjectStats[subject].score -= 0.25;
-                    }
-                }
-            });
-
-            const rawScore = (correctCount * 1.0) - (wrongCount * 0.25);
-            const netScore = Math.round(rawScore * 100) / 100;
-
-            console.log(`Exam submitted. Attempted: ${attempted}, Correct: ${correctCount}, Wrong: ${wrongCount}, Net: ${netScore}`);
-            renderResultPage(netScore, attempted, correctCount, wrongCount, subjectStats);
-            updateView('result');
-            dom.questionNavPanel.classList.add('hidden');
-        }
-
-        /**
-         * Renders the comprehensive result and review page with CEE negative marking.
-         */
-        function renderResultPage(netScore, attempted, correctCount, wrongCount, subjectStats) {
-            const modeName = state.examMode ? state.examMode.toUpperCase().replace('-', ' ') : 'CEE';
-            const subtitleEl = document.getElementById('result-exam-mode-name');
-            if (subtitleEl) {
-                subtitleEl.textContent = `Completed ${modeName} Exam`;
-            }
-
-            // Display Net Score (can be decimal)
-            dom.resultScore.textContent = netScore.toFixed(2);
-
-            // Replace summary block with detailed CEE Scorecard
-            dom.resultSummaryText.innerHTML = `
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6 text-left">
-                    <div class="score-pill">
-                        <p class="text-sm font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Attempted</p>
-                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--text-primary);">${attempted} <span class="text-sm font-normal" style="color: var(--text-secondary);">/ ${TOTAL_QUESTIONS}</span></p>
-                    </div>
-                    <div class="score-pill">
-                        <p class="text-sm font-semibold uppercase tracking-wider" style="color: var(--success);">Correct (+1)</p>
-                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--success);">${correctCount}</p>
-                    </div>
-                    <div class="score-pill">
-                        <p class="text-sm font-semibold uppercase tracking-wider" style="color: var(--danger);">Wrong (-0.25)</p>
-                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--danger);">${wrongCount}</p>
-                        <p class="text-xs font-mono mt-1" style="color: var(--danger);">-${(wrongCount * 0.25).toFixed(2)} pts</p>
-                    </div>
-                    <div class="score-pill">
-                        <p class="text-sm font-semibold uppercase tracking-wider" style="color: var(--accent-gold);">Total Marks</p>
-                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--accent-gold);">${netScore.toFixed(2)}</p>
-                        <p class="text-xs font-mono mt-1" style="color: var(--text-secondary);">${attempted > 0 ? ((correctCount / attempted) * 100).toFixed(1) + '% accuracy' : '0% accuracy'}</p>
-                    </div>
-                </div>
-            `;
-
-            // Subject-wise Breakdown with Net Marks
-            dom.subjectCharts.innerHTML = '';
-            for (const [subject, stats] of Object.entries(subjectStats)) {
-                if (stats.total === 0) continue;
-                const subjNet = Math.max(0, Math.round(stats.score * 100) / 100);
-                const percentage = stats.total > 0 ? ((stats.correct / stats.total) * 100).toFixed(1) : '0';
-
-                const chartEl = document.createElement('div');
-                chartEl.className = 'mb-4';
-                chartEl.innerHTML = `
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="font-semibold text-lg" style="color: var(--text-primary);">${subject}</span>
-                        <span class="text-sm font-mono" style="color: var(--text-secondary);">
-                            <span style="color: var(--success); font-weight:600;">+${stats.correct}</span> / 
-                            <span style="color: var(--danger); font-weight:600;">-${stats.wrong}</span> | 
-                            Net: <span style="color: var(--accent-gold); font-weight:700;">${subjNet.toFixed(2)}</span> / ${stats.total} (${percentage}%)
-                        </span>
-                    </div>
-                    <div class="chart-bar-bg">
-                        <div class="chart-bar" style="width: ${Math.min(100, Math.max(0, percentage))}%"></div>
-                    </div>
-                `;
-                dom.subjectCharts.appendChild(chartEl);
-            }
-
-            // Question Review List
-            dom.reviewContainer.innerHTML = '';
-            state.questions.forEach((q, i) => {
-                if (!q) return;
-
-                const userAnswer = state.userAnswers[i];
-                const isCorrect = userAnswer === q.correct;
-                const isAttempted = state.questionStates[i].answered;
-
-                const reviewEl = document.createElement('div');
-                reviewEl.className = 'p-6 rounded-lg shadow-lg border';
-                reviewEl.style.backgroundColor = 'var(--bg-panel)';
-                reviewEl.style.borderColor = 'var(--border-subtle)';
-
-                const statusColor = isAttempted ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'var(--text-secondary)';
-                const statusText = isAttempted ? (isCorrect ? '+1.0 Correct' : '-0.25 Incorrect') : '0.0 Unattempted';
-
-                const formattedQ = formatLatexFormulas(q.question);
-                const formattedExp = formatLatexFormulas(q.explanation || 'No explanation provided.');
-
-                reviewEl.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="font-mono text-sm px-2.5 py-1 rounded bg-slate-800" style="color: var(--text-secondary);">Q${i + 1} • ${q.subject || ''}</span>
-                        <span class="font-bold text-sm px-2.5 py-1 rounded" style="color: ${statusColor}; background: rgba(0,0,0,0.3);">${statusText}</span>
-                    </div>
-                    <div class="font-medium text-lg mb-4" style="color: var(--text-primary);">${formattedQ}</div>
-                    ${q.diagram_svg && q.diagram_svg.trim().length > 10 ? `<div class="mat-svg-wrapper">${q.diagram_svg}</div>` : ''}
-                    <div class="space-y-2 mb-4">
-                        ${q.options.map((opt, optIdx) => {
-                            let optStyle = 'border: 1px solid var(--border-subtle); color: var(--text-secondary);';
-                            let badge = '';
-                            if (optIdx === q.correct) {
-                                optStyle = 'border: 1px solid var(--success); background: rgba(34, 197, 94, 0.1); color: var(--success); font-weight: 600;';
-                                badge = '<span class="text-xs ml-2 font-bold uppercase tracking-wider">(Correct)</span>';
-                            } else if (isAttempted && userAnswer === optIdx) {
-                                optStyle = 'border: 1px solid var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger);';
-                                badge = '<span class="text-xs ml-2 font-bold uppercase tracking-wider">(Your Choice)</span>';
-                            }
-                            return `<div class="p-3 rounded-lg flex items-center justify-between text-sm" style="${optStyle}">
-                                <span><span class="font-mono font-bold mr-2">${String.fromCharCode(65 + optIdx)}.</span> ${formatLatexFormulas(opt)}</span>
-                                ${badge}
-                            </div>`;
-                        }).join('')}
-                    </div>
-                    <div class="p-4 rounded-lg text-sm" style="background: var(--bg-void); border: 1px solid var(--border-subtle);">
-                        <p class="font-bold mb-1" style="color: var(--accent-gold);">Explanation:</p>
-                        <p style="color: var(--text-secondary);">${formattedExp}</p>
-                    </div>
-                `;
-
-                dom.reviewContainer.appendChild(reviewEl);
-                renderMath(reviewEl);
-            });
-        }
-        
-        dom.submitBtn.addEventListener('click', () => confirmSubmit());
-            dom.prevBtn.addEventListener('click', () => navigateQuestion('prev'));
-            dom.nextBtn.addEventListener('click', () => navigateQuestion('next'));
-            dom.flagBtn.addEventListener('click', toggleFlag);
-            dom.markBtn.addEventListener('click', toggleMark);
-
-            updateView('gate');
-        }
-
-        /**
-         * Starts the exam after a mode is selected by the user.
-         * @param {string} mode - 'probable', 'past-year', or 'mixed'.
-         */
-        async function startExam(mode) {
-            state.examMode = mode;
-            dom.examModeBadge.textContent = mode.toUpperCase().replace('-', ' ');
-            updateView('loading');
-            dom.loadingMessage.textContent = `Generating ${TOTAL_QUESTIONS} ${mode.toUpperCase().replace('-', ' ')} CEE questions...`;
-
-            // Setup navigation grid for 200 questions
-            renderQuestionNav();
-
-            // Fetch the first batch to start the exam
-            await fetchQuestionBatch(0);
-
-            // Check if the initial load was successful
-            if (state.questions[0]) {
-                updateView('exam');
-                renderQuestion(0);
-                startTimer();
-                // Immediately pre-fetch the next batch while the user answers Q1
-                fetchQuestionBatch(QUESTIONS_PER_BATCH);
-            } else {
-                // Handle failure to load initial batch gracefully
-                updateView('loading');
-                dom.loadingView.innerHTML = `
-                    <i class="ph-fill ph-wifi-slash text-6xl mb-4" style="color: var(--danger);"></i>
-                    <h2 class="font-display text-3xl font-bold" style="color: var(--danger);">Failed to Load Exam</h2>
-                    <p class="text-center max-w-md mt-2" style="color: var(--text-secondary);">The server could not generate the questions. Please check the network or retry.</p>
-                    <button class="btn btn-primary mt-6" onclick="window.location.reload()">Retry Mode Selection</button>
-                `;
-                showToast('Initial question fetch failed. Check worker status.', 'error');
-            }
-        }
-
-
-        // =================================================================================
-        // Data Fetching and Question Management
-        // =================================================================================
-
-        /**
-         * Fetches a batch of questions from the AI worker using the selected exam mode.
-         * Implements a robust check to avoid duplicate requests.
-         * @param {number} startIndex - The starting index of the batch (e.g., 0, 10, 20...).
-         */
-        async function fetchQuestionBatch(startIndex) {
-            if (startIndex >= TOTAL_QUESTIONS || state.fetchedBatchMarkers.has(startIndex)) {
-                return; // Already requested or out of bounds
-            }
-
-            console.log(`Requesting batch starting at index ${startIndex} for mode: ${state.examMode}`);
-            state.fetchedBatchMarkers.add(startIndex);
-
-            let attempts = 0;
-            const maxAttempts = 2;
-
-            while (attempts < maxAttempts) {
-                attempts++;
-                try {
-                    const response = await fetch(WORKER_URL, {
-                        method: 'POST',
-                        cache: 'no-store',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            requestType: 'getQuestions',
-                            mode: state.examMode,
-                            startIndex: startIndex,
-                            count: Math.min(QUESTIONS_PER_BATCH, TOTAL_QUESTIONS - startIndex),
-                        }),
-                    });
-
-                    const rawText = await response.text();
-                    let newQuestions;
-                    try {
-                        newQuestions = JSON.parse(rawText);
-                    } catch (err) {
-                        throw new Error(`Edge server error (${response.status}): ${rawText.slice(0, 100)}`);
-                    }
-
-                    if (!response.ok) {
-                        throw new Error(newQuestions.message || newQuestions.error || `Request failed with status ${response.status}`);
-                    }
-
-                    if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
-                        throw new Error('Invalid AI response: empty question array');
-                    }
-
-                    // Inject questions into state
-                    newQuestions.forEach((q, i) => {
-                        const index = startIndex + i;
-                        if (index < TOTAL_QUESTIONS) {
-                            state.questions[index] = q;
-                        }
-                    });
-
-                    console.log(`Successfully loaded batch at index ${startIndex}`);
-
-                    // Re-render if user is waiting on this question
-                    if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
-                        renderQuestion(state.currentQuestionIndex, true);
-                    }
-                    return; // Success, exit retry loop
-
-                } catch (error) {
-                    console.error(`Fetch attempt ${attempts} failed for batch ${startIndex}:`, error);
-                    if (attempts < maxAttempts) {
-                        console.log(`Retrying batch ${startIndex} in 2 seconds...`);
-                        await new Promise(res => setTimeout(res, 2000));
-                    } else {
-                        showToast(`Error fetching questions: ${error.message}`, 'error');
-                        state.fetchedBatchMarkers.delete(startIndex); // Allow user retry
-                    }
-                }
+            } catch (error) {
+                console.error(`CRITICAL: Failed to fetch batch ${startIndex}:`, error);
+                showToast(`Error fetching questions: ${error.message}. Retrying...`, 'error');
+                state.fetchedBatchMarkers.delete(startIndex); // Allow retry later
             }
         }
 
@@ -1444,17 +791,8 @@
                     dom.questionSkeleton.classList.add('hidden');
 
                     dom.questionNumber.textContent = `Q. ${index + 1}`;
-                    dom.questionSubject.textContent = `${questionData.subject}${questionData.subtopic ? ' • ' + questionData.subtopic : ''}`;
-
-                    let questionHtml = `<div class="question-title">${formatLatexFormulas(questionData.question)}</div>`;
-                    if (questionData.diagram_svg && questionData.diagram_svg.trim().length > 10) {
-                        questionHtml += `
-                            <div class="mat-svg-wrapper my-4 p-4 rounded-xl flex items-center justify-center overflow-x-auto border" style="background: var(--bg-void); border-color: var(--border-subtle);">
-                                ${questionData.diagram_svg}
-                            </div>
-                        `;
-                    }
-                    dom.questionText.innerHTML = questionHtml;
+                    dom.questionSubject.textContent = questionData.subject;
+                    dom.questionText.innerHTML = questionData.question; // Use innerHTML for KaTeX processing
 
                     // Options Rendering
                     dom.optionsContainer.innerHTML = '';
@@ -1497,13 +835,11 @@
                 updateQuestionNav();
                 updateProgressBar();
 
-                // Pre-fetch logic: When candidate reaches question 10 or 11 (index 9/10) of current batch
+                // Pre-fetch logic: Check if we are near the end of a loaded batch
                 const batchIndex = index % QUESTIONS_PER_BATCH;
                 if (batchIndex >= PREFETCH_BUFFER_INDEX) {
                     const nextBatchStartIndex = Math.floor(index / QUESTIONS_PER_BATCH) * QUESTIONS_PER_BATCH + QUESTIONS_PER_BATCH;
-                    if (nextBatchStartIndex < TOTAL_QUESTIONS) {
-                        fetchQuestionBatch(nextBatchStartIndex);
-                    }
+                    fetchQuestionBatch(nextBatchStartIndex);
                 }
 
                 // Final visual updates
@@ -1786,38 +1122,30 @@
 
             let score = 0;
             let attempted = 0;
-            // Initialize subject tracking for 5 CEE subjects (Physics 50, Chemistry 50, Botany 40, Zoology 40, MAT 20)
-            const subjectStats = {
-                Physics: { correct: 0, total: 0, score: 0 },
-                Chemistry: { correct: 0, total: 0, score: 0 },
-                Botany: { correct: 0, total: 0, score: 0 },
-                Zoology: { correct: 0, total: 0, score: 0 },
-                MAT: { correct: 0, total: 0, score: 0 }
-            };
+            // Initialize subject tracking for all 4 required subjects
+            const subjectStats = { Physics: { correct: 0, total: 0 }, Chemistry: { correct: 0, total: 0 }, Biology: { correct: 0, total: 0 }, GK: { correct: 0, total: 0 } };
 
             state.questions.forEach((q, i) => {
+                // Only process questions that successfully loaded
                 if (!q) return;
 
                 const userAnswer = state.userAnswers[i];
-                const subject = q.subject || 'Physics';
+                const subject = q.subject || 'GK';
 
-                if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0, score: 0 };
+                // Safety check for subject initialization
+                if (!subjectStats[subject]) subjectStats[subject] = { correct: 0, total: 0 };
+
                 subjectStats[subject].total++;
 
                 if (state.questionStates[i].answered) {
                     attempted++;
-                    // CEE marking scheme: +1 for correct, -0.25 for incorrect response
+                    // Check correctness
                     if (userAnswer === q.correct) {
-                        score += 1.0;
+                        score++;
                         subjectStats[subject].correct++;
-                        subjectStats[subject].score += 1.0;
-                    } else {
-                        score -= 0.25;
-                        subjectStats[subject].score -= 0.25;
                     }
                 }
             });
-            score = Math.max(0, Math.round(score * 100) / 100);
 
             console.log(`Exam finalized. Score: ${score}/${TOTAL_QUESTIONS}`);
             renderResultPage(score, attempted, subjectStats);
@@ -1828,92 +1156,131 @@
         /**
          * Renders the comprehensive result and review page.
          */
-        function renderResultPage(score, attempted, subjectStats) {
-            // --- 1. Score Counter Animation ---
+                /**
+         * Renders the comprehensive result and review page with Nepal CEE scoring breakdown.
+         */
+        function renderResultPage(netScore, correctCount, wrongCount, attempted, subjectStats) {
+            // Mode Heading
+            const modeLabel = (state.examMode || 'Exam').toUpperCase().replace('-', ' ');
+            dom.resultHeading.textContent = `Exam Complete: ${modeLabel}`;
+
+            // Score Counter Animation
             let currentScore = 0;
+            const targetScore = Math.max(0, netScore);
             const scoreInterval = setInterval(() => {
-                if (score === 0) {
-                    dom.resultScore.textContent = 0;
+                if (targetScore === 0) {
+                    dom.resultScore.textContent = '0.00';
                     clearInterval(scoreInterval);
                     return;
                 }
-                currentScore++;
-                dom.resultScore.textContent = currentScore;
-                if (currentScore >= score) clearInterval(scoreInterval);
-            }, 20); // Fast counting animation
+                currentScore += 0.5;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(scoreInterval);
+                }
+                dom.resultScore.textContent = currentScore.toFixed(2);
+            }, 15);
 
-            dom.resultSummaryText.textContent = `You scored ${score} out of ${TOTAL_QUESTIONS}. You attempted ${attempted} questions and had ${attempted - score} incorrect.`;
+            // Detailed Score Breakdown Cards
+            dom.resultSummaryText.innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6 text-left">
+                    <div class="score-pill">
+                        <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Attempted</p>
+                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--text-primary);">${attempted} <span class="text-xs font-normal" style="color: var(--text-secondary);">/ ${TOTAL_QUESTIONS}</span></p>
+                    </div>
+                    <div class="score-pill">
+                        <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--success);">Correct (+1)</p>
+                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--success);">${correctCount}</p>
+                    </div>
+                    <div class="score-pill">
+                        <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--danger);">Wrong (-0.25)</p>
+                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--danger);">${wrongCount}</p>
+                        <p class="text-xs font-mono mt-1" style="color: var(--danger);">-${(wrongCount * 0.25).toFixed(2)} deduction</p>
+                    </div>
+                    <div class="score-pill">
+                        <p class="text-xs font-semibold uppercase tracking-wider" style="color: var(--accent-gold);">Total Marks</p>
+                        <p class="text-3xl font-mono font-bold mt-1" style="color: var(--accent-gold);">${netScore.toFixed(2)}</p>
+                        <p class="text-xs font-mono mt-1" style="color: var(--text-secondary);">${attempted > 0 ? ((correctCount / attempted) * 100).toFixed(1) + '% accuracy' : '0% accuracy'}</p>
+                    </div>
+                </div>
+            `;
 
-            // --- 2. Subject-wise Charts ---
+            // Subject-wise Breakdown
             dom.subjectCharts.innerHTML = '';
             for (const [subject, stats] of Object.entries(subjectStats)) {
                 if (stats.total === 0) continue;
-                const percentage = (stats.correct / stats.total) * 100 || 0;
+                const subjNet = Math.max(0, Math.round(stats.score * 100) / 100);
+                const percentage = stats.total > 0 ? ((stats.correct / stats.total) * 100).toFixed(1) : '0';
+
                 const chartEl = document.createElement('div');
+                chartEl.className = 'mb-4';
                 chartEl.innerHTML = `
                     <div class="flex justify-between items-center mb-1">
-                        <span class="font-semibold text-xl" style="color: var(--text-primary);">${subject}</span>
-                        <span class="text-lg font-mono" style="color: var(--text-secondary);">${stats.correct} / ${stats.total} (${percentage.toFixed(1)}%)</span>
+                        <span class="font-semibold text-base" style="color: var(--text-primary);">${subject}</span>
+                        <span class="text-xs font-mono" style="color: var(--text-secondary);">
+                            <span style="color: var(--success); font-weight:600;">+${stats.correct}</span> / 
+                            <span style="color: var(--danger); font-weight:600;">-${stats.wrong}</span> | 
+                            Net: <span style="color: var(--accent-gold); font-weight:700;">${subjNet.toFixed(2)}</span> / ${stats.total} (${percentage}%)
+                        </span>
                     </div>
                     <div class="chart-bar-bg">
-                        <div class="chart-bar" style="width: ${percentage}%"></div>
+                        <div class="chart-bar" style="width: ${Math.min(100, Math.max(0, percentage))}%"></div>
                     </div>
                 `;
                 dom.subjectCharts.appendChild(chartEl);
             }
 
-            // --- 3. Full 200 Question Review ---
+            // Question Review List
             dom.reviewContainer.innerHTML = '';
             state.questions.forEach((q, i) => {
-                // Skip if question data failed to load
                 if (!q) return;
 
                 const userAnswer = state.userAnswers[i];
                 const isCorrect = userAnswer === q.correct;
                 const isAttempted = state.questionStates[i].answered;
+
                 const reviewEl = document.createElement('div');
                 reviewEl.className = 'p-6 rounded-lg shadow-lg border';
                 reviewEl.style.backgroundColor = 'var(--bg-panel)';
                 reviewEl.style.borderColor = 'var(--border-subtle)';
 
-                let statusText = isAttempted
-                    ? (isCorrect
-                        ? `<span style="color: var(--success);" class="font-bold"><i class="ph-fill ph-check"></i> CORRECT</span>`
-                        : `<span style="color: var(--danger);" class="font-bold"><i class="ph-fill ph-x"></i> INCORRECT</span>`)
-                    : `<span style="color: var(--accent-amber);" class="font-bold"><i class="ph-fill ph-warning-circle"></i> NOT ATTEMPTED</span>`;
+                const statusColor = isAttempted ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'var(--text-secondary)';
+                const statusText = isAttempted ? (isCorrect ? '+1.0 Correct' : '-0.25 Incorrect') : '0.0 Unattempted';
 
-                let optionHtml = '';
-                q.options.forEach((opt, j) => {
-                    let style = 'padding: 0.75rem; border-radius: 0.5rem; border-width: 1px; font-size: 1.125rem;';
-                    if (j === q.correct) style += `background-color: var(--success-soft); border-color: var(--success); color: var(--text-primary); font-weight:600;`;
-                    else if (j === userAnswer && !isCorrect) style += `background-color: var(--danger-soft); border-color: var(--danger); color: var(--text-primary); font-weight:600;`;
-                    else style += `background-color: var(--bg-panel-light); border-color: var(--border-subtle); color: var(--text-secondary);`;
-
-                    optionHtml += `<li style="${style}">${String.fromCharCode(65 + j)}. ${opt}</li>`;
-                });
-
-                // Construct the full review card HTML
-                // Format review formulas
                 const formattedQ = formatLatexFormulas(q.question);
                 const formattedExp = formatLatexFormulas(q.explanation || 'No explanation provided.');
+
                 reviewEl.innerHTML = `
-                    <h4 class="text-2xl font-bold mb-4 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono" style="color: var(--accent-gold);">Q.${i + 1}</span>
-                            <span class="text-lg" style="color: var(--text-secondary);">(${q.subject})</span>
-                        </div>
-                        ${statusText}
-                    </h4>
-                    <p class="text-xl mb-6" style="white-space: pre-wrap; color: var(--text-primary);">${formattedQ}</p>
-                    <ul class="space-y-3 mb-6">${optionHtml}</ul>
-                    <div class="mt-4 pt-4 border-t" style="border-color: var(--border-subtle);">
-                        <h5 class="font-bold text-xl mb-2" style="color: var(--accent-teal);">Detailed Solution:</h5>
-                        <p class="leading-relaxed" style="white-space: pre-wrap; color: var(--text-secondary);">${q.explanation}</p>
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="font-mono text-sm px-2.5 py-1 rounded bg-slate-800" style="color: var(--text-secondary);">Q${i + 1} • ${q.subject || ''}</span>
+                        <span class="font-bold text-sm px-2.5 py-1 rounded" style="color: ${statusColor}; background: rgba(0,0,0,0.3);">${statusText}</span>
+                    </div>
+                    <div class="font-medium text-lg mb-4" style="color: var(--text-primary);">${formattedQ}</div>
+                    ${q.diagram_svg && q.diagram_svg.trim().length > 10 ? `<div class="mat-svg-wrapper">${q.diagram_svg}</div>` : ''}
+                    <div class="space-y-2 mb-4">
+                        ${q.options.map((opt, optIdx) => {
+                            let optStyle = 'border: 1px solid var(--border-subtle); color: var(--text-secondary);';
+                            let badge = '';
+                            if (optIdx === q.correct) {
+                                optStyle = 'border: 1px solid var(--success); background: rgba(34, 197, 94, 0.1); color: var(--success); font-weight: 600;';
+                                badge = '<span class="text-xs ml-2 font-bold uppercase tracking-wider">(Correct)</span>';
+                            } else if (isAttempted && userAnswer === optIdx) {
+                                optStyle = 'border: 1px solid var(--danger); background: rgba(239, 68, 68, 0.1); color: var(--danger);';
+                                badge = '<span class="text-xs ml-2 font-bold uppercase tracking-wider">(Your Choice)</span>';
+                            }
+                            return `<div class="p-3 rounded-lg flex items-center justify-between text-sm" style="${optStyle}">
+                                <span><span class="font-mono font-bold mr-2">${String.fromCharCode(65 + optIdx)}.</span> ${formatLatexFormulas(opt)}</span>
+                                ${badge}
+                            </div>`;
+                        }).join('')}
+                    </div>
+                    <div class="p-4 rounded-lg text-sm" style="background: var(--bg-void); border: 1px solid var(--border-subtle);">
+                        <p class="font-bold mb-1" style="color: var(--accent-gold);">Explanation:</p>
+                        <p style="color: var(--text-secondary);">${formattedExp}</p>
                     </div>
                 `;
-                dom.reviewContainer.appendChild(reviewEl);
 
-                // Render math for the newly injected review card
+                dom.reviewContainer.appendChild(reviewEl);
                 renderMath(reviewEl);
             });
         }
@@ -1941,6 +1308,7 @@
         // === INITIALIZATION ENTRY POINT ===
         document.addEventListener('DOMContentLoaded', init);
 
+    
     </script>
 </body>
 </html>
