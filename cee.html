@@ -473,8 +473,8 @@
         // --- CONFIGURATION CONSTANTS ---
         const TOTAL_QUESTIONS = 200;
         const EXAM_DURATION_SECONDS = 3 * 60 * 60; // 3 hours in seconds
-        const QUESTIONS_PER_BATCH = 15; // 15 questions per batch
-        const PREFETCH_BUFFER_INDEX = 9; // Start background pre-fetch when reaching Q10/Q11
+        const QUESTIONS_PER_BATCH = 10; // 10 questions per batch (exact CEE subject alignment)
+        const PREFETCH_BUFFER_INDEX = 6; // Background fetch next batch at Q7 of current batch
 
         // --- ACCESS GATE ---
         // Change this to whatever code you want to hand out to students.
@@ -674,56 +674,72 @@
          */
         async function fetchQuestionBatch(startIndex) {
             if (startIndex >= TOTAL_QUESTIONS || state.fetchedBatchMarkers.has(startIndex)) {
-                return; // Already requested or index out of bounds
+                return; // Already requested or out of bounds
             }
 
             console.log(`Requesting batch starting at index ${startIndex} for mode: ${state.examMode}`);
-            state.fetchedBatchMarkers.add(startIndex); // Mark as requested
+            state.fetchedBatchMarkers.add(startIndex);
 
-            try {
-                const response = await fetch(WORKER_URL, {
-                    method: 'POST',
-                    cache: 'no-store',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        requestType: 'getQuestions',
-                        mode: state.examMode,
-                        startIndex: startIndex,
-                        count: Math.min(QUESTIONS_PER_BATCH, TOTAL_QUESTIONS - startIndex),
-                    }),
-                });
+            let attempts = 0;
+            const maxAttempts = 2;
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("API Error Response:", errorData);
-                    throw new Error(errorData.message || `Worker request failed with status ${response.status}`);
-                }
+            while (attempts < maxAttempts) {
+                attempts++;
+                try {
+                    const response = await fetch(WORKER_URL, {
+                        method: 'POST',
+                        cache: 'no-store',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            requestType: 'getQuestions',
+                            mode: state.examMode,
+                            startIndex: startIndex,
+                            count: Math.min(QUESTIONS_PER_BATCH, TOTAL_QUESTIONS - startIndex),
+                        }),
+                    });
 
-                const newQuestions = await response.json();
-
-                if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
-                    throw new Error('Invalid data received from AI: empty or non-array response.');
-                }
-
-                // Inject new questions into the global state array
-                newQuestions.forEach((q, i) => {
-                    const index = startIndex + i;
-                    if (index < TOTAL_QUESTIONS) {
-                        state.questions[index] = q;
+                    const rawText = await response.text();
+                    let newQuestions;
+                    try {
+                        newQuestions = JSON.parse(rawText);
+                    } catch (err) {
+                        throw new Error(`Edge server error (${response.status}): ${rawText.slice(0, 100)}`);
                     }
-                });
 
-                console.log(`Successfully received and stored batch starting at index ${startIndex}`);
+                    if (!response.ok) {
+                        throw new Error(newQuestions.message || newQuestions.error || `Request failed with status ${response.status}`);
+                    }
 
-                // If the user is currently waiting on a question that just loaded, re-render it
-                if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
-                    renderQuestion(state.currentQuestionIndex, true);
+                    if (!Array.isArray(newQuestions) || newQuestions.length === 0) {
+                        throw new Error('Invalid AI response: empty question array');
+                    }
+
+                    // Inject questions into state
+                    newQuestions.forEach((q, i) => {
+                        const index = startIndex + i;
+                        if (index < TOTAL_QUESTIONS) {
+                            state.questions[index] = q;
+                        }
+                    });
+
+                    console.log(`Successfully loaded batch at index ${startIndex}`);
+
+                    // Re-render if user is waiting on this question
+                    if (state.currentQuestionIndex >= startIndex && state.currentQuestionIndex < startIndex + QUESTIONS_PER_BATCH) {
+                        renderQuestion(state.currentQuestionIndex, true);
+                    }
+                    return; // Success, exit retry loop
+
+                } catch (error) {
+                    console.error(`Fetch attempt ${attempts} failed for batch ${startIndex}:`, error);
+                    if (attempts < maxAttempts) {
+                        console.log(`Retrying batch ${startIndex} in 2 seconds...`);
+                        await new Promise(res => setTimeout(res, 2000));
+                    } else {
+                        showToast(`Error fetching questions: ${error.message}`, 'error');
+                        state.fetchedBatchMarkers.delete(startIndex); // Allow user retry
+                    }
                 }
-
-            } catch (error) {
-                console.error(`CRITICAL: Failed to fetch batch ${startIndex}:`, error);
-                showToast(`Error fetching questions: ${error.message}. Retrying...`, 'error');
-                state.fetchedBatchMarkers.delete(startIndex); // Allow retry later
             }
         }
 
@@ -1101,9 +1117,6 @@
                 MAT: { correct: 0, total: 0, score: 0 }
             };
 
-            let correctCount = 0;
-            let incorrectCount = 0;
-
             state.questions.forEach((q, i) => {
                 if (!q) return;
 
@@ -1115,15 +1128,13 @@
 
                 if (state.questionStates[i].answered) {
                     attempted++;
-                    // Nepal CEE marking scheme: +1 for correct, -0.25 for incorrect
+                    // CEE marking scheme: +1 for correct, -0.25 for incorrect response
                     if (userAnswer === q.correct) {
                         score += 1.0;
-                        correctCount++;
                         subjectStats[subject].correct++;
                         subjectStats[subject].score += 1.0;
                     } else {
                         score -= 0.25;
-                        incorrectCount++;
                         subjectStats[subject].score -= 0.25;
                     }
                 }
@@ -1141,11 +1152,19 @@
          */
         function renderResultPage(score, attempted, subjectStats) {
             // --- 1. Score Counter Animation ---
-            // Support decimal scores from -0.25 deductions
-            dom.resultScore.textContent = Number.isInteger(score) ? score : score.toFixed(2);
+            let currentScore = 0;
+            const scoreInterval = setInterval(() => {
+                if (score === 0) {
+                    dom.resultScore.textContent = 0;
+                    clearInterval(scoreInterval);
+                    return;
+                }
+                currentScore++;
+                dom.resultScore.textContent = currentScore;
+                if (currentScore >= score) clearInterval(scoreInterval);
+            }, 20); // Fast counting animation
 
-            const unattempted = TOTAL_QUESTIONS - attempted;
-            dom.resultSummaryText.textContent = `You scored ${Number.isInteger(score) ? score : score.toFixed(2)} out of ${TOTAL_QUESTIONS}. Attempted: ${attempted} (${correctCount} correct, ${incorrectCount} incorrect, -${(incorrectCount * 0.25).toFixed(2)} penalty). Unattempted: ${unattempted}.`;
+            dom.resultSummaryText.textContent = `You scored ${score} out of ${TOTAL_QUESTIONS}. You attempted ${attempted} questions and had ${attempted - score} incorrect.`;
 
             // --- 2. Subject-wise Charts ---
             dom.subjectCharts.innerHTML = '';
