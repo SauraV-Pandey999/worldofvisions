@@ -749,9 +749,21 @@
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("API Error Response:", errorData);
-                    throw new Error(errorData.message || `Worker request failed with status ${response.status}`);
+                    let errMsg = `Worker request failed with status ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        console.error("API Error Response:", errorData);
+                        if (errorData.error) {
+                            errMsg = errorData.error;
+                            if (errorData.attempts && Array.isArray(errorData.attempts)) {
+                                const details = errorData.attempts.map(a => `${a.model}: ${a.status || "err"} (${a.message || "failed"})`).join(" | ");
+                                errMsg += ` [${details}]`;
+                            }
+                        } else if (errorData.message) {
+                            errMsg = errorData.message;
+                        }
+                    } catch (_) {}
+                    throw new Error(errMsg);
                 }
 
                 const newQuestions = await response.json();
