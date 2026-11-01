@@ -479,6 +479,7 @@
     margin: 16px 0;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     padding-bottom: 10px;
+    flex-wrap: wrap;
   }
   .admin-tab-btn {
     background: rgba(255,255,255,0.05);
@@ -518,9 +519,6 @@
   }
 
   /* ==========================================
-     COMMUNITY LEADERBOARD (USER 3)
-     ========================================== */
-    /* ==========================================
      EXECUTIVE COUNCIL (LEADERBOARD)
      ========================================== */
   .exec-council-grid {
@@ -546,8 +544,7 @@
     transition: transform 200ms ease, box-shadow 200ms ease;
   }
   .exec-card:hover { transform: translateY(-3px); }
-  
-  /* C.E.O - Radiant Gold */
+
   .exec-card--ceo {
     border: 1px solid rgba(255, 215, 0, 0.4);
     box-shadow: 0 0 25px rgba(255, 215, 0, 0.12), inset 0 0 15px rgba(255, 215, 0, 0.05);
@@ -559,7 +556,6 @@
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
   }
 
-  /* Operation Coordinator - Electric Purple */
   .exec-card--ops {
     border: 1px solid rgba(168, 85, 247, 0.4);
     box-shadow: 0 0 25px rgba(168, 85, 247, 0.12), inset 0 0 15px rgba(168, 85, 247, 0.05);
@@ -571,7 +567,6 @@
     box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
   }
 
-  /* Marketing Manager - Emerald Green */
   .exec-card--mkt {
     border: 1px solid rgba(34, 197, 94, 0.4);
     box-shadow: 0 0 25px rgba(34, 197, 94, 0.12), inset 0 0 15px rgba(34, 197, 94, 0.05);
@@ -689,6 +684,33 @@
     font-size: 13px;
   }
   .leaderboard-table tr:hover td { background: rgba(255, 255, 255, 0.03); }
+
+  /* ==========================================
+     BADGE SYSTEM (streak + limited-time)
+     ========================================== */
+  .bd-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:600;color:var(--bc,#00e5ff);border:1px solid color-mix(in oklab,var(--bc,#00e5ff) 55%,transparent);background:color-mix(in oklab,var(--bc,#00e5ff) 14%,transparent);box-shadow:0 0 8px color-mix(in oklab,var(--bc,#00e5ff) 25%,transparent);white-space:nowrap}
+  .bd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .bd-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 10px;text-align:center;border-radius:var(--radius);border:1px solid color-mix(in oklab,var(--bc) 50%,transparent);background:color-mix(in oklab,var(--bc) 8%,var(--deep));box-shadow:0 0 14px color-mix(in oklab,var(--bc) 18%,transparent)}
+  .bd-card.locked{filter:grayscale(1);opacity:.45;box-shadow:none}
+  .bd-card .bd-icon{font-size:30px;line-height:1}
+  .bd-card strong{font-family:var(--font-display);font-size:11px;letter-spacing:.06em;color:var(--foreground)}
+  .bd-card small{font-size:11px;color:var(--muted-foreground)}
+  .bd-tag{font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+  .bd-tag.live{color:#22c55e;animation:bdPulse 1.6s ease-in-out infinite}
+  .bd-tag.ended{color:#94a3b8}
+  .bd-tag.mine{color:var(--gold)}
+  @keyframes bdPulse{50%{box-shadow:0 0 10px #22c55e}}
+  .bd-section-title{font-family:var(--font-display);font-size:12px;letter-spacing:.2em;color:var(--muted-foreground);text-transform:uppercase;margin:0 0 12px}
+  .bd-chip svg{display:block}
+  .bd-chip.icon-only{padding:1px 3px}
+  .bd-card .bd-icon{display:grid;place-items:center;min-height:64px}
+  .lb-form input[type=file]{padding:5px}
+  .lb-sort{display:flex;gap:8px;margin:0 0 12px}
+  .lb-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:760px}
+  .lb-form input,.lb-form select{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 10px;border-radius:4px;width:100%}
+  .lb-form label{font-size:11px;color:var(--muted-foreground);display:grid;gap:4px}
+  .lb-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;font-size:12px}
+  .lb-row button{font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--foreground)}
 
 </style>
   <!-- QR Code & Card Image Export CDN -->
@@ -821,7 +843,7 @@
         </div>
         <button class="broadcast-close" id="dismissBannerBtn" aria-label="Dismiss banner">✕</button>
       </div>
- 
+
 
       <section class="welcome-panel">
         <img src="assets/vision-hero.jpg" alt="A visionary looking at Earth from a futuristic observatory" width="1536" height="512" />
@@ -923,6 +945,7 @@
           <button class="admin-tab-btn active" data-admintab="users">1. Members & Badges</button>
           <button class="admin-tab-btn" data-admintab="codes">2. Mint Access Codes</button>
           <button class="admin-tab-btn" data-admintab="broadcast">3. Cosmic Broadcast</button>
+          <button class="admin-tab-btn" data-admintab="limited">4. Limited Badges</button>
         </div>
 
         <!-- SUB-PANEL 1: USERS & BADGES -->
@@ -930,7 +953,7 @@
           <p style="font-size: 13px; color: var(--muted);">Manage ranks, progress, and award honorary badges.</p>
           <p role="status" id="adminMessage" style="color: var(--gold); font-size: 12px;">Loading users…</p>
                   <!-- EXECUTIVE APPOINTMENTS -->
-        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; margin-bottom:18px;">
+        <div id="execLeadBox" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; margin-bottom:18px;">
           <h4 style="margin:0 0 12px; font-size:13px; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase;">✦ Executive Council Appointments</h4>
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
             <div>
@@ -985,6 +1008,40 @@
             <p id="broadcastAdminMsg" style="font-size: 12px; color: #00e5ff;"></p>
           </div>
         </div>
+
+        <!-- SUB-PANEL 4: LIMITED-TIME BADGES -->
+        <div id="adminTab-limited" hidden>
+          <p style="font-size:13px;color:var(--muted);">Launch a time-limited badge. Once the end time passes, nobody can earn it unless you reopen it.</p>
+          <div class="lb-form">
+            <input id="lbName" placeholder="Badge name (e.g. Diwali Glow)" />
+            <input id="lbIcon" placeholder="Emoji fallback (e.g. 🪔)" maxlength="4" />
+            <input id="lbDesc" placeholder="Description shown to members" />
+            <input id="lbImageUrl" placeholder="Badge image URL (https://…) — optional" />
+            <label>…or upload badge artwork<input type="file" id="lbImageFile" accept="image/*" /></label>
+            <label>Badge color
+              <select id="lbColor">
+                <option value="cyan">Cyan</option><option value="gold">Gold</option><option value="violet">Violet</option>
+                <option value="rose">Rose</option><option value="emerald">Emerald</option>
+              </select>
+            </label>
+            <span id="lbImgPreview" style="align-self:end;font-size:11px;color:var(--muted-foreground);">No image: the emoji is used.</span>
+            <label>Starts (blank = now)<input type="datetime-local" id="lbStart" /></label>
+            <label>Ends<input type="datetime-local" id="lbEnd" /></label>
+            <label>Task
+              <select id="lbKind">
+                <option value="login_days">Log in on N different days</option>
+                <option value="streak_reach">Reach an N-day streak</option>
+                <option value="profile_update">Update your profile</option>
+                <option value="manual">Manual only (I award it)</option>
+              </select>
+            </label>
+            <label>Target N<input type="number" id="lbTarget" min="1" value="3" /></label>
+            <label style="align-content:end;"><span><input type="checkbox" id="lbAnnounce" checked style="width:auto;"> Announce via broadcast banner</span></label>
+          </div>
+          <button id="launchBadgeBtn" style="margin:12px 0;background:var(--gold);color:#000;font-weight:bold;border:none;padding:8px 18px;border-radius:4px;cursor:pointer;">🚀 Launch Badge</button>
+          <p id="lbMsg" style="font-size:12px;color:var(--gold);"></p>
+          <div id="limitedBadgeList" style="display:grid;gap:8px;"></div>
+        </div>
       </section>
 
     </div>
@@ -996,7 +1053,7 @@
     <div class="tab-panel" id="panel-Settings" hidden></div>
     <div class="tab-panel" id="panel-Leaderboard" hidden>
       <div class="leaderboard-container">
-          
+
       <div class="leaderboard-header">
         <h2>COMMUNITY VISIONARIES</h2>
         <p>The cosmic vanguard: Ranked by continuous discipline and vision progression.</p>
@@ -1015,7 +1072,14 @@
       <!-- Top 3 Podium Cards -->
       <div class="podium-grid" id="podiumContainer"></div>
 
-        
+      <!-- BADGE SHOWCASE (streak ladder + limited events) -->
+      <div id="badgeShowcase" style="margin-bottom:28px;"></div>
+
+      <div class="lb-sort">
+        <button class="admin-tab-btn active" data-lbsort="streak">Sort: Streak</button>
+        <button class="admin-tab-btn" data-lbsort="badges">Sort: Badges</button>
+      </div>
+
         <table class="leaderboard-table">
           <thead>
             <tr>
@@ -1041,10 +1105,10 @@
   import {
     getAuth, onAuthStateChanged, signOut, getIdTokenResult,
   } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp,
-  collection, getDocs, query, orderBy, limit, runTransaction,
-} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, serverTimestamp,
+    collection, getDocs, query, orderBy, limit, runTransaction, where, arrayUnion, Timestamp,
+  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 
   // ---- Firebase config: same project as the rest of Vision_S ----
@@ -1062,6 +1126,7 @@ import {
   const DEFAULT_USER = {
     name: "Visionary", email: "", level: "Bronze", progress: 0, streak: 0,
     lastLogin: null, photoURL: null, membershipNumber: "VS-000001",
+    longestStreak: 0, earnedBadges: {}, ltdProgress: {},
   };
 
   const QUOTES = [
@@ -1175,6 +1240,7 @@ import {
     toastText.textContent = text;
     toast.hidden = false;
   }
+  const showToast = showNotice; // alias: the Resources panel calls showToast()
   $("toastDismiss").addEventListener("click", () => { toast.hidden = true; });
 
   function renderNav() {
@@ -1286,7 +1352,7 @@ import {
     else if (active === "Activity") renderActivityPanel();
     else if (active === "Settings") renderSettingsPanel();
         else if (active === "Membership") renderMembershipCard();
- else if (active === "Leaderboard") renderLeaderboardPanel(); // <-- ADD THIS LINE
+ else if (active === "Leaderboard") renderLeaderboardPanel();
   }
 
   hydrateIcons();
@@ -1307,6 +1373,9 @@ import {
         user.level = data.level || user.level;
         user.progress = clamp(data.progress);
         user.streak = Number(data.streak) || 0;
+        user.longestStreak = Number(data.longestStreak) || user.longestStreak || 0;
+        user.earnedBadges = data.earnedBadges || user.earnedBadges || {};
+        user.ltdProgress = data.ltdProgress || user.ltdProgress || {};
         user.name = data.name || user.name;
         user.photoURL = data.photoURL || user.photoURL;
         user.membershipNumber = data.membershipNumber || user.membershipNumber;
@@ -1357,6 +1426,8 @@ import {
         <p class="settings-msg">Login daily to maintain streak and increase level faster.</p>
       </div>
 
+      ${myBadgesHtml()}
+
       <div class="info-card">
         <h2>PROGRESS TOWARDS NEXT LEVEL</h2>
         <div class="profile-toprow" style="margin-bottom:0;">
@@ -1389,8 +1460,7 @@ import {
     panel.querySelector("#profileRefreshBtn").addEventListener("click", () => refreshFromFirestore());
   }
 
-  // ---- Resources panel: tries a real "resources" Firestore collection first ----
- // ---- Resources panel with Admin Add & Delete ----
+  // ---- Resources panel with Admin Add & Delete ----
 async function renderResourcesPanel() {
   const panel = $("panel-Resources");
   panel.innerHTML = `
@@ -1614,6 +1684,7 @@ async function renderResourcesPanel() {
         await updateDoc(doc(db, "users", currentUserId), { name: newName, photoURL: newPhoto, emailNotifications: notifOn, updatedAt: serverTimestamp() });
         await addDoc(collection(db, "users", currentUserId, "activities"), { title: "Profile updated", timestamp: serverTimestamp(), type: "profile" });
         user.name = newName; user.photoURL = newPhoto; user.emailNotifications = notifOn;
+        await checkBadges("profile"); // limited badges with a "profile update" task
         renderUI();
         msg.textContent = "Saved.";
       } catch (err) {
@@ -1667,6 +1738,7 @@ async function renderResourcesPanel() {
             photoURL: account.photoURL || null,
             membershipNumber: deriveMembershipNumber(account.uid),
             emailNotifications: true,
+            longestStreak: 1, earnedBadges: {}, ltdProgress: {},
           };
           await setDoc(ref, { ...next, lastLogin: serverTimestamp() });
         } else {
@@ -1683,6 +1755,9 @@ async function renderResourcesPanel() {
             photoURL: data.photoURL || account.photoURL || null,
             membershipNumber: data.membershipNumber || deriveMembershipNumber(account.uid),
             emailNotifications: data.emailNotifications !== false,
+            longestStreak: Number(data.longestStreak) || 0,
+            earnedBadges: data.earnedBadges || {},
+            ltdProgress: data.ltdProgress || {},
           };
           if (!data.membershipNumber) {
             // Backfill once so this account has a permanent membership number going forward.
@@ -1719,8 +1794,9 @@ async function renderResourcesPanel() {
           }
         }
         user = next;
+        await checkBadges("login"); // streak milestones + limited-time badges
         renderUI();
-         loadGlobalBroadcast(); // <-- ADD THIS LINE
+        loadGlobalBroadcast();
       });
     } catch (err) {
       console.error(err);
@@ -1982,12 +2058,12 @@ async function renderResourcesPanel() {
       $("adminTab-users").hidden = tab !== "users";
       $("adminTab-codes").hidden = tab !== "codes";
       $("adminTab-broadcast").hidden = tab !== "broadcast";
+      $("adminTab-limited").hidden = tab !== "limited";
       if (tab === "codes") loadActiveCodes();
+      if (tab === "limited") loadLimitedAdmin();
     });
   });
 
-  // --- ADMIN 3: BADGE GRANTING & USER DIRECTORY EXTENSION ---
-  // Replace the loadAdminUsers function so it supports adding/removing honorary badges:
   // ==========================================
   // ADMIN 1 & 3: USER MANAGEMENT & EXECUTIVE APPOINTMENTS
   // ==========================================
@@ -2032,7 +2108,8 @@ async function renderResourcesPanel() {
         });
       });
 
-      // 3. Auto-inject Executive Council selector box in Admin Panel if not present
+      // 3. Executive Council selector box (static markup carries id="execLeadBox";
+      //    this only injects one if it is somehow missing)
       let leadBox = $("execLeadBox");
       if (!leadBox && list.parentNode) {
         leadBox = document.createElement("div");
@@ -2182,19 +2259,357 @@ async function renderResourcesPanel() {
     }
   }
 
-  // --- SPECIAL BADGE FORMATTER ---
+  // --- SPECIAL BADGE FORMATTER (honorary badges) ---
   function formatBadgeHtml(badge, canRemove = false) {
     const removeBtn = canRemove ? ` <span class="admin-badge-remove" data-badge="${escapeHtml(badge)}" style="cursor:pointer; margin-left:4px; font-weight:bold;">×</span>` : "";
     return `<span class="admin-badge-pill" style="background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; font-size:10px; padding:2px 6px; border-radius:3px; display:inline-flex; align-items:center;">${escapeHtml(badge)}${removeBtn}</span>`;
   }
 
-  // --- LEADERBOARD & EXECUTIVE COUNCIL ---
+  // ==========================================
+  // BADGE ENGINE: streak milestones + limited-time badges
+  // ==========================================
+  const DAY = 86400000;
+  // ---------- Medal palettes (metal gradients + dark core) ----------
+  const PAL = {
+    bronze:   { hi: "#f6c89a", mid: "#cd7f32", lo: "#6e3f17", core1: "#3a2210", core2: "#150b05", glow: "rgba(205,127,50,.55)" },
+    silver:   { hi: "#f8fafc", mid: "#b8c2cc", lo: "#59636f", core1: "#2b323a", core2: "#0f1216", glow: "rgba(203,213,225,.5)" },
+    gold:     { hi: "#fff2b0", mid: "#e5b44b", lo: "#80590f", core1: "#3d2c08", core2: "#150f03", glow: "rgba(255,200,60,.6)" },
+    platinum: { hi: "#d9fffa", mid: "#2dd4bf", lo: "#0d5a53", core1: "#0b3a37", core2: "#041514", glow: "rgba(45,212,191,.55)" },
+    sapphire: { hi: "#c4ebff", mid: "#38bdf8", lo: "#0a4676", core1: "#0b2f52", core2: "#030d18", glow: "rgba(56,189,248,.6)" },
+    imperial: { hi: "#fff2b0", mid: "#f0b429", lo: "#7a4f08", core1: "#3b1470", core2: "#12062b", glow: "rgba(255,190,50,.7)" },
+    obsidian: { hi: "#f0dcff", mid: "#a855f7", lo: "#3b0764", core1: "#2a0d4f", core2: "#0a0314", glow: "rgba(168,85,247,.7)" },
+    cyan:     { hi: "#c6f7ff", mid: "#22d3ee", lo: "#0e4f66", core1: "#0e3a52", core2: "#04121f", glow: "rgba(0,229,255,.55)" },
+    violet:   { hi: "#eadcff", mid: "#8b5cf6", lo: "#3b1f87", core1: "#26145a", core2: "#09041a", glow: "rgba(139,92,246,.6)" },
+    rose:     { hi: "#ffd6e2", mid: "#f43f5e", lo: "#7f1230", core1: "#4a0f22", core2: "#14040a", glow: "rgba(244,63,94,.6)" },
+    emerald:  { hi: "#d1fadf", mid: "#22c55e", lo: "#0d5a2a", core1: "#0b3b1f", core2: "#03140a", glow: "rgba(34,197,94,.6)" },
+  };
+  // Center glyphs (drawn inside a 100x100 hexagon, above the label banner)
+  const GLYPHS = {
+    flame:  '<path d="M50 24c2 8 13 12 13 25a13 13 0 0 1-26 0c0-7 4-11 7-14 1 4 3 6 5 7-1-7 0-12 1-18z"/>',
+    bolt:   '<path d="M55 22L37 48h11l-3 20 20-28H53z"/>',
+    star:   '<path d="M50 22l7 14 15 2-11 11 3 15-14-8-14 8 3-15-11-11 15-2z"/>',
+    gem:    '<path d="M37 36l8-10h10l8 10-13 32z"/><path d="M37 36h26M45 26l5 10 5-10M50 36v32" fill="none"/>',
+    shield: '<path d="M50 24l17 6v16c0 12-8 19-17 23-9-4-17-11-17-23V30z"/><path d="M50 34v24M41 44h18" fill="none"/>',
+    crown:  '<path d="M31 62l3-26 11 11 5-17 5 17 11-11 3 26z"/><circle cx="50" cy="26" r="2.4"/>',
+  };
+  const STREAK_TIERS = [
+    { days: 7,   name: "Spark",      icon: "🔥", label: "1 Week",   art: "bronze",   glyph: "flame",  tag: "7D" },
+    { days: 14,  name: "Flame",      icon: "⚡", label: "2 Weeks",  art: "silver",   glyph: "bolt",   tag: "14D" },
+    { days: 30,  name: "Blaze",      icon: "🌟", label: "1 Month",  art: "gold",     glyph: "star",   tag: "30D" },
+    { days: 90,  name: "Ember Lord", icon: "💎", label: "3 Months", art: "platinum", glyph: "gem",    tag: "3M" },
+    { days: 180, name: "Inferno",    icon: "🛡️", label: "6 Months", art: "sapphire", glyph: "shield", tag: "6M" },
+    { days: 365, name: "Eternal",    icon: "👑", label: "1 Year",   art: "imperial", glyph: "crown",  tag: "1Y" },
+  ];
+  // Fixed tiers + one new badge for every extra year, forever
+  function streakTiersFor(n) {
+    const list = [...STREAK_TIERS];
+    for (let y = 2; y * 365 <= n + 365; y++) list.push({ days: y * 365, name: `Eternal ×${y}`, icon: "👑", label: `${y} Years`, art: "obsidian", glyph: "crown", tag: `${y}Y` });
+    return list;
+  }
+  const streakDef = (t) => ({ id: `streak_${t.days}`, type: "streak", days: t.days, name: t.name, icon: t.icon, desc: `${t.label} login streak`, color: PAL[t.art].mid, art: t.art, glyph: t.glyph, tag: t.tag });
+
+  // Only https links or data: images are accepted for badge artwork
+  const safeImg = (u) => (typeof u === "string" && (/^https:\/\//i.test(u) || /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(u))) ? u : "";
+
+  // ---------- Designed medal SVGs ----------
+  let _mid = 0;
+  const HEX_OUTER = "50,3 93,26 93,74 50,97 7,74 7,26";
+  const HEX_INNER = "50,10 86,30 86,70 50,90 14,70 14,30";
+  function medalFrame(id, p, inner, d, size) {
+    const banner = size >= 40 && d.tag
+      ? `<rect x="29" y="73" width="42" height="12" rx="3" fill="${p.lo}" stroke="${p.hi}" stroke-width=".8"/><text x="50" y="82.3" text-anchor="middle" font-family="Orbitron,Rajdhani,sans-serif" font-size="8" font-weight="700" fill="${p.hi}">${escapeHtml(d.tag)}</text>`
+      : "";
+    return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" role="img" aria-label="${escapeHtml(d.name)}" style="flex:0 0 auto;vertical-align:middle;filter:drop-shadow(0 0 ${size >= 40 ? 6 : 3}px ${p.glow})">
+      <defs>
+        <linearGradient id="${id}a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p.hi}"/><stop offset=".5" stop-color="${p.mid}"/><stop offset="1" stop-color="${p.lo}"/></linearGradient>
+        <radialGradient id="${id}b" cx=".5" cy=".38" r=".75"><stop offset="0" stop-color="${p.core1}"/><stop offset="1" stop-color="${p.core2}"/></radialGradient>
+        <clipPath id="${id}c"><polygon points="${HEX_INNER}"/></clipPath>
+      </defs>
+      <polygon points="${HEX_OUTER}" fill="url(#${id}a)"/>
+      <polygon points="${HEX_INNER}" fill="url(#${id}b)" stroke="${p.hi}" stroke-width="1.2" stroke-opacity=".75"/>
+      ${inner}
+      ${banner}
+    </svg>`;
+  }
+  function medalSvg(d, size = 64) {
+    const id = "m" + (++_mid), p = PAL[d.art] || PAL.cyan;
+    const glyph = `<g fill="url(#${id}a)" stroke="${p.hi}" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">${GLYPHS[d.glyph] || ""}</g>`;
+    return medalFrame(id, p, glyph, d, size);
+  }
+  function limitedSvg(d, size = 64) {
+    const id = "m" + (++_mid), p = PAL[d.art] || PAL.cyan;
+    const img = safeImg(d.imageUrl);
+    const inner = img
+      ? `<image href="${escapeHtml(img)}" x="12" y="8" width="76" height="84" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id}c)"/><polygon points="${HEX_INNER}" fill="none" stroke="${p.hi}" stroke-width="1.6"/>`
+      : `<text x="50" y="${size >= 40 ? 57 : 62}" text-anchor="middle" font-size="${size >= 40 ? 34 : 40}">${escapeHtml(d.icon || "🏅")}</text>`;
+    return medalFrame(id, p, inner, { ...d, tag: "LTD" }, size);
+  }
+  const art = (d, size = 64) => (d.type === "streak" ? medalSvg(d, size) : limitedSvg(d, size));
+
+  let limitedMap = {};
+  const endOf = (b) => (b.reopenUntil && b.reopenUntil > b.endsAt ? b.reopenUntil : b.endsAt);
+  function isLive(b, now = new Date()) {
+    if (b.disabled || !b.startsAt || !b.endsAt || now < b.startsAt) return false;
+    return now <= endOf(b);
+  }
+  function badgeStatus(b, now = new Date()) {
+    if (b.disabled) return "disabled";
+    if (now < b.startsAt) return "upcoming";
+    return isLive(b, now) ? "live" : "ended";
+  }
+  function timeLeft(d) {
+    const ms = d - Date.now();
+    if (ms <= 0) return "ended";
+    const dd = Math.floor(ms / DAY), h = Math.floor((ms % DAY) / 3600000), m = Math.floor((ms % 3600000) / 60000);
+    return dd ? `${dd}d ${h}h left` : h ? `${h}h ${m}m left` : `${m}m left`;
+  }
+  async function loadLimitedCatalog() {
+    limitedMap = {};
+    if (!db) return;
+    try {
+      const snap = await getDocs(collection(db, "badges"));
+      snap.forEach((d) => {
+        const x = d.data();
+        limitedMap[d.id] = {
+          id: d.id, type: "limited", name: x.name || "Limited Badge", icon: x.icon || "🏅",
+          desc: x.description || "", color: (PAL[x.art] || PAL.cyan).mid, art: PAL[x.art] ? x.art : "cyan", imageUrl: safeImg(x.imageUrl || ""), task: x.task || { kind: "manual", target: 1 },
+          startsAt: x.startsAt?.toDate?.() || null, endsAt: x.endsAt?.toDate?.() || null,
+          reopenUntil: x.reopenUntil?.toDate?.() || null, disabled: x.disabled === true,
+        };
+      });
+    } catch (e) { console.warn("Badge catalog load skipped:", e); }
+  }
+  function getBadgeDef(id) {
+    if (id.startsWith("streak_")) {
+      const days = Number(id.slice(7));
+      const t = streakTiersFor(days).find((x) => x.days === days);
+      return t ? streakDef(t) : null;
+    }
+    return limitedMap[id] || null;
+  }
+
+  // Award whatever the user has legitimately earned. trigger: "login" | "profile"
+  async function checkBadges(trigger) {
+    if (!db || !currentUserId) return;
+    const ref = doc(db, "users", currentUserId);
+    try {
+      await loadLimitedCatalog();
+      const data = (await getDoc(ref)).data() || {};
+      const earned = { ...(data.earnedBadges || {}) };
+      const progress = data.ltdProgress || {};
+      const updates = {};
+      const newly = [];
+      const today = dayKey(new Date());
+      const streak = Number(data.streak) || 0;
+
+      if (trigger === "login") {
+        const best = Math.max(Number(data.longestStreak) || 0, streak);
+        if (best > (Number(data.longestStreak) || 0)) updates.longestStreak = best;
+        user.longestStreak = best;
+        for (const t of streakTiersFor(best)) {
+          const def = streakDef(t);
+          if (best >= t.days && !earned[def.id]) { updates[`earnedBadges.${def.id}`] = serverTimestamp(); earned[def.id] = true; newly.push(def); }
+        }
+      }
+      for (const b of Object.values(limitedMap)) {
+        if (earned[b.id] || !isLive(b)) continue;          // ended = gone forever
+        const kind = b.task.kind, target = Number(b.task.target) || 1;
+        let done = false;
+        if (trigger === "login" && kind === "streak_reach") done = streak >= target;
+        if (trigger === "login" && kind === "login_days") {
+          const days = [...(progress[b.id]?.days || [])];
+          if (!days.includes(today)) { updates[`ltdProgress.${b.id}.days`] = arrayUnion(today); days.push(today); progress[b.id] = { days }; }
+          done = days.length >= target;
+        }
+        if (trigger === "profile" && kind === "profile_update") done = true;
+        if (done) { updates[`earnedBadges.${b.id}`] = serverTimestamp(); earned[b.id] = true; newly.push(b); }
+      }
+      if (Object.keys(updates).length) await updateDoc(ref, updates);
+      user.earnedBadges = earned;
+      user.ltdProgress = progress;
+      if (newly.length) showNotice(`🎉 New badge${newly.length > 1 ? "s" : ""}: ${newly.map((d) => `${d.icon} ${d.name}`).join(", ")}`);
+    } catch (err) { console.warn("Badge check failed:", err); }
+  }
+
+  // ---------- badge rendering helpers ----------
+  const chipHtml = (d, iconOnly = false) =>
+    `<span class="bd-chip ${iconOnly ? "icon-only" : ""}" style="--bc:${d.color}" title="${escapeHtml(d.name + " — " + d.desc)}">${art(d, iconOnly ? 28 : 20)}${iconOnly ? "" : " " + escapeHtml(d.name)}</span>`;
+
+  function earnedChips(earned, honorary = [], max = 4) {
+    const defs = Object.keys(earned || {}).map(getBadgeDef).filter(Boolean)
+      .sort((a, b) => (a.type === "limited" ? -1 : 1) - (b.type === "limited" ? -1 : 1) || (b.days || 0) - (a.days || 0));
+    const shown = defs.slice(0, max).map((d) => chipHtml(d)).join("");
+    const more = defs.length > max ? `<span class="bd-chip" style="--bc:#94a3b8">+${defs.length - max}</span>` : "";
+    const hon = honorary.map((b) => formatBadgeHtml(b)).join("");
+    return shown + more + hon || '<span style="color:#64748b;font-size:11px;">-</span>';
+  }
+  const podiumChips = (v) =>
+    `<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin:4px 0;">${Object.keys(v.earned).map(getBadgeDef).filter(Boolean).sort((a, b) => (b.days || 0) - (a.days || 0)).slice(0, 4).map((d) => chipHtml(d, true)).join("")}</div>`;
+  const bdCard = (d, locked, tagHtml = "", sub = "") =>
+    `<div class="bd-card ${locked ? "locked" : ""}" style="--bc:${d.color}"><div class="bd-icon">${art(d, 64)}</div><strong>${escapeHtml(d.name)}</strong><small>${escapeHtml(d.desc)}</small>${sub ? `<small>${sub}</small>` : ""}${tagHtml}</div>`;
+
+  // Leaderboard showcase: every badge + how many members own it
+  function renderBadgeShowcase(community) {
+    const box = $("badgeShowcase");
+    if (!box) return;
+    const counts = {};
+    community.forEach((v) => Object.keys(v.earned).forEach((k) => (counts[k] = (counts[k] || 0) + 1)));
+    const maxStreak = Math.max(0, ...community.map((v) => v.longestStreak || v.streak));
+    const streakCards = streakTiersFor(maxStreak).map(streakDef)
+      .map((d) => bdCard(d, !counts[d.id], "", `${counts[d.id] || 0} member${counts[d.id] === 1 ? "" : "s"}`)).join("");
+    const limited = Object.values(limitedMap).filter((b) => !b.disabled && b.startsAt && b.startsAt <= new Date())
+      .sort((a, b) => b.startsAt - a.startsAt)
+      .map((b) => {
+        const live = isLive(b);
+        const tag = live ? `<span class="bd-tag live">LIVE · ${timeLeft(endOf(b))}</span>` : `<span class="bd-tag ended">ENDED · VAULTED</span>`;
+        return bdCard(b, !counts[b.id], tag, `${counts[b.id] || 0} earned`);
+      }).join("");
+    box.innerHTML = `
+      <h3 class="bd-section-title">🔥 Streak Ladder</h3><div class="bd-grid" style="margin-bottom:22px;">${streakCards}</div>
+      <h3 class="bd-section-title">⏳ Limited Event Badges</h3>
+      <div class="bd-grid">${limited || '<p class="settings-msg">No limited events yet. Stay tuned.</p>'}</div>`;
+  }
+
+  // "My badges" card for the Profile tab
+  function myBadgesHtml() {
+    const earned = user.earnedBadges || {};
+    const best = Math.max(user.longestStreak || 0, user.streak || 0);
+    const next = streakTiersFor(best).find((t) => t.days > best);
+    const ladder = streakTiersFor(best).map(streakDef)
+      .filter((d) => d.days <= Math.max(best, 365) || earned[d.id])
+      .map((d) => bdCard(d, !earned[d.id])).join("");
+    const limited = Object.values(limitedMap).filter((b) => !b.disabled && b.startsAt && b.startsAt <= new Date())
+      .map((b) => {
+        const got = !!earned[b.id], live = isLive(b);
+        const tag = got ? `<span class="bd-tag mine">EARNED ✓</span>`
+          : live ? `<span class="bd-tag live">LIVE · ${timeLeft(endOf(b))}</span>`
+          : `<span class="bd-tag ended">MISSED</span>`;
+        const k = b.task.kind, n = Number(b.task.target) || 1;
+        const sub = got || !live ? "" : k === "login_days" ? `${(user.ltdProgress?.[b.id]?.days || []).length} / ${n} days`
+          : k === "streak_reach" ? `${user.streak} / ${n} streak` : k === "profile_update" ? "Update your profile" : "Awarded by admin";
+        return bdCard(b, !got, tag, sub);
+      }).join("");
+    return `<div class="info-card">
+      <h2>MY BADGES</h2>
+      <p class="card-sub">${next ? `Next streak badge: ${next.icon} ${next.name} at ${next.days} days (${Math.max(0, next.days - (user.streak || 0))} to go).` : "All streak badges unlocked!"}</p>
+      <div class="bd-grid">${ladder}</div>
+      ${limited ? `<h3 class="bd-section-title" style="margin-top:20px;">Limited Events</h3><div class="bd-grid">${limited}</div>` : ""}
+    </div>`;
+  }
+
+  // ---------- ADMIN: launch / manage limited badges ----------
+  // Uploaded artwork is shrunk to 160x160 and stored inline (no Firebase Storage needed)
+  let lbImageData = "";
+  $("lbImageFile")?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    lbImageData = "";
+    if (!file) return;
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement("canvas"); c.width = c.height = 160;
+        const g = c.getContext("2d");
+        const k = Math.max(160 / img.width, 160 / img.height), w = img.width * k, h = img.height * k;
+        g.drawImage(img, (160 - w) / 2, (160 - h) / 2, w, h);
+        lbImageData = c.toDataURL("image/webp", 0.85);
+        $("lbImgPreview").innerHTML = `<img src="${lbImageData}" alt="" style="width:44px;height:44px;border-radius:8px;vertical-align:middle;"> artwork ready`;
+      };
+      img.onerror = () => { $("lbImgPreview").textContent = "That file could not be read as an image."; };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+
+  $("launchBadgeBtn")?.addEventListener("click", async () => {
+    const msg = $("lbMsg");
+    const name = $("lbName").value.trim();
+    const end = new Date($("lbEnd").value);
+    const start = $("lbStart").value ? new Date($("lbStart").value) : new Date();
+    const imageUrl = lbImageData || safeImg($("lbImageUrl").value.trim());
+    if (!name || isNaN(end) || end <= start) { msg.textContent = "Enter a name and a valid end time after the start."; return; }
+    try {
+      await addDoc(collection(db, "badges"), {
+        name, icon: $("lbIcon").value.trim() || "🏅", description: $("lbDesc").value.trim(),
+        startsAt: Timestamp.fromDate(start), endsAt: Timestamp.fromDate(end), reopenUntil: null, disabled: false,
+        imageUrl, art: $("lbColor").value || "cyan",
+        task: { kind: $("lbKind").value, target: Number($("lbTarget").value) || 1 },
+        createdAt: serverTimestamp(), createdBy: currentUserEmail,
+      });
+      if ($("lbAnnounce").checked) {
+        await setDoc(doc(db, "system", "announcements"), {
+          text: `⏳ Limited badge "${name}" is live until ${end.toLocaleString()}. Don't miss it!`,
+          active: true, publishedAt: serverTimestamp(), author: currentUserEmail,
+        });
+      }
+      msg.textContent = `✓ "${name}" launched!`;
+      ["lbName", "lbIcon", "lbDesc", "lbStart", "lbEnd", "lbImageUrl", "lbImageFile"].forEach((i) => ($(i).value = ""));
+      lbImageData = ""; $("lbImgPreview").textContent = "No image: the emoji is used.";
+      loadLimitedAdmin();
+    } catch (err) { msg.textContent = "Launch failed: " + err.message; }
+  });
+
+  async function loadLimitedAdmin() {
+    const box = $("limitedBadgeList");
+    if (!box || !db) return;
+    await loadLimitedCatalog();
+    const counts = {};
+    try { (await getDocs(collection(db, "users"))).forEach((u) => Object.keys(u.data().earnedBadges || {}).forEach((k) => (counts[k] = (counts[k] || 0) + 1))); } catch (e) {}
+    const items = Object.values(limitedMap).sort((a, b) => (b.startsAt || 0) - (a.startsAt || 0));
+    box.innerHTML = items.map((b) => {
+      const st = badgeStatus(b);
+      const col = { live: "#22c55e", ended: "#94a3b8", upcoming: "#00e5ff", disabled: "#ef4444" }[st];
+      return `<div class="lb-row" data-id="${b.id}">
+        <span>${art(b, 30)} <strong>${escapeHtml(b.name)}</strong>
+          <span class="bd-tag" style="color:${col};margin-left:6px;">${st.toUpperCase()}${st === "live" ? " · " + timeLeft(endOf(b)) : ""}</span>
+          <small style="color:var(--muted);margin-left:8px;">${counts[b.id] || 0} earned · ${escapeHtml(b.task.kind)} (${b.task.target || 1}) · ends ${b.endsAt?.toLocaleString() || "-"}</small></span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button data-act="end">End now</button><button data-act="reopen">Reopen…</button>
+          <button data-act="award">Award to member…</button><button data-act="toggle">${b.disabled ? "Enable" : "Disable"}</button>
+        </span></div>`;
+    }).join("") || "<p style='font-size:12px;color:var(--muted);'>No limited badges launched yet.</p>";
+
+    box.querySelectorAll("[data-act]").forEach((btn) => btn.addEventListener("click", async () => {
+      const id = btn.closest(".lb-row").dataset.id, act = btn.dataset.act, ref = doc(db, "badges", id);
+      try {
+        if (act === "end") { await updateDoc(ref, { endsAt: Timestamp.now(), reopenUntil: null }); }
+        else if (act === "reopen") {
+          const h = Number(prompt("Reopen for how many hours from now?", "24"));
+          if (!h) return;
+          await updateDoc(ref, { reopenUntil: Timestamp.fromDate(new Date(Date.now() + h * 3600000)), disabled: false });
+        } else if (act === "toggle") { await updateDoc(ref, { disabled: !limitedMap[id].disabled }); }
+        else if (act === "award") {
+          const email = prompt("Member email to award this badge to:");
+          if (!email) return;
+          const snap = await getDocs(query(collection(db, "users"), where("email", "==", email.trim())));
+          if (snap.empty) { showNotice("No member with that email."); return; }
+          await updateDoc(doc(db, "users", snap.docs[0].id), { [`earnedBadges.${id}`]: serverTimestamp() });
+          showNotice("Badge awarded.");
+        }
+        loadLimitedAdmin();
+      } catch (err) { console.error(err); showNotice("Action blocked: " + err.message); }
+    }));
+  }
+
+  // Leaderboard sort toggle
+  let lbSort = "streak";
+  document.querySelectorAll("[data-lbsort]").forEach((b) => b.addEventListener("click", () => {
+    lbSort = b.dataset.lbsort;
+    document.querySelectorAll("[data-lbsort]").forEach((x) => x.classList.toggle("active", x === b));
+    renderLeaderboardPanel();
+  }));
+
+  // ==========================================
+  // LEADERBOARD & EXECUTIVE COUNCIL
+  // ==========================================
   async function renderLeaderboardPanel() {
     const list = $("leaderboardList");
     const podium = $("podiumContainer");
     if (!list || !db) return;
 
     try {
+      await loadLimitedCatalog();
+
       // 1. Fetch Executive Council appointments from Firestore
       let leadership = {};
       try {
@@ -2217,8 +2632,10 @@ async function renderResourcesPanel() {
           email: data.email || "",
           level: data.level || "Bronze",
           streak: Number(data.streak) || 0,
+          longestStreak: Number(data.longestStreak) || 0,
           progress: Number(data.progress) || 0,
           badges: Array.isArray(data.badges) ? data.badges : [],
+          earned: data.earnedBadges || {},
           hideFromLeaderboard: data.hideFromLeaderboard === true,
         };
         userMap[d.id] = userData;
@@ -2247,7 +2664,7 @@ async function renderResourcesPanel() {
       if (council) {
         council.innerHTML = `
           <div style="grid-column: 1 / -1; font-family:var(--font-display, monospace); font-size:12px; letter-spacing:0.2em; color:var(--gold, #ffd700); text-transform:uppercase; margin-bottom:4px;">✦ VISION-S EXECUTIVE COUNCIL ✦</div>
-          
+
           <!-- C.E.O Card (Fixed to you) -->
           <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,215,0,0.5); box-shadow:0 0 25px rgba(255,215,0,0.15), inset 0 0 15px rgba(255,215,0,0.06); border-radius:8px; padding:20px 16px; text-align:center;">
             <div style="background:linear-gradient(90deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3)); border:1px solid #ffd700; color:#ffd700; box-shadow:0 0 10px rgba(255,215,0,0.35); font-size:11px; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:20px; text-transform:uppercase; display:inline-block; margin-bottom:12px;">👑 C.E.O</div>
@@ -2274,8 +2691,13 @@ async function renderResourcesPanel() {
         `;
       }
 
-      // Sort community by streak length, then progress
-      community.sort((a, b) => b.streak - a.streak || b.progress - a.progress);
+      // Sort community: by streak (default) or by total badges
+      const bc = (v) => Object.keys(v.earned).length + v.badges.length;
+      community.sort((a, b) => lbSort === "badges"
+        ? bc(b) - bc(a) || b.streak - a.streak
+        : b.streak - a.streak || bc(b) - bc(a) || b.progress - a.progress);
+
+      renderBadgeShowcase(community);
 
       // Render Community Top 3 Podium
       const top1 = community[0];
@@ -2289,6 +2711,7 @@ async function renderResourcesPanel() {
             <div class="podium-rank">2</div>
             <div style="color: #e2e8f0; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top2.name)}</div>
             <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top2.level)}</div>
+            ${podiumChips(top2)}
             <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top2.streak} Days</div>
           </div>` : ''}
 
@@ -2298,6 +2721,7 @@ async function renderResourcesPanel() {
             <div style="font-size:24px; margin-bottom:4px;">👑</div>
             <div style="color: #ffd700; font-family:'Orbitron', monospace; font-size:18px; font-weight:bold;">${escapeHtml(top1.name)}</div>
             <div style="font-size:12px; color:var(--muted); margin:4px 0;">${escapeHtml(top1.level)}</div>
+            ${podiumChips(top1)}
             <div style="color:var(--gold); font-size:16px; font-weight:bold;">🔥 ${top1.streak} Days</div>
           </div>` : ''}
 
@@ -2306,6 +2730,7 @@ async function renderResourcesPanel() {
             <div class="podium-rank">3</div>
             <div style="color: #cd7f32; font-family:'Orbitron', monospace; font-size:16px; font-weight:bold;">${escapeHtml(top3.name)}</div>
             <div style="font-size:11px; color:var(--muted); margin:4px 0;">${escapeHtml(top3.level)}</div>
+            ${podiumChips(top3)}
             <div style="color:var(--gold); font-size:14px; font-weight:bold;">🔥 ${top3.streak} Days</div>
           </div>` : ''}
         `;
@@ -2317,7 +2742,7 @@ async function renderResourcesPanel() {
           <td style="font-family:'Orbitron', monospace; font-weight:bold; color:${i < 3 ? 'var(--gold)' : 'var(--muted)'};">#${i + 1}</td>
           <td><strong style="color:#fff;">${escapeHtml(v.name)}</strong></td>
           <td><span style="background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:4px; font-size:11px;">${escapeHtml(v.level)}</span></td>
-          <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${v.badges.map(b => formatBadgeHtml(b)).join("") || '<span style="color:#64748b; font-size:11px;">-</span>'}</div></td>
+          <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${earnedChips(v.earned, v.badges)}</div></td>
           <td style="text-align:right; font-weight:bold; color:var(--gold);">🔥 ${v.streak}</td>
         </tr>
       `).join("");
@@ -2334,4 +2759,3 @@ async function renderResourcesPanel() {
 </script>
 </body>
 </html>
-
